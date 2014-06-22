@@ -1,0 +1,12 @@
+{
+    "name": "Smarty/Smarty 4",
+    "description": "Smarty template engine version 4",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "author's name",
+            "email": "email@example.com"
+        }
+    ]
+}

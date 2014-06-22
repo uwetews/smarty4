@@ -1,0 +1,3 @@
+<exception>
+    <error>Template '%s' cannot be relative to template of resource type '%s'</error>
+</exception>

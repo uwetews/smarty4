@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<smarty>
+    <parserPeg>
+        <checkGenerator>on</checkGenerator>
+        <compile_check>on</compile_check>
+        <force_compile></force_compile>
+        <generatorClass>Smarty\Parser\Peg\Generator</generatorClass>
+        <ruleFilePostfix>.peg.inc</ruleFilePostfix>
+        <parserFilePostfix>Parser.php</parserFilePostfix>
+        <parserClassPostfix>Parser</parserClassPostfix>
+    </parserPeg>
+    <pegGenerator>
+        <compile_check>on</compile_check>
+        <force_compile></force_compile>
+        <generatorClass>Smarty\Parser\Peg\InternalTool\ParserGenerator</generatorClass>
+        <ruleFilePostfix>ParserGenerator.peg.inc</ruleFilePostfix>
+        <parserFilePostfix>Generator.php</parserFilePostfix>
+    </pegGenerator>
+</smarty>

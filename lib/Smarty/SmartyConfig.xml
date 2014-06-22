@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<smarty>
+    <sourceLanguage>Smarty</sourceLanguage>
+    <targetLanguage>Php</targetLanguage>
+    <properties>
+        <leftDelimiter>{</leftDelimiter>
+        <rightDelimiter>}</rightDelimiter>
+        <autoLiteral>false</autoLiteral>
+        <filePerms></filePerms>
+    </properties>
+    <core>
+    </core>
+    <compiler>
+        <class>Smarty\Compiler</class>
+        <source>
+            <language name="smarty">
+                <prefix>Smarty\Source\Smarty</prefix>
+            </language>
+            <language name="config">
+                <prefix>Smarty\Source\Smarty</prefix>
+            </language>
+        </source>
+        <compiled>
+            <language>php</language>
+        </compiled>
+        <default>
+            <language>php</language>
+        </default>
+        <php>
+            <prefix>Smarty\Compiler\Php</prefix>
+        </php>
+        <smarty>
+            <prefix>Smarty\Source\Smarty</prefix>
+        </smarty>
+    </compiler>
+    <parser>
+        <defaultNode>Resource</defaultNode>
+        <class>Smarty\Parser</class>
+        <trace>on</trace>
+        <tracefilepath>php://output</tracefilepath>
+    </parser>
+</smarty>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<smarty>
+    <baseDir></baseDir>
+    <compiler>
+        <source>
+            <rootDir>./Source/</rootDir>
+            <language>Smarty</language>
+            <language>Config</language>
+        </source>
+        <target>
+            <rootDir>./Target/</rootDir>
+            <language>Php</language>
+        </target>
+    </compiler>
+    <parserPeg>
+        <trace>on</trace>
+        <checkGenerator></checkGenerator>
+        <compile_check>on</compile_check>
+        <force_compile></force_compile>
+        <generatorClass>Smarty\Tool\Parser\Peg\Generator</generatorClass>
+        <ruleFilePostfix>.peg.inc</ruleFilePostfix>
+        <parserFilePostfix>Parser.php</parserFilePostfix>
+        <parserClassPostfix>Parser</parserClassPostfix>
+    </parserPeg>
+    <pegGenerator>
+        <compile_check>on</compile_check>
+        <trace>on</trace>
+        <force_compile></force_compile>
+        <generatorClass>Smarty\Tool\Parser\Peg\InternalTool\ParserGenerator</generatorClass>
+        <ruleFilePostfix>Tool/Parser/Peg/InternalTool/ParserGenerator.peg.inc</ruleFilePostfix>
+        <parserFilePostfix>Tool/Parser/Peg/Generator.php</parserFilePostfix>
+    </pegGenerator>
+</smarty>

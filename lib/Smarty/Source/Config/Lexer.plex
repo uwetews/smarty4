@@ -1,0 +1,233 @@
+<?php
+/**
+* Smarty Config Lexer
+*
+* This is the lexer to break the config file source into tokens
+* @package Smarty
+* @subpackage Config
+* @author Uwe Tews
+*/
+/**
+* Smarty Compiler Config Lexer
+*/
+class Smarty_Compiler_Source_Language_Config_Lexer extends Smarty_Compiler_Lexer
+{
+    public $smarty_token_names = array (		// Text for parser error messages
+   				);
+
+
+    function __construct($compiler, $context)
+    {
+        parent::__construct($compiler, $context);
+    }
+
+
+/*!lex2php
+%input $this->source
+%counter $this->source_ptr
+%token $this->token
+%value $this->value
+%line $this->line
+
+commentstart = /#|;/
+openB = /\[/
+closeB = /\]/
+section = /.*?(?=[\.=\[\]\r\n])/
+equal = /=/
+whitespace = /[ \t\r]+/
+dot = /\./
+id = /[0-9]*[a-zA-Z_]\w*/
+newline = /\n/
+single_quoted_string = /'[^'\\]*(?:\\.[^'\\]*)*'(?=[ \t\r]*[\n#;])/
+double_quoted_string = /"[^"\\]*(?:\\.[^"\\]*)*"(?=[ \t\r]*[\n#;])/
+tripple_quotes = /"""/
+tripple_quotes_end = /"""(?=[ \t\r]*[\n#;])/
+text = /[\S\s]/
+float = /\d+\.\d+(?=[ \t\r]*[\n#;])/
+int = /\d+(?=[ \t\r]*[\n#;])/
+maybe_bool = /[a-zA-Z]+(?=[ \t\r]*[\n#;])/
+naked_string = /[^\n]+?(?=[ \t\r]*\n)/
+bom = /\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/
+any = /[\s\S]?/
+*/
+/*!lex2php
+%statename BOM
+bom {
+     $this->yypushstate(self::START);
+     return false;
+}
+any {
+     $this->yypushstate(self::START);
+     return true;
+}
+*/
+/*!lex2php
+%statename START
+
+commentstart {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_COMMENTSTART;
+    $this->yypushstate(self::COMMENT);
+}
+openB {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_OPENB;
+    $this->yypushstate(self::SECTION);
+}
+closeB {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_CLOSEB;
+}
+equal {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_EQUAL;
+    $this->yypushstate(self::VALUE);
+}
+whitespace {
+    return false;
+}
+newline {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_NEWLINE;
+}
+id {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_ID;
+}
+text {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_OTHER;
+}
+
+*/
+
+/*!lex2php
+%statename VALUE
+
+whitespace {
+    return false;
+}
+float {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_FLOAT;
+    $this->yypopstate();
+}
+int {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_INT;
+    $this->yypopstate();
+}
+tripple_quotes {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_TRIPPLE_QUOTES;
+    $this->yypushstate(self::TRIPPLE);
+}
+single_quoted_string {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_SINGLE_QUOTED_STRING;
+    $this->yypopstate();
+}
+double_quoted_string {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_DOUBLE_QUOTED_STRING;
+    $this->yypopstate();
+}
+maybe_bool {
+    if (!$this->context->smarty->config_booleanize || !in_array(strtolower($this->value), Array("true", "false", "on", "off", "yes", "no")) ) {
+        $this->yypopstate();
+        $this->yypushstate(self::NAKED_STRING_VALUE);
+        return true; //reprocess in new state
+    } else {
+        $parser_class = $this->parser_class;
+        $this->token = $parser_class::CONFIG_BOOL;
+        $this->yypopstate();
+    }
+}
+naked_string {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_NAKED_STRING;
+    $this->yypopstate();
+}
+newline {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_NAKED_STRING;
+    $this->value = "";
+    $this->yypopstate();
+}
+
+*/
+
+/*!lex2php
+%statename NAKED_STRING_VALUE
+
+naked_string {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_NAKED_STRING;
+    $this->yypopstate();
+}
+
+*/
+
+/*!lex2php
+%statename COMMENT
+
+whitespace {
+    return false;
+}
+naked_string {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_NAKED_STRING;
+}
+newline {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_NEWLINE;
+    $this->yypopstate();
+}
+
+*/
+
+/*!lex2php
+%statename SECTION
+
+dot {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_DOT;
+}
+section {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_SECTION;
+    $this->yypopstate();
+}
+
+*/
+/*!lex2php
+%statename TRIPPLE
+
+tripple_quotes_end {
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_TRIPPLE_QUOTES_END;
+    $this->yypopstate();
+    $this->yypushstate(self::START);
+}
+text {
+  if ($this->mbstring_overload) {
+    $to = mb_strlen($this->source,'latin1');
+  } else {
+  $to = strlen($this->source);
+  }
+  preg_match("/\"\"\"[ \t\r]*[\n#;]/",$this->source,$match,PREG_OFFSET_CAPTURE,$this->source_ptr);
+  if (isset($match[0][1])) {
+    $to = $match[0][1];
+  } else {
+    $this->compiler->error ("missing or misspelled literal closing tag");
+  }
+  if ($this->mbstring_overload) {
+    $this->value = mb_substr($this->source,$this->source_ptr,$to-$this->source_ptr,'latin1');
+  } else {
+    $this->value = substr($this->source,$this->source_ptr,$to-$this->source_ptr);
+  }
+    $parser_class = $this->parser_class;
+    $this->token = $parser_class::CONFIG_TRIPPLE_TEXT;
+}
+*/
+}
