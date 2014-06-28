@@ -131,12 +131,10 @@ class Tag extends Node
      * Constructor
      *
      * @param \Smarty\Parser       $parser parser context object
-     * @param \Smarty\Parser\Token $token
      */
-    public function __construct(Parser $parser, $token)
+    public function __construct(Parser $parser, $name)
     {
-        $this->name = $token['_name'];
-        parent::__construct($parser, $token);
+        parent::__construct($parser, $name);
         if (isset($this->nodeAttributes['required'])) {
             $this->requiredAttributes = $this->nodeAttributes['required'];
         }

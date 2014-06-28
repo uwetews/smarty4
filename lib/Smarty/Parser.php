@@ -3,9 +3,9 @@
 namespace Smarty;
 
 use Smarty\Exception\Magic;
-use Smarty\Parser\Rules\RxMatch;
 use Smarty\Template\Context;
 use Smarty\Parser\Exception\NoRule;
+use Smarty\Parser\RuleArrayParser;
 
 
 /**
@@ -13,37 +13,8 @@ use Smarty\Parser\Exception\NoRule;
  *
  * @package Smarty\Parser
  */
-class Parser extends Magic
+class Parser
 {
-    /*
-     * Regexp cache
-     *
-     * @var array
-     */
-    /**
-     * @var array
-     */
-    public $rxCache = array();
-    /**
-     * @var array
-     */
-    public $packCache = array();
-    /**
-     * @var array
-     */
-    public $ruleGroupsCache = array();
-    /*
-    * Rule definition array
-    *
-    * @var array
-    */
-    public $rules = array();
-    /*
-     * Node array
-     *
-     * @var array
-     */
-    public $nodes = array();
 
     /**
      * Compiler object
@@ -51,26 +22,124 @@ class Parser extends Magic
      * @var Compiler
      */
     public $compiler = null;
+
     /**
      * Compiler object
      *
      * @var Context
      */
     public $context = null;
-    /**
-     * @var null
-     */
-    public $result = null;
 
+    /**
+     * RuleArrayParser object for parsing rules in array format
+     *
+     * @var RuleArrayParser
+     */
+    public $ruleArrayParser = null;
+
+    /**
+     * Cache of regular expressions for '/ ... /' match rules
+     *
+     * @var array
+     */
+    public $rxCache = array();
+
+    /**
+     * Cache of parsed rules with have <attribute>hash</attribute> set
+     *
+     * @var array
+     */
+    public $packCache = array();
+
+    /**
+     * Cache of peg parser rule info by rule group  ALL|TARGET|SOURCE|SHARED
+     *   The peg parser rule info is an array of filepath and parser class prefix
+     *
+     *@var array
+     */
+    public $ruleGroupsCache = array();
+
+    /**
+     * Cache of match result of /.../ rules by position and rule nam
+     *
+     * @var array
+     */
+    public $regexpCache  = array();
+
+    /*
+    * Rule definition array of loaded rules defined in array format
+    *
+    * @var array
+    */
+    /**
+     * @var array
+     */
+    public $rules = array();
+
+    /*
+    * PegParser object of loaded rules
+    *
+    * @var array PegParser
+    */
+    /**
+     * @var array
+     */
+    public $rulePegParserArray = array();
+
+    /*
+    * Match method names of loaded rules
+    *
+    * @var array
+    */
+    /**
+     * @var array
+     */
+    public $matchMethods = array();
+
+    /**
+     * Flag to force recompilation of rule PegParser classes
+     *
+     * @var bool
+     */
     public $force_compile = false;
 
-    public $compile_check = false;
-    public $ruleFilePostfix = '';
-    public $parserFilePostfix = '';
-    public $parserClassPostfix = '';
-    public $generatorClass = null;
     /**
-     * Source
+     * Flag to check if rule definition as been updated and rule PegParser class must be recompiled
+     *
+     * @var bool
+     */
+    public $compile_check = false;
+
+    /**
+     * Rule definition file postfix
+     *
+     * @var string
+     */
+    public $ruleFilePostfix = '';
+
+    /**
+     * PegParser file postfix
+     *
+     * @var string
+     */
+    public $parserFilePostfix = '';
+
+    /**
+     * PegParser class name postfix
+     *
+     * @var string
+     */
+    public $parserClassPostfix = '';
+
+    /**
+     * Name of PegParser generator Class
+     *
+     * @var null
+     */
+    public $generatorClass = null;
+
+    /**
+     * Template source
      *
      * @var string
      */
@@ -91,53 +160,54 @@ class Parser extends Magic
     public $line = 1;
 
     /**
-     * parser configuration
-
+     * Source language name of template source
+     *
+     * @var string
      */
-    public $parserConfiguration = null;
-
     public $sourceLanguage = null;
 
+    /**
+     * Source language directory of template source
+     *
+     * @var string
+     */
     public $sourceLanguageDir = null;
 
+    /**
+     * Target language name of compiled template
+     *
+     * @var string
+     */
     public $targetLanguage = null;
 
+    /**
+     * Target language directory of compiled template
+     *
+     * @var string
+     */
     public $targetLanguageDir = null;
-    /**
-     * Source file path prefix
-     */
-    public $soureFilePath = null;
+
 
     /**
-     * Source class prefix
-     */
-    public $soureClassPrefix = null;
-    /**
-     * Compiled file path prefix
-     */
-    public $compiledFilePath = null;
-
-    /**
-     * Compiled class prefix
-     */
-    public $compiledClassPrefix = null;
-    /**
+     * Flag if trace of parsing process shall be output
+     *
      * @var bool
      */
     public $trace = false;
+
     /**
+     * Trace prompt string
+     *
      * @var string
      */
     public $tracePrompt = "\n<br>";
+
     /**
+     * Resource of trace output
+     *
      * @var null|resource
      */
     public $traceFile = null;
-    /**
-     * peg configuration
-
-     */
-    public $pegConfiguration = null;
 
     /**
      * Subtags of current tag while parsing
@@ -147,18 +217,59 @@ class Parser extends Magic
     public $currentSubtags = array();
 
     /**
+     * Name of current Rx node for replace call backs
+     *
+     * @var string
+     */
+    private $nameRx = '';
+
+    /**
      * Stack of subtags while processing nested tags
      *
      * @var array
      */
     public $subtagsStack = array();
 
+    /**
+     * Result array deafult content
+     *
+     * @var array
+     */
     public $resultDefault = array('_silent' => false, '_tag' => false, '_text' => '', '_matchres' => array());
 
+    /**
+     * Regular expression for white spaces while parsing rule definition files
+     *
+     * @var string
+     */
     public $whitespacePattern = '/[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))*/';
+
+    /**
+     * Backtrace information array
+     *
+     * @var array
+     */
     public $backtrace = array();
+
+    /**
+     * Current Smarty left delimiter
+     *
+     * @var string
+     */
     public $Ldel = '';
+
+    /**
+     * Current Smarty right delimiter
+     *
+     * @var string
+     */
     public $Rdel = '';
+
+    /**
+     * Case directory
+     *
+     * @var string
+     */
     public $baseDir = '';
 
     /**
@@ -167,7 +278,6 @@ class Parser extends Magic
      * @param Compiler $compiler compiler object
      * @param Context                    $context
      *
-     * @throws Exception\NoGeneratorClass
      */
     function __construct(Compiler $compiler, Context $context)
     {
@@ -202,6 +312,7 @@ class Parser extends Magic
         $this->loadRules('Core');
         $this->loadRules('Expression');
         $this->loadRules('Variable');
+        $this->loadRules('TagAssign');
         return $this;
     }
 
@@ -247,7 +358,6 @@ class Parser extends Magic
      * @param null|string $parserFilePostfix
      * @param bool        $force force compilation of rule parser
      *
-     * @throws Exception\NoGeneratorClass
      * @return mixed
      */
     public function checkRule($name, $ruleFilePrefix, $parserFilePrefix = null, $ruleFilePostfix = null, $parserFilePostfix = null, $force = null)
@@ -301,39 +411,39 @@ class Parser extends Magic
     {
         $groups = ($ruleGroups === Compiler::ALL) ? (Compiler::USER + Compiler::SOURCE + Compiler::TARGET + Compiler::SHARED) : $ruleGroups;
         if (isset($this->ruleGroupsCache[$groups])) {
-            $ruleArray = $this->ruleGroupsCache[$groups];
+            $ruleInfoArray = $this->ruleGroupsCache[$groups];
         } else {
-            $ruleArray = array();
+            $ruleInfoArray = array();
             if ($groups | Compiler::TARGET == Compiler::TARGET) {
                 if ($groups | Compiler::SHARED == Compiler::SHARED) {
-                    $ruleArray[] = array(__DIR__ . "/Compiler/Target/Shared/Parser/",
+                    $ruleInfoArray[] = array(__DIR__ . "/Compiler/Target/Shared/Parser/",
                                          'Smarty\Compiler\Target\Shared\Parser\\');
                 }
-                $ruleArray[] = array(__DIR__ . "/Compiler/Target/Language/{$this->getTargetLanguage()}/Parser/",
+                $ruleInfoArray[] = array(__DIR__ . "/Compiler/Target/Language/{$this->getTargetLanguage()}/Parser/",
                                      'Smarty\Compiler\Target\Language\\' . $this->getTargetLanguage() . '\Parser\\');
             }
             if ($groups | Compiler::SOURCE == Compiler::SOURCE) {
                 if ($groups | Compiler::SHARED == Compiler::SHARED) {
-                    $ruleArray[] = array(__DIR__ . "/Compiler/Source/Shared/Parser/",
+                    $ruleInfoArray[] = array(__DIR__ . "/Compiler/Source/Shared/Parser/",
                                          'Smarty\Compiler\Source\Shared\Parser\\');
                 }
-                $ruleArray[] = array(__DIR__ . "/Compiler/Source/Language/{$this->getSourceLanguage()}/Parser/",
+                $ruleInfoArray[] = array(__DIR__ . "/Compiler/Source/Language/{$this->getSourceLanguage()}/Parser/",
                                      'Smarty\Compiler\Source\Language\\' . $this->getSourceLanguage() . '\Parser\\');
             }
-            $this->ruleGroupsCache[$groups] = $ruleArray;
+            $this->ruleGroupsCache[$groups] = $ruleInfoArray;
         }
-        foreach ($ruleArray as $rule) {
+        foreach ($ruleInfoArray as $ruleInfo) {
             // path exists?
-            if (!is_dir($rule[0])) {
+            if (!is_dir($ruleInfo[0])) {
                 continue;
             }
             $exists = true;
             if ($this->compile_check || $this->force_compile) {
-                $exists = $this->checkRule($name, $rule[0]);
+                $exists = $this->checkRule($name, $ruleInfo[0]);
             }
-            $nodeParserClass = $rule[1] . $name . $this->parserClassPostfix;
+            $nodeParserClass = $ruleInfo[1] . $name . $this->parserClassPostfix;
             if ($exists && class_exists($nodeParserClass)) {
-                $o = new $nodeParserClass();
+                $o = new $nodeParserClass($this);
                 $this->addRules($o);
             }
         }
@@ -362,15 +472,24 @@ class Parser extends Magic
     /**
      * Add all rule matcher functions of rule object to cache
      *
-     * @param Node $nodeParser
+     * @param PegParser $nodeParser
      */
-    public function addRules($nodeParser)
+    public function addRules(PegParser $nodeParser)
     {
         if ($this->trace) {
             fprintf($this->traceFile, "%sLoad Parser Rules '%s' group '%d' path '%s' \n", $this->tracePrompt, get_class($nodeParser), '$nodeParser->group', '$nodeParser->nodePath');
         }
-        foreach ($nodeParser->rules as $name => $rule) {
-            $this->rules[$name] = $nodeParser;
+        if (isset($nodeParser->rules)) {
+            foreach ($nodeParser->rules as $name => $rule) {
+                $this->rules[$name] = $nodeParser;
+                $this->rulePegParserArray[$name] = $nodeParser;
+            }
+        }
+        if (isset($nodeParser->matchMethods)) {
+            foreach ($nodeParser->matchMethods as $name => $rule) {
+                $this->matchMethods[$name] = $nodeParser;
+                $this->rulePegParserArray[$name] = $nodeParser;
+            }
         }
     }
 
@@ -402,15 +521,24 @@ class Parser extends Magic
             $this->traceFile = fopen('php://output', 'w');
         }
         $nodeName = isset($nodeName) ? $nodeName : (string) $this->context->smarty->smartyConfig->parser->defaultNode;
+        if ($this->getMatchMethod($nodeName, true)) {
+            $dummy = array();
+            if (isset($node)) {
+                $dummy['node'] = $node;
+            }
+            $result = $this->matchRule($dummy, $nodeName);
+            return $result;
+        }
         // build result array
-        $result = array_merge($this->resultDefault, $this->getRuleNode($nodeName));
+        $this->ruleArrayParser = new RuleArrayParser($this);
+        $result = array_merge($this->resultDefault, $this->getRuleAsArray($nodeName));
         if (isset($node)) {
             $result['node'] = $node;
         }
         // call start actions
-        $this->ruleStart($result);
+        $this->ruleArrayParser->ruleStart($result);
         // match node rule
-        $this->matchRule($result, $this->buildParams($result));
+        $this->ruleArrayParser->matchRuleArray($result, $this->buildParams($result));
         // free memory
         $this->rules = array();
         $this->rxCache = array();
@@ -420,22 +548,80 @@ class Parser extends Magic
     }
 
     /**
-     * @param $ruleName
+     * Get Peg Parser object for rule
+     *
+     * @param  string    $ruleName rule name
+     * @param bool $quiet if true do not throw exception
+     *
+     * @throws Parser\Exception\NoRule
+     */
+    public function getPegParser($ruleName, $quiet = false) {
+        if (isset($this->rulePegParserArray[$ruleName])) {
+            return $this->rulePegParserArray[$ruleName];
+        } else {
+            $this->loadRules($ruleName);
+            if (isset($this->rulePegParserArray[$ruleName])) {
+                return $this->rulePegParserArray[$ruleName];
+            } else {
+                if ($quiet) {
+                    return false;
+                }
+                throw new NoRule($ruleName, 0, $this->context);
+            }
+        }
+    }
+
+    /**
+     * Get match method name for rule
+     * 
+     * @param string $ruleName rule name
+     * @param bool $quiet if true do not throw exception
+     *
+     * @throws Parser\Exception\NoRule
+     */
+    public function getMatchMethod($ruleName, $quiet = false) {
+        $peg = $this->getPegParser($ruleName);
+        if (isset($peg->matchMethods[$ruleName])) {
+            return $peg->matchMethods[$ruleName];
+        } else {
+            if ($quiet) {
+                return false;
+            }
+            throw new NoRule($ruleName, 0, $this->context);
+        }
+    }
+
+    /**
+     * Get node attributes by rule name
+     *
+     * @param string $ruleName  rule name
+     *
+     * @return bool|array
+     * @throws Parser\Exception\NoRule
+     */
+    public function getNodeAttributes($ruleName) {
+        $peg = $this->getPegParser($ruleName);
+        if (isset($peg->nodeAttributes[$ruleName])) {
+            return $peg->nodeAttributes[$ruleName];
+        } else {
+            return false;
+        }
+    }
+    /**
+     * Get rule definition as array
+     *
+     * @param  string $ruleName  rule name
      *
      * @throws Parser\Exception\NoRule
      * @return mixed
      */
-    public function getRuleNode($ruleName)
+    public function getRuleAsArray($ruleName)
     {
+        $this->checkPegParser($ruleName);
         if (isset($this->rules[$ruleName])) {
             $rule = $this->rules[$ruleName];
         } else {
-            $this->loadRules($ruleName);
-            if (isset($this->rules[$ruleName])) {
-                $rule = $this->rules[$ruleName];
-            } else {
-                throw new NoRule($ruleName, 0, $this->context);
-            }
+            throw new NoRule($ruleName, 0, $this->context);
         }
         if (is_array($rule)) {
             $rule['_ruleParser'] = $this;
@@ -447,168 +633,20 @@ class Parser extends Magic
     }
 
     /**
-     * Rule result array initialization
+     * Call match method of rule
      *
-     * @param array     $result
-     * @param null|array $previous optional result array of calling rule
-     */
-    public function ruleStart(&$result, $previous = null)
-    {
-        $result['_parser'] = $this;
-        $result['_startpos'] = $result['_endpos'] = $this->pos;
-        $result['_lineno'] = $this->line;
-        if (isset($result['_actions']['_start'])) {
-            foreach ($result['_actions']['_start'] as $method => $foo) {
-                $callback = array($result['_ruleParser'], $method);
-                call_user_func_array($callback, array(&$result, $previous));
-            }
-        }
-    }
-
-    /**
-     * Match token rule observing all parameter
+     * @param array $result
+     * @param $ruleName
      *
-     * @param array $result result array
-     * @param array $params rule parameter array
-     *
-     * @return bool
-     */
-    public function matchRule(&$result, $params)
-    {
-        $iteration = 0;
-        if ($params['_pla'] || $params['_nla']) {
-            $backup = $result;
-        }
-        $pos = $this->pos;
-        $line = $this->line;
-        do {
-            $a = substr($this->source, $this->pos, 30);
-            $valid = $this->matchToken($result, $params);
-            if ($params['_pla'] || $params['_nla']) {
-                $this->pos = $pos;
-                $this->line = $line;
-                $result = $backup;
-            }
-            if ($params['_nla']) {
-                $valid = !$valid;
-            }
-            if ($valid) {
-                $iteration ++;
-            }
-            if ($valid && $params['_max'] != null && $iteration == $params['_max']) {
-                break;
-            }
-            if (!$valid && $iteration >= $params['_min']) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) {
-                break;
-            }
-        } while (true);
-        return $valid;
-    }
-
-    /**
-     * Match rule token by its type
-     *
-     * @param array $result   result array
-     * @param array $params   rule parameter array
-     *
-     * @return bool  result of match
-     */
-    public function matchToken(&$result, $params)
-    {
-        switch ($params['_type']) {
-            case 'recurse':
-                return $this->matchRecurse($result, $params);
-                break;
-            case 'rx':
-                $rx = isset($this->rxCache[$params['_param']]) ? $this->rxCache[$params['_param']] : $this->rxCache[$params['_param']] = new RxMatch($params, $this);
-                return $rx->matchRx($result, $params);
-                break;
-            case 'option':
-                return $this->matchOption($result, $params);
-                break;
-            case 'sequence':
-                return $this->matchSequence($result, $params);
-                break;
-            case 'whitespace':
-                return $this->matchWhitespace($result, $params);
-                break;
-            case 'literal':
-                return $this->matchLiteral($result, $params);
-                break;
-            case 'expression':
-                return $this->matchExpression($result, $params);
-                break;
-            default:
-                //TODO
-                return false;
-                break;
-        }
-    }
-
-    /**
-     * Match Token by its node name
-     *     *
-     *
-     * @param array     $result result array
-     * @param array $params rule parameter array
-     *
+     * @return false|array   return false if match failed or result array
      * @throws Parser\Exception\NoRule
-     * @return bool result of match
      */
-    public function matchRecurse(&$result, $params)
-    {
-        $subres = array_merge($this->resultDefault, $this->getRuleNode($params['_param']));
-        $newParams = $this->buildParams($subres);
+    public function matchRule(&$result, $ruleName){
+        $peg = $this->getPegParser($ruleName);
+            $method = $this->getMatchMethod($ruleName);
+            return $peg->$method($result);
+     }
 
-        $this->backtrace[] = $subres;
-        $hashed = isset($subres['_attr']['hash']);
-        $pos = $this->pos;
-        $hashvalid = false;
-        if ($hashed && isset($this->packCache[$pos][$subres['_name']])) {
-            $subres = $this->packCache[$pos][$subres['_name']];
-            $hashvalid = $valid = !(false === $subres);
-            if ($hashvalid) {
-                $subres['_tag'] = $params['_tag'];
-                $this->pos = $subres['_endpos'];
-            }
-        } else {
-            $this->ruleStart($subres, $result);
-            $subres['_tag'] = $params['_tag'];
-            $valid = ($newParams['_extended']) ? $this->matchRule($subres, $newParams) : $this->matchToken($subres, $newParams);
-            if ($hashed) {
-                if ($valid) {
-                    $this->packCache[$pos][$subres['_name']] = $subres;
-                } else {
-                    $this->packCache[$pos][$subres['_name']] = false;
-                }
-            }
-        }
-        $remove = array_pop($this->backtrace);
-        if ($valid) {
-            $this->successNode($subres);
-            if ($subres['_silent'] < 2) {
-                if (!$hashvalid && isset($subres['_actions']['_finish'])) {
-                    foreach ($subres['_actions']['_finish'] as $method => $foo) {
-                        $callback = array($subres['_ruleParser'], $method);
-                        call_user_func_array($callback, array(&$subres));
-                        if ($subres === false) {
-                            return false;
-                        }
-                    }
-                }
-                $this->ruleMatch($result, $subres);
-            } else {
-                $result['_endpos'] = $this->pos;
-            }
-        } else {
-            $this->failNode($remove);
-        }
-        return $valid;
-    }
 
     /**
      * Build rule parameter array
@@ -642,27 +680,37 @@ class Parser extends Magic
     }
 
     /**
-     * @param $subres
+     * @param $backTrace
+     *
      */
-    public function successNode($subres)
+    public function successNode($backTrace)
     {
         if ($this->trace) {
             $this->backtrace();
-            fprintf($this->traceFile, " = %s('%s')]\n", ($subres['_tag'] ? $subres['_tag'] . ':' : '') . $subres['_name'], $this->truncateText($subres['_text']));
+            fprintf($this->traceFile, " = %s('%s')]\n", ($backTrace[1]['_tag'] ? $backTrace[1]['_tag'] . ':' : '') . $backTrace[0], $this->truncateText($backTrace[1]['_text']));
         }
     }
 
+    /**
+     * @param $backTrace
+     */
+    public function addBackTrace($backTrace)
+    {
+        if ($this->trace) {
+            $this->backtrace[] = $backTrace;
+        }
+    }
     /**
      *
      */
     public function backtrace()
     {
         fprintf($this->traceFile, "%s [", $this->tracePrompt);
-        foreach ($this->backtrace as $t) {
-            fprintf($this->traceFile, " %s", $t['_name']);
-        }
-        if (isset($t['_text'])) {
-            fprintf($this->traceFile, "('%s')", $this->truncateText($t['_text']));
+        if (!empty($this->backtrace)) {
+            foreach ($this->backtrace as $t) {
+                fprintf($this->traceFile, " %s", $t[0]);
+            }
+            fprintf($this->traceFile, "('%s')", $this->truncateText($t[1]['_text']));
         }
     }
 
@@ -680,104 +728,16 @@ class Parser extends Magic
         return $text;
     }
 
+
     /**
-     * Calls store actions on matching rules
+     * @param $backTrace
      *
-     * @param array $result result array
-     * @param array $subres result array of matched token
      */
-    public function ruleMatch(&$result, $subres)
-    {
-        $result['_endpos'] = $this->pos;
-        if ($subres['_silent'] == 0) {
-            $result['_text'] .= $subres['_text'];
-        }
-        $storetag = (isset($subres['_tag']) && !empty($subres['_tag'])) ? $subres['_tag'] : false;
-        // TODO
-        if (false && $this->trace) {
-            $backlinks = $this->getBacklinks();
-            fprintf($this->traceFile, "%sParser Match [", $this->tracePrompt);
-            foreach ($backlinks as $bl) {
-                fprintf($this->traceFile, "%s ", $bl['_name']);
-            }
-            fprintf($this->traceFile, "= %s]\n", $subres['_name']);
-        }
-
-        /**
-         * if ($storetag) {
-         * $this->_result[$storetag][$subres->_startpos][$subres->_endpos]['text'] = $subres->_text;
-         * $this->_result[$storetag][$subres->_startpos][$subres->_endpos]['node'] = $subres->node;
-         * $this->_result[$storetag][$subres->_startpos][$subres->_endpos]['result'] = $subres->_result;
-         * }
-         * */
-        if (isset($result['_actions']['_match'])) {
-            if (isset($subres['_matchres']) && !empty($subres['_matchres'])) {
-                foreach ($subres['_matchres'] as $type => $foo) {
-                    if (!empty($foo) && isset($result['_actions']['_match'][$type])) {
-                        foreach ($result['_actions']['_match'][$type] as $method => $bar) {
-                            $storetag = false;
-                            $callback = array($result['_ruleParser'], $method);
-                            call_user_func_array($callback, array(&$result, $subres));
-                        }
-                    }
-                }
-            }
-            if ($storetag || isset($subres['_name'])) {
-                $type = $storetag ? $storetag : $subres['_name'];
-                if (false) {
-                    $method = "{$result['_name']}_{$type}";
-                    if (isset($result['_actions'][$method])) {
-                        $callback = array($result['_ruleParser'], $method);
-                        call_user_func_array($callback, array(&$result, $subres));
-                        return;
-                    }
-                }
-                if (isset($result['_actions']['_match'][$type])) {
-                    foreach ($result['_actions']['_match'][$type] as $method => $foo) {
-                        $callback = array($result['_ruleParser'], $method);
-                        call_user_func_array($callback, array(&$result, $subres));
-                        return;
-                    }
-                }
-            }
-        }
-
-        if (isset($result['_actions']['_all'])) {
-            foreach ($result['_actions']['_all'] as $method => $foo) {
-                $callback = array($result['_ruleParser'], $method);
-                call_user_func_array($callback, array(&$result, $subres));
-                return;
-            }
-        }
-        if (!empty($subres['_matchres'])) {
-            $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
-        } elseif ($storetag) {
-            if (!isset($result[$storetag])) {
-                $result[$storetag] = $subres;
-            } else {
-                if (!is_array($result[$storetag])) {
-                    $result[$storetag] = array($result[$storetag], $subres);
-                }
-                $result[$storetag][] = $subres;
-            }
-        }
-        /**
-         * else {
-         * if (isset($subres['_matchres'])) {
-         * $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
-         * }
-         * }
-         */
-    }
-
-    /**
-     * @param $subres
-     */
-    public function failNode($subres)
+    public function failNode($backTrace)
     {
         if ($this->trace) {
             $this->backtrace();
-            fprintf($this->traceFile, " ] [%s]? Got '%s'\n", $subres['_name'], $this->unexpected());
+            fprintf($this->traceFile, " ] [%s]? Got '%s'\n", $backTrace[0], $this->unexpected());
         }
     }
 
@@ -792,123 +752,6 @@ class Parser extends Magic
         return '';
     }
 
-    /**
-     * Match optional tokens
-     *
-     * @param array $result result array
-     * @param array $params rule parameter array
-     *
-     * @return bool result of match
-     */
-    public function matchOption(&$result, $params)
-    {
-        $backup = $result;
-        $pos = $this->pos;
-        $line = $this->line;
-        $count = count($params['_param']);
-        $loop = 0;
-        do {
-            $newParams = $this->buildParams($params['_param'][$loop]);
-            $valid = ($newParams['_extended']) ? $this->matchRule($result, $newParams) : $this->matchToken($result, $newParams);
-            if ($valid) {
-                return true;
-            }
-            $loop ++;
-        } while ($loop < $count);
-        $this->pos = $pos;
-        $this->line = $line;
-        $result = $backup;
-        return false;
-    }
-
-    /**
-     * Match sequence of tokens
-     *
-     * @param array $result result array
-     * @param array $params rule parameter array
-     *
-     * @return bool result of match
-     */
-    public function matchSequence(&$result, $params)
-    {
-        $backup = $result;
-        $pos = $this->pos;
-        $line = $this->line;
-        $count = count($params['_param']);
-        $loop = 0;
-        do {
-            $newParams = $this->buildParams($params['_param'][$loop]);
-            $valid = ($newParams['_extended']) ? $this->matchRule($result, $newParams) : $this->matchToken($result, $newParams);
-            if ($valid === false) {
-                $this->pos = $pos;
-                $this->line = $line;
-                $result = $backup;
-                return false;
-            }
-            $loop ++;
-        } while ($loop < $count);
-       if ($params['_tag']) {
-            $result['_tag'] = $params['_tag'];
-            $this->ruleMatch($backup, $result);
-            $result = $backup;
-        }
-        return true;
-    }
-
-    /**
-     * Match whitespace token
-     *
-     * @param array $result result array
-     * @param array $params rule parameter array ($params['_param'] == true is optional)
-     *
-     * @return bool result of match
-     */
-    public function matchWhitespace(&$result, $params)
-    {
-        if (preg_match($this->whitespacePattern, $this->source, $match, 0, $this->pos)) {
-            $result['_text'] .= ' ';
-            $this->pos += strlen($match[0]);
-            $this->line += substr_count($match[0], "\n");
-            $result['_endpos'] = $this->pos;
-            return true;
-        }
-        if ($params['_param']) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Match literal token
-     *
-     * @param array $result result array
-     * @param array $params rule parameter array ($params['_param'] contains literal)
-     *
-     * @return bool result of match
-     */
-    public function matchLiteral(&$result, $params)
-    {
-        if ($params['_param'] == substr($this->source, $this->pos, strlen($params['_param']))) {
-            $this->pos += strlen($params['_param']);
-            $result['_text'] .= $params['_param'];
-            $result['_endpos'] = $this->pos;
-            $this->successLiteral($params['_param']);
-            // if literal was tagged call matching action
-            if ($params['_tag']) {
-                if (isset($result['_actions']['_match'][$params['_tag']])) {
-                    foreach ($result['_actions']['_match'][$params['_tag']] as $method => $foo) {
-                        $callback = array($result['_ruleParser'], $method);
-                        $subres = array();
-                        call_user_func_array($callback, array(&$result, $subres));
-                        return true;
-                    }
-                }
-            }
-            return true;
-        }
-        $this->failLiteral($params['_param']);
-        return false;
-    }
 
     /**
      * @param $literal
@@ -932,46 +775,6 @@ class Parser extends Magic
         }
     }
 
-    /**
-     * Match expression token
-     *
-     * @param array $result result array
-     * @param array $params rule parameter array
-     *
-     * @return bool result of match
-     */
-    public function matchExpression(&$result, $params)
-    {
-        $subres = $result;
-        $subres['_tag'] = $params['_tag'];
-        $this->backtrace[] = $result;
-        $valid = false;
-        // call runtime function to perform the match
-        $method = "{$result['_name']}_EXP_{$params['_param']}";
-        if (isset($result['_actions']['_expression'][$method])) {
-            $callback = array($result['_ruleParser'], $method);
-            $valid = call_user_func_array($callback, array(&$subres));
-        }
-        $remove = array_pop($this->backtrace);
-        if ($valid) {
-            $this->successNode($subres);
-            // call matching actions
-            if ($subres['_silent'] < 2) {
-                if (isset($subres['_actions']['_finish'])) {
-                    foreach ($subres['_actions']['_finish'] as $method => $foo) {
-                        $callback = array($subres['_ruleParser'], $method);
-                        call_user_func_array($callback, array(&$subres));
-                    }
-                }
-                $this->ruleMatch($result, $subres);
-            } else {
-                $result['_endpos'] = $this->pos;
-            }
-        } else {
-            $this->failNode($remove);
-        }
-        return $valid;
-    }
 
     /**
      * Get source language directory
@@ -1009,44 +812,120 @@ class Parser extends Magic
         // Reset position to LDel
         $this->pos = $result['_startpos'];
         $this->line = $result['_lineno'];
-        $tag = $result['_tag'];
         // build match rule
         $ruleName = 'Tag' . ucfirst($result['tagname']['_text']);
-        $subres = array_merge($this->resultDefault, $this->getRuleNode($ruleName));
-        $subres['node'] = $tagNode = $this->compiler->instanceNode('Tag', $this->compiler->context, $this, $subres);
+        $tagNode = $this->compiler->instanceNode('Tag', $this->compiler->context, $this, $ruleName);
         $subtags = $tagNode->getNodeAttribute('subtags');
         if ($subtags !== false) {
             $this->subtagsStack[] = $this->currentSubtags;
             $this->currentSubtags = $subtags;
         }
-        $this->ruleStart($subres);
-        $valid = $this->matchRule($subres, $this->buildParams($subres));
+        if ($this->getMatchMethod($ruleName, true)) {
+            $subres = array('node' => $tagNode);
+            $result = $this->matchRule($subres, $ruleName);
+            if ( $result) {
+                return true;
+            }
+            return false;
+        } else {
+            $tag = $result['_tag'];
+            $subres = array_merge($this->resultDefault, $this->getRuleAsArray($ruleName));
+            $subres['node'] = $tagNode;
+            $this->ruleStart($subres);
+            $valid = $this->matchRuleArray($subres, $this->buildParams($subres));
+            if ($valid) {
+                if (isset($subres['_actions']['_finish'])) {
+                    foreach ($subres['_actions']['_finish'] as $method => $foo) {
+                        $callback = array($subres['_ruleParser'], $method);
+                        call_user_func_array($callback, array(&$subres));
+                    }
+                }
+                $subres['node']->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+                $actions = $result['_actions'];
+                $result = $subres;
+                $result['_actions'] = $actions;
+                $result['_tag'] = $tag;
+            }
+        }
         if ($subtags !== false) {
             $this->currentSubtags = array_pop($this->subtagsStack);
-        }
-        if ($valid) {
-            if (isset($subres['_actions']['_finish'])) {
-                foreach ($subres['_actions']['_finish'] as $method => $foo) {
-                    $callback = array($subres['_ruleParser'], $method);
-                    call_user_func_array($callback, array(&$subres));
-                }
-            }
-            $subres['node']->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-            $actions = $result['_actions'];
-            $result = $subres;
-            $result['_actions'] = $actions;
-            $result['_tag'] = $tag;
         }
         return $valid;
     }
 
+    /**
+     *
+     * Insert expression in regular expression at initialization
+     *
+     * @param string $nameRx node name
+     * @param string $regexp regular expression
+     *
+     * @return string regular expression
+     */
+    function initRxReplace($nameRx, $regexp) {
+        $this->nameRx = $nameRx;
+        return preg_replace_callback('/{(\w+)}/', array($this, 'initRxReplaceCb'), $regexp);
+    }
+
+    /**
+     * Callback for initRxReplace()
+     *
+     * @param array $matches
+     *
+     * @return string replacement
+     *
+     * @throws Parser\Exception\NoRule
+     */
+    function initRxReplaceCb($matches)
+    {
+        $method = "{$this->nameRx}_INIT_{$matches[1]}";
+        $peg = $this->getPegParser($this->nameRx);
+        return $peg->$method($this);
+    }
+
+    /**
+     *
+     * Insert expression in regular expression dynamically
+     *
+     * @param string $nameRx node name
+     * @param string $regexp regular expression
+     *
+     * @return string regular expression
+     */
+    function dynamicRxReplace($nameRx, $regexp) {
+        $this->nameRx = $nameRx;
+        return preg_replace_callback('/\$(\w+)/', array($this, 'dynamicRxReplaceCb'), $regexp);
+    }
+
+    /**
+     * Callback for dynamicRxReplace()
+     *
+     * @param array $matches
+     *
+     * @return string replacement
+     *
+     * @throws Parser\Exception\NoRule
+     */
+    function dynamicRxReplaceCb($matches)
+    {
+        $method = "{$this->nameRx}_INIT_{$matches[1]}";
+        $peg = $this->getPegParser($this->nameRx);
+        return $peg->$method($this);
+    }
+
+    /**
+     *
+     */
     public function cleanup()
     {
         $this->source = '';
         $this->rules = array();
         $this->rxCache = array();
         $this->packCache = array();
+        $this->rulePegParserArray = array();
+        $this->matchMethods = array();
         $this->context = null;
         $this->compiler = null;
+        $this->ruleArrayParser = null;
     }
 }

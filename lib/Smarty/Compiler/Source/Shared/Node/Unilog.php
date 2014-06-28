@@ -11,27 +11,28 @@
  *
  * @package Smarty\Compiler
  */
-namespace Smarty\Node\Operator;
+namespace Smarty\Compiler\Source\Shared\Node;
 
 use Smarty\Node;
 
 /**
- * Class Unimath
+ * Class Unilog
  *
  * @package Smarty\Nodes\Internal
  */
-class Unimath extends Node
+class Unilog extends Node
 {
     /**
      * Node name
      *
      * @var string
      */
-    public $name = 'Unimath';
+    public $name = 'Unilog';
+
     /**
      * node group
      */
-    public $nodeGroup = 'math';
+    public $nodeGroup = 'logop';
 
     /**
      * Normalized operator as string
@@ -52,8 +53,10 @@ class Unimath extends Node
      *
      * @var array
      */
-    private $translation = array('+' => ' + ',
-                                 '-' => ' - ',
+    private $translation = array('!'   => ' !',
+                                 'not' => ' !',
+                                 '~'   => ' ~',
+
     );
 
     /**

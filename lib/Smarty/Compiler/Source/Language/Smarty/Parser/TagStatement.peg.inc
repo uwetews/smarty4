@@ -5,17 +5,17 @@ use Smarty\Compiler\Source\Shared\Node;
 use Smarty\PegParser;
 
 /**
- * Class TagOutputParser
+ * Class TagStatementParser
  *
  * @package Smarty\Compiler\Source\Language\Smarty\Parser
  */
-class TagOutputParser extends PegParser
+class TagStatementParser extends PegParser
 {
     /*!*
-         <pegparser TagOutput>
-             <node TagOutput>
-                 <rule>Ldel _? value:Expr Rdel</rule>
-                 <action value>
+         <pegparser TagStatement>
+             <node TagStatement>
+                 <rule>Ldel statement:Statement Rdel</rule>
+                 <action statement>
                  {
                      $result['node'] = new Node\TagOutput($this->parser);
                      $result['node']->addSubTree($subres['node'], 'value');

@@ -359,6 +359,7 @@ class Compiler extends Magic
             $node->parse();
             $codeObj = $node->compile();
             $code = $codeObj->compiled;
+            $node->parser->cleanup();
             $node->cleanup();
             unset($node);
             echo '<br>exit<br>';
@@ -393,7 +394,7 @@ class Compiler extends Magic
     /**
      * Instance node
      *
-     * @param string                   $name node name
+     * @param string                   $nodeName node name
      * @param \Smarty\Template\Context $context
      * @param null                     $parser
      * @param int                      $ruleGroups
@@ -402,32 +403,33 @@ class Compiler extends Magic
      * @throws ParserClassNotFound
      * @return \Smarty\Node
      */
-    public function instanceNode($name, Context $context = null, $parser = null, $token = null, $ruleGroups = self::ALL)
+    public function instanceNode($nodeName, Context $context = null, $parser = null, $tokenName = null, $ruleGroups = self::ALL)
     {
+        $tokenName = isset($tokenName)  ? $tokenName : $nodeName;
         $context = isset($context) ? $context : $this->context;
         $groups = ($ruleGroups === self::ALL) ? (self::USER + self::SOURCE + self::TARGET + self::SHARED + self::COMMON) : $ruleGroups;
-        if (isset($this->nodeClassCache[$groups]) && isset($this->nodeClassCache[$groups][$name])) {
-            $nodeClass = $this->nodeClassCache[$groups][$name];
+        if (isset($this->nodeClassCache[$groups]) && isset($this->nodeClassCache[$groups][$nodeName])) {
+            $nodeClass = $this->nodeClassCache[$groups][$nodeName];
             $parser = isset($parser) ? $parser : $this->instanceParser($context);
-            return new $nodeClass($parser, $token);
+            return new $nodeClass($parser, $tokenName);
         }
         $classArray = array();
-        if ($groups | self::USER == self::USER && !(false == $classArray[0] = $this->getUserNodeClass($name))) {
+        if ($groups | self::USER == self::USER && !(false == $classArray[0] = $this->getUserNodeClass($nodeName))) {
         } else {
             if (isset($this->nodeClassGroupsCache[$groups])) {
                 $classArray = $this->nodeClassGroupsCache[$groups];
             } else {
                 $classArray = array();
                 if ($groups | self::TARGET == self::TARGET) {
-                    $classArray[] = "Smarty\Compiler\Target\Language\\{$context->getTargetLanguage()}\Nodes\\";
+                    $classArray[] = "Smarty\Compiler\Target\Language\\{$context->getTargetLanguage()}\Node\\";
                     if ($groups | self::SHARED == self::SHARED) {
-                        $classArray[] = "Smarty\Compiler\Target\Shared\Nodes\\";
+                        $classArray[] = "Smarty\Compiler\Target\Shared\Node\\";
                     }
                 }
                 if ($groups | self::SOURCE == self::SOURCE) {
-                    $classArray[] = "Smarty\Compiler\Source\Language\\{$context->getSourceLanguage()}\Nodes\\";
+                    $classArray[] = "Smarty\Compiler\Source\Language\\{$context->getSourceLanguage()}\Node\\";
                     if ($groups | self::SHARED == self::SHARED) {
-                        $classArray[] = "Smarty\Compiler\Source\Shared\Nodes\\";
+                        $classArray[] = "Smarty\Compiler\Source\Shared\Node\\";
                     }
                 }
                 if ($groups | self::COMMON == self::COMMON) {
@@ -437,16 +439,16 @@ class Compiler extends Magic
             }
         }
         foreach ($classArray as $nodeClass) {
-            $nodeClass .= $name;
+            $nodeClass .= $nodeName;
             // class exist?
             if (class_exists($nodeClass)) {
-                $this->nodeClassCache[$groups][$name] = $nodeClass;
+                $this->nodeClassCache[$groups][$nodeName] = $nodeClass;
                 $parser = isset($parser) ? $parser : $this->instanceParser($context);
-                return new $nodeClass($parser, $name, $token);
+                return new $nodeClass($parser, $tokenName);
             }
         }
 
-        throw new NodeClassNotFound($name, 0, $this->context);
+        throw new NodeClassNotFound($nodeName, 0, $this->context);
     }
 
     /**

@@ -1,276 +1,71 @@
 <?php
 namespace Smarty\Compiler\Source\Language\Smarty\Parser;
 
-use Smarty\Compiler\Source\Shared\Nodes;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class TagIfParser
  *
- * @package Smarty\Source\Smarty\Nodes\ifTag
+ * @package Smarty\Compiler\Source\Language\Smarty\Parser
  */
-class TagIfParser
+class TagIfParser extends PegParser
 {
    
     /**
      *
-     * Parser generated on 2014-06-21 18:39:24
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/TagIf.peg.inc' dated 2014-06-20 15:01:45
+     * Parser generated on 2014-06-28 11:26:33
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/TagIf.peg.inc' dated 2014-06-28 02:53:30
      *
     */
 
+    /**
+     Flag that compiled Peg Parser class is valid
+     *
+     * @var bool
+     */
+    public $valid = true;
 
+    /**
+     * Array of match method names for rules of this Peg Parser
+     *
+     * @var array
+     */
+    public $matchMethods = array(
+            "TagIf" => "matchNodeTagIf",
+            "elseifTagif" => "matchNodeelseifTagif",
+            "elseTagif" => "matchNodeelseTagif"
+        );
 
-
-    public $rules = array(
+    /**
+     * Array of node attributes
+     *
+     * @var array
+     */
+    public $nodeAttributes = array(
             "TagIf" => array(
-                    "_attr" => array(
-                            "_nodetype" => "node",
-                            "attributes" => array(
-                                    "subtags" => array(
-                                            "elseif" => true,
-                                            "else" => true
-                                        )
-                                ),
-                            "options" => "nocache"
-                        ),
-                    "_name" => "TagIf",
-                    "_param" => array(
-                            0 => array(
-                                    "_param" => "Ldel",
-                                    "_type" => "recurse"
-                                ),
-                            1 => array(
-                                    "_param" => "if",
-                                    "_type" => "literal"
-                                ),
-                            2 => array(
-                                    "_param" => false,
-                                    "_type" => "whitespace"
-                                ),
-                            3 => array(
-                                    "_param" => array(
-                                            0 => array(
-                                                    "_param" => "Statement",
-                                                    "_tag" => "condition",
-                                                    "_type" => "recurse"
-                                                ),
-                                            1 => array(
-                                                    "_param" => "Logexpr",
-                                                    "_tag" => "condition",
-                                                    "_type" => "recurse"
-                                                )
-                                        ),
-                                    "_type" => "option"
-                                ),
-                            4 => array(
-                                    "_param" => "Smarty_Tag_Params",
-                                    "_type" => "recurse"
-                                ),
-                            5 => array(
-                                    "_param" => "Rdel",
-                                    "_type" => "recurse"
-                                ),
-                            6 => array(
-                                    "_min" => 0,
-                                    "_param" => "Body",
-                                    "_tag" => "body",
-                                    "_type" => "recurse"
-                                ),
-                            7 => array(
-                                    "_max" => null,
-                                    "_min" => 0,
-                                    "_param" => array(
-                                            0 => array(
-                                                    "_nla" => true,
-                                                    "_param" => "LdelSlash",
-                                                    "_type" => "recurse"
-                                                ),
-                                            1 => array(
-                                                    "_param" => "elseifTagif",
-                                                    "_type" => "recurse"
-                                                )
-                                        ),
-                                    "_type" => "sequence"
-                                ),
-                            8 => array(
-                                    "_min" => 0,
-                                    "_param" => array(
-                                            0 => array(
-                                                    "_nla" => true,
-                                                    "_param" => "LdelSlash",
-                                                    "_type" => "recurse"
-                                                ),
-                                            1 => array(
-                                                    "_param" => "elseTagif",
-                                                    "_type" => "recurse"
-                                                )
-                                        ),
-                                    "_type" => "sequence"
-                                ),
-                            9 => array(
-                                    "_param" => "Smarty_Tag_Block_Close",
-                                    "_tag" => "close",
-                                    "_type" => "recurse"
+                    "_nodetype" => "node",
+                    "attributes" => array(
+                            "subtags" => array(
+                                    "elseif" => true,
+                                    "else" => true
                                 )
                         ),
-                    "_type" => "sequence",
-                    "_actions" => array(
-                            "_start" => array(
-                                    "TagIf___START" => true
-                                ),
-                            "_match" => array(
-                                    "condition" => array(
-                                            "TagIf_condition" => true
-                                        ),
-                                    "body" => array(
-                                            "TagIf_body" => true
-                                        )
-                                ),
-                            "_finish" => array(
-                                    "TagIf___FINISH" => true
-                                )
-                        )
+                    "options" => "nocache"
                 ),
             "elseifTagif" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token"
-                        ),
-                    "_name" => "elseifTagif",
-                    "_param" => array(
-                            0 => array(
-                                    "_param" => "Ldel",
-                                    "_type" => "recurse"
-                                ),
-                            1 => array(
-                                    "_param" => "elseif",
-                                    "_type" => "literal"
-                                ),
-                            2 => array(
-                                    "_param" => false,
-                                    "_type" => "whitespace"
-                                ),
-                            3 => array(
-                                    "_param" => array(
-                                            0 => array(
-                                                    "_param" => "Statement",
-                                                    "_tag" => "condition",
-                                                    "_type" => "recurse"
-                                                ),
-                                            1 => array(
-                                                    "_param" => "Logexpr",
-                                                    "_tag" => "condition",
-                                                    "_type" => "recurse"
-                                                )
-                                        ),
-                                    "_type" => "option"
-                                ),
-                            4 => array(
-                                    "_param" => "Rdel",
-                                    "_type" => "recurse"
-                                ),
-                            5 => array(
-                                    "_min" => 0,
-                                    "_param" => "Body",
-                                    "_tag" => "body",
-                                    "_type" => "recurse"
-                                )
-                        ),
-                    "_type" => "sequence",
-                    "_actions" => array(
-                            "_start" => array(
-                                    "elseifTagif___START" => true
-                                ),
-                            "_match" => array(
-                                    "condition" => array(
-                                            "elseifTagif_condition" => true
-                                        ),
-                                    "body" => array(
-                                            "elseifTagif_body" => true
-                                        )
-                                ),
-                            "_finish" => array(
-                                    "elseifTagif___FINISH" => true
-                                )
-                        )
+                    "_nodetype" => "token"
                 ),
             "elseTagif" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token"
-                        ),
-                    "_name" => "elseTagif",
-                    "_param" => array(
-                            0 => array(
-                                    "_param" => "Ldel",
-                                    "_type" => "recurse"
-                                ),
-                            1 => array(
-                                    "_param" => "else",
-                                    "_type" => "literal"
-                                ),
-                            2 => array(
-                                    "_param" => "Rdel",
-                                    "_type" => "recurse"
-                                ),
-                            3 => array(
-                                    "_min" => 0,
-                                    "_param" => "Body",
-                                    "_tag" => "body",
-                                    "_type" => "recurse"
-                                )
-                        ),
-                    "_type" => "sequence",
-                    "_actions" => array(
-                            "_start" => array(
-                                    "elseTagif___START" => true
-                                ),
-                            "_match" => array(
-                                    "body" => array(
-                                            "elseTagif_body" => true
-                                        )
-                                ),
-                            "_finish" => array(
-                                    "elseTagif___FINISH" => true
-                                )
-                        )
+                    "_nodetype" => "token"
                 )
         );
-    public function matchNodeTagIf(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $valid = $this->parser->matchToken($result, $params);
-    }
-
-
-
-    public function matchNodeelseifTagif(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $valid = $this->parser->matchToken($result, $params);
-    }
-
-
-
-    public function matchNodeelseTagif(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $valid = $this->parser->matchToken($result, $params);
-    }
-
-
-
     /**
      *
      * Parser rules and action for node 'TagIf'
      *
      *  Rule:
-     <node TagIf> <attribute> attributes =  ( subtags =  ( elseif , else )), options =  nocache</attribute>  <rule>  Ldel 'if' _ condition:Statement | condition:Logexpr Smarty_Tag_Params Rdel body:Body? (  !LdelSlash elseifTagif )* (  !LdelSlash elseTagif )? close:Smarty_Tag_Block_Close </rule>  <action _start> {
-                    $i =1;
+     <node TagIf> <attribute> attributes =  ( subtags =  ( elseif , else )), options =  nocache</attribute>  <rule>  Ldel 'if' _ condition:Statement | condition:Logexpr SmartyTagOptions Rdel body:Body? (  !LdelSlash elseifTagif )* (  !LdelSlash elseTagif )? close:Smarty_Tag_Block_Close </rule>  <action _start> {
+                    $result['node'] = $previous['node'];
                 } </action>  <action condition> {
                     $result['condition'] = $subres['node'];
                 } </action>  <action body> {
@@ -280,9 +75,327 @@ class TagIfParser
                 } </action> </node> 
      *
     */
+    public function matchNodeTagIf($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        $this->TagIf___START($result, $previous);
+        // Start 'TagIf' min '1' max '1'
+        // start sequence
+        $backup1 = $result;
+        $pos1 = $this->parser->pos;
+        $line1 = $this->parser->line;
+        do {
+            // Start 'Ldel' min '1' max '1'
+            $this->parser->addBacktrace(array('Ldel', $result));
+            $subres = $this->parser->matchRule($result, 'Ldel');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Ldel',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            // End 'Ldel'
+            if (!$valid) {
+                break;
+            }
+            // Start ''if'' min '1' max '1'
+            if ('if' == substr($this->parser->source, $this->parser->pos, 2)) {
+                $this->parser->pos += 2;
+                $result['_text'] .= 'if';
+                $this->parser->successLiteral('if');
+                $valid = true;
+            } else {
+                $this->parser->failLiteral('if');
+                $valid = false;
+            }
+            // End ''if''
+            if (!$valid) {
+                break;
+            }
+            // Start '_' min '1' max '1'
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
+                $this->parser->pos += strlen($match[0]);
+                $this->parser->line += substr_count($match[0], "\n");
+                $result['_text'] .= ' ';
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            // End '_'
+            if (!$valid) {
+                break;
+            }
+            // Start 'TagIf' min '1' max '1'
+            // start option
+            do {
+                // Start 'condition:Statement' tag 'condition' min '1' max '1'
+                $this->parser->addBacktrace(array('Statement', $result));
+                $subres = $this->parser->matchRule($result, 'Statement');
+                $remove = array_pop($this->parser->backtrace);
+                if ($subres) {
+                    $this->parser->successNode(array('Statement',  $subres));
+                    $result['_text'] .= $subres['_text'];
+                    $this->TagIf_condition($result, $subres);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    $this->parser->failNode($remove);
+                }
+                // End 'condition:Statement'
+                if ($valid) {
+                    break;
+                }
+                // Start 'condition:Logexpr' tag 'condition' min '1' max '1'
+                $this->parser->addBacktrace(array('Logexpr', $result));
+                $subres = $this->parser->matchRule($result, 'Logexpr');
+                $remove = array_pop($this->parser->backtrace);
+                if ($subres) {
+                    $this->parser->successNode(array('Logexpr',  $subres));
+                    $result['_text'] .= $subres['_text'];
+                    $this->TagIf_condition($result, $subres);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    $this->parser->failNode($remove);
+                }
+                // End 'condition:Logexpr'
+                if ($valid) {
+                    break;
+                }
+                break;
+            } while (true);
+            // end option
+            // End 'TagIf'
+            if (!$valid) {
+                break;
+            }
+            // Start 'SmartyTagOptions' min '1' max '1'
+            $this->parser->addBacktrace(array('SmartyTagOptions', $result));
+            $subres = $this->parser->matchRule($result, 'SmartyTagOptions');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('SmartyTagOptions',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            // End 'SmartyTagOptions'
+            if (!$valid) {
+                break;
+            }
+            // Start 'Rdel' min '1' max '1'
+            $this->parser->addBacktrace(array('Rdel', $result));
+            $subres = $this->parser->matchRule($result, 'Rdel');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Rdel',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            // End 'Rdel'
+            if (!$valid) {
+                break;
+            }
+            // Start 'body:Body?' tag 'body' min '0' max '1'
+            $this->parser->addBacktrace(array('Body', $result));
+            $subres = $this->parser->matchRule($result, 'Body');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Body',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $this->TagIf_body($result, $subres);
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            $valid = true;
+            // End 'body:Body?'
+            if (!$valid) {
+                break;
+            }
+            // Start '(  !LdelSlash elseifTagif )*' min '0' max 'null'
+            $iteration11 = 0;
+            do {
+                // start sequence
+                $backup12 = $result;
+                $pos12 = $this->parser->pos;
+                $line12 = $this->parser->line;
+                do {
+                    // Start '!LdelSlash' min '1' max '1' negative lookahead
+                    $backup13 = $result;
+                    $pos13 = $this->parser->pos;
+                    $line13 = $this->parser->line;
+                    $this->parser->addBacktrace(array('LdelSlash', $result));
+                    $subres = $this->parser->matchRule($result, 'LdelSlash');
+                    $remove = array_pop($this->parser->backtrace);
+                    if ($subres) {
+                        $this->parser->successNode(array('LdelSlash',  $subres));
+                        $result['_text'] .= $subres['_text'];
+                        $valid = false;
+                    } else {
+                        $valid = true;
+                        $this->parser->failNode($remove);
+                    }
+                    $this->parser->pos = $pos13;
+                    $this->parser->line = $line13;
+                    $result = $backup13;
+                    unset($backup13);
+                    // End '!LdelSlash'
+                    if (!$valid) {
+                        break;
+                    }
+                    // Start 'elseifTagif' min '1' max '1'
+                    $this->parser->addBacktrace(array('elseifTagif', $result));
+                    $subres = $this->parser->matchRule($result, 'elseifTagif');
+                    $remove = array_pop($this->parser->backtrace);
+                    if ($subres) {
+                        $this->parser->successNode(array('elseifTagif',  $subres));
+                        $result['_text'] .= $subres['_text'];
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        $this->parser->failNode($remove);
+                    }
+                    // End 'elseifTagif'
+                    if (!$valid) {
+                        break;
+                    }
+                    break;
+                } while (true);
+                if (!$valid) {
+                    $this->parser->pos = $pos12;
+                    $this->parser->line = $line12;
+                    $result = $backup12;
+                }
+                unset($backup12);
+                // end sequence
+                $iteration11 = $valid ? ($iteration11 + 1) : $iteration11;
+                if (!$valid && $iteration11 >= 0) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) break;
+            } while (true);
+            // End '(  !LdelSlash elseifTagif )*'
+            if (!$valid) {
+                break;
+            }
+            // Start '(  !LdelSlash elseTagif )?' min '0' max '1'
+            // start sequence
+            $backup16 = $result;
+            $pos16 = $this->parser->pos;
+            $line16 = $this->parser->line;
+            do {
+                // Start '!LdelSlash' min '1' max '1' negative lookahead
+                $backup17 = $result;
+                $pos17 = $this->parser->pos;
+                $line17 = $this->parser->line;
+                $this->parser->addBacktrace(array('LdelSlash', $result));
+                $subres = $this->parser->matchRule($result, 'LdelSlash');
+                $remove = array_pop($this->parser->backtrace);
+                if ($subres) {
+                    $this->parser->successNode(array('LdelSlash',  $subres));
+                    $result['_text'] .= $subres['_text'];
+                    $valid = false;
+                } else {
+                    $valid = true;
+                    $this->parser->failNode($remove);
+                }
+                $this->parser->pos = $pos17;
+                $this->parser->line = $line17;
+                $result = $backup17;
+                unset($backup17);
+                // End '!LdelSlash'
+                if (!$valid) {
+                    break;
+                }
+                // Start 'elseTagif' min '1' max '1'
+                $this->parser->addBacktrace(array('elseTagif', $result));
+                $subres = $this->parser->matchRule($result, 'elseTagif');
+                $remove = array_pop($this->parser->backtrace);
+                if ($subres) {
+                    $this->parser->successNode(array('elseTagif',  $subres));
+                    $result['_text'] .= $subres['_text'];
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    $this->parser->failNode($remove);
+                }
+                // End 'elseTagif'
+                if (!$valid) {
+                    break;
+                }
+                break;
+            } while (true);
+            if (!$valid) {
+                $this->parser->pos = $pos16;
+                $this->parser->line = $line16;
+                $result = $backup16;
+            }
+            unset($backup16);
+            // end sequence
+            $valid = true;
+            // End '(  !LdelSlash elseTagif )?'
+            if (!$valid) {
+                break;
+            }
+            // Start 'close:Smarty_Tag_Block_Close' tag 'close' min '1' max '1'
+            $this->parser->addBacktrace(array('Smarty_Tag_Block_Close', $result));
+            $subres = $this->parser->matchRule($result, 'Smarty_Tag_Block_Close');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Smarty_Tag_Block_Close',  $subres));
+                $result['_text'] .= $subres['_text'];
+                if(!isset($result['close'])) {
+                    $result['close'] = $subres;
+                } else {
+                    if (!is_array($result['close'])) {
+                        $result['close'] = array($result['close']);
+                    }
+                    $result['close'][] = $subres;
+                }
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            // End 'close:Smarty_Tag_Block_Close'
+            if (!$valid) {
+                break;
+            }
+            break;
+        } while (true);
+        if (!$valid) {
+            $this->parser->pos = $pos1;
+            $this->parser->line = $line1;
+            $result = $backup1;
+        }
+        unset($backup1);
+        // end sequence
+        // End 'TagIf'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+            $this->TagIf___FINISH($result);
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     public function TagIf___START (&$result, $previous) {
-        $i =1;
+        $result['node'] = $previous['node'];
     }
 
 
@@ -317,6 +430,158 @@ class TagIfParser
                 } </action> </token> 
      *
     */
+    public function matchNodeelseifTagif($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        $this->elseifTagif___START($result, $previous);
+        // Start 'elseifTagif' min '1' max '1'
+        // start sequence
+        $backup1 = $result;
+        $pos1 = $this->parser->pos;
+        $line1 = $this->parser->line;
+        do {
+            // Start 'Ldel' min '1' max '1'
+            $this->parser->addBacktrace(array('Ldel', $result));
+            $subres = $this->parser->matchRule($result, 'Ldel');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Ldel',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            // End 'Ldel'
+            if (!$valid) {
+                break;
+            }
+            // Start ''elseif'' min '1' max '1'
+            if ('elseif' == substr($this->parser->source, $this->parser->pos, 6)) {
+                $this->parser->pos += 6;
+                $result['_text'] .= 'elseif';
+                $this->parser->successLiteral('elseif');
+                $valid = true;
+            } else {
+                $this->parser->failLiteral('elseif');
+                $valid = false;
+            }
+            // End ''elseif''
+            if (!$valid) {
+                break;
+            }
+            // Start '_' min '1' max '1'
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
+                $this->parser->pos += strlen($match[0]);
+                $this->parser->line += substr_count($match[0], "\n");
+                $result['_text'] .= ' ';
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            // End '_'
+            if (!$valid) {
+                break;
+            }
+            // Start 'elseifTagif' min '1' max '1'
+            // start option
+            do {
+                // Start 'condition:Statement' tag 'condition' min '1' max '1'
+                $this->parser->addBacktrace(array('Statement', $result));
+                $subres = $this->parser->matchRule($result, 'Statement');
+                $remove = array_pop($this->parser->backtrace);
+                if ($subres) {
+                    $this->parser->successNode(array('Statement',  $subres));
+                    $result['_text'] .= $subres['_text'];
+                    $this->elseifTagif_condition($result, $subres);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    $this->parser->failNode($remove);
+                }
+                // End 'condition:Statement'
+                if ($valid) {
+                    break;
+                }
+                // Start 'condition:Logexpr' tag 'condition' min '1' max '1'
+                $this->parser->addBacktrace(array('Logexpr', $result));
+                $subres = $this->parser->matchRule($result, 'Logexpr');
+                $remove = array_pop($this->parser->backtrace);
+                if ($subres) {
+                    $this->parser->successNode(array('Logexpr',  $subres));
+                    $result['_text'] .= $subres['_text'];
+                    $this->elseifTagif_condition($result, $subres);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    $this->parser->failNode($remove);
+                }
+                // End 'condition:Logexpr'
+                if ($valid) {
+                    break;
+                }
+                break;
+            } while (true);
+            // end option
+            // End 'elseifTagif'
+            if (!$valid) {
+                break;
+            }
+            // Start 'Rdel' min '1' max '1'
+            $this->parser->addBacktrace(array('Rdel', $result));
+            $subres = $this->parser->matchRule($result, 'Rdel');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Rdel',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            // End 'Rdel'
+            if (!$valid) {
+                break;
+            }
+            // Start 'body:Body?' tag 'body' min '0' max '1'
+            $this->parser->addBacktrace(array('Body', $result));
+            $subres = $this->parser->matchRule($result, 'Body');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Body',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $this->elseifTagif_body($result, $subres);
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            $valid = true;
+            // End 'body:Body?'
+            if (!$valid) {
+                break;
+            }
+            break;
+        } while (true);
+        if (!$valid) {
+            $this->parser->pos = $pos1;
+            $this->parser->line = $line1;
+            $result = $backup1;
+        }
+        unset($backup1);
+        // end sequence
+        // End 'elseifTagif'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+            $this->elseifTagif___FINISH($result);
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     public function elseifTagif___START (&$result, $previous) {
         $result['node'] = $previous['node'];
@@ -352,6 +617,101 @@ class TagIfParser
                 } </action> </token> 
      *
     */
+    public function matchNodeelseTagif($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        $this->elseTagif___START($result, $previous);
+        // Start 'elseTagif' min '1' max '1'
+        // start sequence
+        $backup1 = $result;
+        $pos1 = $this->parser->pos;
+        $line1 = $this->parser->line;
+        do {
+            // Start 'Ldel' min '1' max '1'
+            $this->parser->addBacktrace(array('Ldel', $result));
+            $subres = $this->parser->matchRule($result, 'Ldel');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Ldel',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            // End 'Ldel'
+            if (!$valid) {
+                break;
+            }
+            // Start ''else'' min '1' max '1'
+            if ('else' == substr($this->parser->source, $this->parser->pos, 4)) {
+                $this->parser->pos += 4;
+                $result['_text'] .= 'else';
+                $this->parser->successLiteral('else');
+                $valid = true;
+            } else {
+                $this->parser->failLiteral('else');
+                $valid = false;
+            }
+            // End ''else''
+            if (!$valid) {
+                break;
+            }
+            // Start 'Rdel' min '1' max '1'
+            $this->parser->addBacktrace(array('Rdel', $result));
+            $subres = $this->parser->matchRule($result, 'Rdel');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Rdel',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            // End 'Rdel'
+            if (!$valid) {
+                break;
+            }
+            // Start 'body:Body?' tag 'body' min '0' max '1'
+            $this->parser->addBacktrace(array('Body', $result));
+            $subres = $this->parser->matchRule($result, 'Body');
+            $remove = array_pop($this->parser->backtrace);
+            if ($subres) {
+                $this->parser->successNode(array('Body',  $subres));
+                $result['_text'] .= $subres['_text'];
+                $this->elseTagif_body($result, $subres);
+                $valid = true;
+            } else {
+                $valid = false;
+                $this->parser->failNode($remove);
+            }
+            $valid = true;
+            // End 'body:Body?'
+            if (!$valid) {
+                break;
+            }
+            break;
+        } while (true);
+        if (!$valid) {
+            $this->parser->pos = $pos1;
+            $this->parser->line = $line1;
+            $result = $backup1;
+        }
+        unset($backup1);
+        // end sequence
+        // End 'elseTagif'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+            $this->elseTagif___FINISH($result);
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     public function elseTagif___START (&$result, $previous) {
         $result['node'] = $previous['node'];

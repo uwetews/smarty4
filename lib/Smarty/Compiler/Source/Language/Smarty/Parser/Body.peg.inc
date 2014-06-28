@@ -1,18 +1,18 @@
 <?php
 namespace Smarty\Compiler\Source\Language\Smarty\Parser;
 
-use Smarty\Compiler\Source\Language\Smarty\Nodes;
+use Smarty\Compiler\Source\Language\Smarty\Node;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class BodyParser
  *
- * @package Smarty\Source\Smarty\Nodes\Smarty
+ * @package Smarty\Compiler\Source\Language\Smarty\Parser
  */
-class BodyParser
+class BodyParser extends PegParser
 {
-    /*!*
+     /*!*
     <pegparser Body>
-
 
         <node  Body>
             <rule> ( !LdelSlash ((&Ldel nodes:CoreTag) | nodes:Text ))*</rule>
@@ -24,7 +24,7 @@ class BodyParser
             <action _finish>
             {
                 if (isset($result['nodes'])) {
-                    $result['node'] = new Nodes\Body($result['_parser']);
+                    $result['node'] = new Node\Body($this->parser);
                     $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
                     $result['node']->addSubTree($result['nodes']);
                     unset($result['nodes']);
@@ -34,7 +34,6 @@ class BodyParser
             }
             </action>
         </node>
-
     </pegparser>
 
     */

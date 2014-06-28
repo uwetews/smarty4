@@ -11,27 +11,27 @@
  *
  * @package Smarty\Compiler
  */
-namespace Smarty\Node\Operator;
+namespace Smarty\Compiler\Source\Shared\Node;
 
 use Smarty\Node;
 
 /**
- * Class Unimath
+ * Class Logop
  *
  * @package Smarty\Nodes\Internal
  */
-class Unimath extends Node
+class Logop extends Node
 {
     /**
      * Node name
      *
      * @var string
      */
-    public $name = 'Unimath';
+    public $name = 'Logop';
     /**
      * node group
      */
-    public $nodeGroup = 'math';
+    public $nodeGroup = 'logop';
 
     /**
      * Normalized operator as string
@@ -52,16 +52,25 @@ class Unimath extends Node
      *
      * @var array
      */
-    private $translation = array('+' => ' + ',
-                                 '-' => ' - ',
+    private $translation = array(
+        '&'   => ' & ',
+        '|'   => ' | ',
+        '^'   => ' ^ ',
+        '&&'  => ' && ',
+        'and' => ' && ',
+        '||'  => ' || ',
+        'or'  => ' || ', #
+        'xor' => ' xor ',
+
     );
 
     /**
      * set value and translate to code
      *
-     * @param string $operator
+     * @param $operator
      *
      * @throws Smarty_Compiler_Exception_MissingCode
+     * @internal param string $value
      * @return $this
      */
     public function setValue($operator)

@@ -2,458 +2,108 @@
 namespace Smarty\Compiler\Source\Shared\Parser;
 
 use Smarty\Node;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class CoreParser
  *
- * @package Smarty\Nodes\Core
+ * @package Smarty\Compiler\Source\Shared\Parser
  */
-class CoreParser
+class CoreParser extends PegParser
 {
+
    
     /**
      *
-     * Parser generated on 2014-06-21 12:41:38
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Shared/Parser/Core.peg.inc' dated 2014-06-10 22:49:44
+     * Parser generated on 2014-06-28 11:26:33
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Shared/Parser/Core.peg.inc' dated 2014-06-28 02:53:31
      *
     */
 
+    /**
+     Flag that compiled Peg Parser class is valid
+     *
+     * @var bool
+     */
+    public $valid = true;
 
+    /**
+     * Array of match method names for rules of this Peg Parser
+     *
+     * @var array
+     */
+    public $matchMethods = array(
+            "Id" => "matchNodeId",
+            "Attr" => "matchNodeAttr",
+            "OpenP" => "matchNodeOpenP",
+            "OpenB" => "matchNodeOpenB",
+            "OpenC" => "matchNodeOpenC",
+            "CloseP" => "matchNodeCloseP",
+            "CloseB" => "matchNodeCloseB",
+            "CloseC" => "matchNodeCloseC",
+            "Dollar" => "matchNodeDollar",
+            "Hatch" => "matchNodeHatch",
+            "Comma" => "matchNodeComma",
+            "Ptr" => "matchNodePtr",
+            "Unexpected" => "matchNodeUnexpected"
+        );
 
-
-    public $rules = array(
+    /**
+     * Array of node attributes
+     *
+     * @var array
+     */
+    public $nodeAttributes = array(
             "Id" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token"
-                        ),
-                    "_name" => "Id",
-                    "_param" => "/[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]* /",
-                    "_type" => "rx"
+                    "_nodetype" => "token"
                 ),
             "Attr" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token"
-                        ),
-                    "_name" => "Attr",
-                    "_param" => "/[\\S]+/",
-                    "_type" => "rx"
+                    "_nodetype" => "token"
                 ),
             "OpenP" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "OpenP",
-                    "_param" => "/\\s*\\(\\s* /",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "OpenB" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "OpenB",
-                    "_param" => "/\\s*\\[\\s* /",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "OpenC" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "OpenC",
-                    "_param" => "/\\{\\s* /",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "CloseP" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "CloseP",
-                    "_param" => "/\\s*\\)\\s* /",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "CloseB" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "CloseB",
-                    "_param" => "/\\s*\\}/",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "CloseC" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "CloseC",
-                    "_param" => "/\\s*\\}/",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "Dollar" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "Dollar",
-                    "_param" => "/\\\$/",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "Hatch" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "Hatch",
-                    "_param" => "/#/",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "Comma" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "Comma",
-                    "_param" => "/\\s*,\\s* /",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "Ptr" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token",
-                            "matchall" => true
-                        ),
-                    "_name" => "Ptr",
-                    "_param" => "/->/",
-                    "_type" => "rx"
+                    "_nodetype" => "token",
+                    "matchall" => true
                 ),
             "Unexpected" => array(
-                    "_attr" => array(
-                            "_nodetype" => "token"
-                        ),
-                    "_name" => "Unexpected",
-                    "_param" => "/[\\s\\S]{1,30}/",
-                    "_type" => "rx",
-                    "_actions" => array(
-                            "_finish" => array(
-                                    "Unexpected___FINISH" => true
-                                )
-                        )
+                    "_nodetype" => "token"
                 )
         );
-    public function matchNodeId(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration1 = 0;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration1 = $valid ? $iteration1++ : $iteration1;
-            if ($valid && $iteration1 == 1) break;
-            if (!$valid && $iteration1 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeAttr(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration2 = 0;
-        $pos2 = $this->parser->pos;
-        $line2 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration2 = $valid ? $iteration2++ : $iteration2;
-            if ($valid && $iteration2 == 1) break;
-            if (!$valid && $iteration2 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeOpenP(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration3 = 0;
-        $pos3 = $this->parser->pos;
-        $line3 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration3 = $valid ? $iteration3++ : $iteration3;
-            if ($valid && $iteration3 == 1) break;
-            if (!$valid && $iteration3 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeOpenB(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration4 = 0;
-        $pos4 = $this->parser->pos;
-        $line4 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration4 = $valid ? $iteration4++ : $iteration4;
-            if ($valid && $iteration4 == 1) break;
-            if (!$valid && $iteration4 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeOpenC(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration5 = 0;
-        $pos5 = $this->parser->pos;
-        $line5 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration5 = $valid ? $iteration5++ : $iteration5;
-            if ($valid && $iteration5 == 1) break;
-            if (!$valid && $iteration5 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeCloseP(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration6 = 0;
-        $pos6 = $this->parser->pos;
-        $line6 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration6 = $valid ? $iteration6++ : $iteration6;
-            if ($valid && $iteration6 == 1) break;
-            if (!$valid && $iteration6 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeCloseB(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration7 = 0;
-        $pos7 = $this->parser->pos;
-        $line7 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration7 = $valid ? $iteration7++ : $iteration7;
-            if ($valid && $iteration7 == 1) break;
-            if (!$valid && $iteration7 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeCloseC(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration8 = 0;
-        $pos8 = $this->parser->pos;
-        $line8 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration8 = $valid ? $iteration8++ : $iteration8;
-            if ($valid && $iteration8 == 1) break;
-            if (!$valid && $iteration8 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeDollar(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration9 = 0;
-        $pos9 = $this->parser->pos;
-        $line9 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration9 = $valid ? $iteration9++ : $iteration9;
-            if ($valid && $iteration9 == 1) break;
-            if (!$valid && $iteration9 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeHatch(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration10 = 0;
-        $pos10 = $this->parser->pos;
-        $line10 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration10 = $valid ? $iteration10++ : $iteration10;
-            if ($valid && $iteration10 == 1) break;
-            if (!$valid && $iteration10 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeComma(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration11 = 0;
-        $pos11 = $this->parser->pos;
-        $line11 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration11 = $valid ? $iteration11++ : $iteration11;
-            if ($valid && $iteration11 == 1) break;
-            if (!$valid && $iteration11 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodePtr(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration12 = 0;
-        $pos12 = $this->parser->pos;
-        $line12 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration12 = $valid ? $iteration12++ : $iteration12;
-            if ($valid && $iteration12 == 1) break;
-            if (!$valid && $iteration12 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
-    public function matchNodeUnexpected(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration13 = 0;
-        $pos13 = $this->parser->pos;
-        $line13 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration13 = $valid ? $iteration13++ : $iteration13;
-            if ($valid && $iteration13 == 1) break;
-            if (!$valid && $iteration13 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
     /**
      *
      * Parser rules and action for node 'Id'
@@ -462,6 +112,56 @@ class CoreParser
      <token Id> <rule>  /[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* / </rule> </token> 
      *
     */
+    public function matchNodeId($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* /' min '1' max '1'
+        $regexp = "/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* /";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Id2'][$pos])) {
+            $subres = $this->parser->regexpCache['Id2'][$pos];
+        } else {
+            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
+                foreach ($match as $n => $v) {
+                    if (is_string($n)) {
+                        $subres['_matchres'][$n] = $v[0];
+                    }
+                }
+                if ($subres['_startpos'] != $pos) {
+                    $this->parser->regexpCache['Id2'][$subres['_startpos']] = $subres;
+                    $this->parser->regexpCache['Id2'][$pos] = false;
+                    $subres = false;
+                }
+            } else {
+                $this->parser->regexpCache['Id2'][$pos] = false;
+                $subres = false;
+            }
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'Id';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* /'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -471,6 +171,56 @@ class CoreParser
      <token Attr> <rule>  /[\S]+/ </rule> </token> 
      *
     */
+    public function matchNodeAttr($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/[\S]+/' min '1' max '1'
+        $regexp = "/[\S]+/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Attr2'][$pos])) {
+            $subres = $this->parser->regexpCache['Attr2'][$pos];
+        } else {
+            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
+                foreach ($match as $n => $v) {
+                    if (is_string($n)) {
+                        $subres['_matchres'][$n] = $v[0];
+                    }
+                }
+                if ($subres['_startpos'] != $pos) {
+                    $this->parser->regexpCache['Attr2'][$subres['_startpos']] = $subres;
+                    $this->parser->regexpCache['Attr2'][$pos] = false;
+                    $subres = false;
+                }
+            } else {
+                $this->parser->regexpCache['Attr2'][$pos] = false;
+                $subres = false;
+            }
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'Attr';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/[\S]+/'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -480,6 +230,61 @@ class CoreParser
      <token OpenP> <attribute> matchall </attribute>  <rule>  /\s*\(\s* / </rule> </token> 
      *
     */
+    public function matchNodeOpenP($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/\s*\(\s* /' min '1' max '1'
+        $regexp = "/\s*\(\s* /";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['OpenP2'][$pos])) {
+            $subres = $this->parser->regexpCache['OpenP2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['OpenP2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['OpenP2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['OpenP2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['OpenP2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['OpenP2'][$pos])) {
+            $subres = $this->parser->regexpCache['OpenP2'][$pos];
+        } else {
+            $this->parser->regexpCache['OpenP2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'OpenP';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/\s*\(\s* /'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -489,6 +294,61 @@ class CoreParser
      <token OpenB> <attribute> matchall </attribute>  <rule>  /\s*\[\s* / </rule> </token> 
      *
     */
+    public function matchNodeOpenB($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/\s*\[\s* /' min '1' max '1'
+        $regexp = "/\s*\[\s* /";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['OpenB2'][$pos])) {
+            $subres = $this->parser->regexpCache['OpenB2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['OpenB2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['OpenB2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['OpenB2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['OpenB2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['OpenB2'][$pos])) {
+            $subres = $this->parser->regexpCache['OpenB2'][$pos];
+        } else {
+            $this->parser->regexpCache['OpenB2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'OpenB';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/\s*\[\s* /'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -498,6 +358,61 @@ class CoreParser
      <token OpenC> <attribute> matchall </attribute>  <rule>  /\{\s* / </rule> </token> 
      *
     */
+    public function matchNodeOpenC($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/\{\s* /' min '1' max '1'
+        $regexp = "/\{\s* /";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['OpenC2'][$pos])) {
+            $subres = $this->parser->regexpCache['OpenC2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['OpenC2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['OpenC2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['OpenC2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['OpenC2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['OpenC2'][$pos])) {
+            $subres = $this->parser->regexpCache['OpenC2'][$pos];
+        } else {
+            $this->parser->regexpCache['OpenC2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'OpenC';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/\{\s* /'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -507,6 +422,61 @@ class CoreParser
      <token CloseP> <attribute> matchall </attribute>  <rule>  /\s*\)\s* / </rule> </token> 
      *
     */
+    public function matchNodeCloseP($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/\s*\)\s* /' min '1' max '1'
+        $regexp = "/\s*\)\s* /";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['CloseP2'][$pos])) {
+            $subres = $this->parser->regexpCache['CloseP2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['CloseP2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['CloseP2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['CloseP2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['CloseP2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['CloseP2'][$pos])) {
+            $subres = $this->parser->regexpCache['CloseP2'][$pos];
+        } else {
+            $this->parser->regexpCache['CloseP2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'CloseP';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/\s*\)\s* /'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -516,6 +486,61 @@ class CoreParser
      <token CloseB> <attribute> matchall </attribute>  <rule>  /\s*\}/ </rule> </token> 
      *
     */
+    public function matchNodeCloseB($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/\s*\}/' min '1' max '1'
+        $regexp = "/\s*\}/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['CloseB2'][$pos])) {
+            $subres = $this->parser->regexpCache['CloseB2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['CloseB2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['CloseB2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['CloseB2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['CloseB2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['CloseB2'][$pos])) {
+            $subres = $this->parser->regexpCache['CloseB2'][$pos];
+        } else {
+            $this->parser->regexpCache['CloseB2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'CloseB';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/\s*\}/'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -525,6 +550,61 @@ class CoreParser
      <token CloseC> <attribute> matchall </attribute>  <rule>  /\s*\}/ </rule> </token> 
      *
     */
+    public function matchNodeCloseC($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/\s*\}/' min '1' max '1'
+        $regexp = "/\s*\}/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['CloseC2'][$pos])) {
+            $subres = $this->parser->regexpCache['CloseC2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['CloseC2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['CloseC2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['CloseC2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['CloseC2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['CloseC2'][$pos])) {
+            $subres = $this->parser->regexpCache['CloseC2'][$pos];
+        } else {
+            $this->parser->regexpCache['CloseC2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'CloseC';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/\s*\}/'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -534,6 +614,61 @@ class CoreParser
      <token Dollar> <attribute> matchall </attribute>  <rule>  /\$/ </rule> </token> 
      *
     */
+    public function matchNodeDollar($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/\$/' min '1' max '1'
+        $regexp = "/\$/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Dollar2'][$pos])) {
+            $subres = $this->parser->regexpCache['Dollar2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['Dollar2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['Dollar2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['Dollar2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['Dollar2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['Dollar2'][$pos])) {
+            $subres = $this->parser->regexpCache['Dollar2'][$pos];
+        } else {
+            $this->parser->regexpCache['Dollar2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'Dollar';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/\$/'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -543,6 +678,61 @@ class CoreParser
      <token Hatch> <attribute> matchall </attribute>  <rule>  /#/ </rule> </token> 
      *
     */
+    public function matchNodeHatch($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/#/' min '1' max '1'
+        $regexp = "/#/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Hatch2'][$pos])) {
+            $subres = $this->parser->regexpCache['Hatch2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['Hatch2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['Hatch2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['Hatch2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['Hatch2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['Hatch2'][$pos])) {
+            $subres = $this->parser->regexpCache['Hatch2'][$pos];
+        } else {
+            $this->parser->regexpCache['Hatch2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'Hatch';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/#/'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -552,6 +742,61 @@ class CoreParser
      <token Comma> <attribute> matchall </attribute>  <rule>  /\s*,\s* / </rule> </token> 
      *
     */
+    public function matchNodeComma($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/\s*,\s* /' min '1' max '1'
+        $regexp = "/\s*,\s* /";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Comma2'][$pos])) {
+            $subres = $this->parser->regexpCache['Comma2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['Comma2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['Comma2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['Comma2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['Comma2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['Comma2'][$pos])) {
+            $subres = $this->parser->regexpCache['Comma2'][$pos];
+        } else {
+            $this->parser->regexpCache['Comma2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'Comma';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/\s*,\s* /'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -561,6 +806,61 @@ class CoreParser
      <token Ptr> <attribute> matchall </attribute>  <rule>  /->/ </rule> </token> 
      *
     */
+    public function matchNodePtr($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/->/' min '1' max '1'
+        $regexp = "/->/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Ptr2'][$pos])) {
+            $subres = $this->parser->regexpCache['Ptr2'][$pos];
+        } else {
+            if (empty($this->parser->regexpCache['Ptr2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
+                $this->parser->regexpCache['Ptr2'][- 1] = true;
+                foreach ($matches[0] as $match) {
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
+                    foreach ($match as $n => $v) {
+                        if (is_string($n)) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
+                    }
+                    $this->parser->regexpCache['Ptr2'][$match[1]] = $subres;
+                }
+            } else {
+                $this->parser->regexpCache['Ptr2'][- 1] = false;
+                $subres = false;
+            }
+        }
+        if (isset($this->parser->regexpCache['Ptr2'][$pos])) {
+            $subres = $this->parser->regexpCache['Ptr2'][$pos];
+        } else {
+            $this->parser->regexpCache['Ptr2'][$pos] = false;
+            $subres = false;
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'Ptr';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/->/'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     /**
      *
@@ -572,6 +872,57 @@ class CoreParser
                     } </action> </token> 
      *
     */
+    public function matchNodeUnexpected($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        // Start '/[\s\S]{1,30}/' min '1' max '1'
+        $regexp = "/[\s\S]{1,30}/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Unexpected2'][$pos])) {
+            $subres = $this->parser->regexpCache['Unexpected2'][$pos];
+        } else {
+            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
+                foreach ($match as $n => $v) {
+                    if (is_string($n)) {
+                        $subres['_matchres'][$n] = $v[0];
+                    }
+                }
+                if ($subres['_startpos'] != $pos) {
+                    $this->parser->regexpCache['Unexpected2'][$subres['_startpos']] = $subres;
+                    $this->parser->regexpCache['Unexpected2'][$pos] = false;
+                    $subres = false;
+                }
+            } else {
+                $this->parser->regexpCache['Unexpected2'][$pos] = false;
+                $subres = false;
+            }
+        }
+        if ($subres) {
+            $subres['_lineno'] = $this->parser->line;
+            $this->parser->pos = $subres['_endpos'];
+            $this->parser->line += substr_count($subres['_text'], "\n");
+            $subres['_tag'] = false;
+            $subres['_name'] = 'Unexpected';
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if ($valid) {
+            $result['_text'] .= $subres['_text'];
+        }
+        // End '/[\s\S]{1,30}/'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+            $this->Unexpected___FINISH($result);
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
 
     public function Unexpected___FINISH (&$result) {
         $this->parserContext->compiler->error("unexpected '{$result['text']}'", $this->parserContext->line, $this);

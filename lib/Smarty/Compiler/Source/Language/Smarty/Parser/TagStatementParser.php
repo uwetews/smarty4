@@ -5,17 +5,17 @@ use Smarty\Compiler\Source\Shared\Node;
 use Smarty\PegParser;
 
 /**
- * Class TagOutputParser
+ * Class TagStatementParser
  *
  * @package Smarty\Compiler\Source\Language\Smarty\Parser
  */
-class TagOutputParser extends PegParser
+class TagStatementParser extends PegParser
 {
    
     /**
      *
      * Parser generated on 2014-06-28 11:26:33
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/TagOutput.peg.inc' dated 2014-06-28 02:53:31
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/TagStatement.peg.inc' dated 2014-06-28 02:53:31
      *
     */
 
@@ -32,7 +32,7 @@ class TagOutputParser extends PegParser
      * @var array
      */
     public $matchMethods = array(
-            "TagOutput" => "matchNodeTagOutput"
+            "TagStatement" => "matchNodeTagStatement"
         );
 
     /**
@@ -41,27 +41,27 @@ class TagOutputParser extends PegParser
      * @var array
      */
     public $nodeAttributes = array(
-            "TagOutput" => array(
+            "TagStatement" => array(
                     "_nodetype" => "node"
                 )
         );
     /**
      *
-     * Parser rules and action for node 'TagOutput'
+     * Parser rules and action for node 'TagStatement'
      *
      *  Rule:
-     <node TagOutput> <rule>  Ldel _? value:Expr Rdel </rule>  <action value> {
+     <node TagStatement> <rule>  Ldel statement:Statement Rdel </rule>  <action statement> {
                      $result['node'] = new Node\TagOutput($this->parser);
                      $result['node']->addSubTree($subres['node'], 'value');
                      $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
                  } </action> </node> 
      *
     */
-    public function matchNodeTagOutput($previous){
+    public function matchNodeTagStatement($previous){
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
-        // Start 'TagOutput' min '1' max '1'
+        // Start 'TagStatement' min '1' max '1'
         // start sequence
         $backup1 = $result;
         $pos1 = $this->parser->pos;
@@ -83,31 +83,20 @@ class TagOutputParser extends PegParser
             if (!$valid) {
                 break;
             }
-            // Start '_?' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
-            }
-            $valid = true;
-            // End '_?'
-            if (!$valid) {
-                break;
-            }
-            // Start 'value:Expr' tag 'value' min '1' max '1'
-            $this->parser->addBacktrace(array('Expr', $result));
-            $subres = $this->parser->matchRule($result, 'Expr');
+            // Start 'statement:Statement' tag 'statement' min '1' max '1'
+            $this->parser->addBacktrace(array('Statement', $result));
+            $subres = $this->parser->matchRule($result, 'Statement');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Expr',  $subres));
+                $this->parser->successNode(array('Statement',  $subres));
                 $result['_text'] .= $subres['_text'];
-                $this->TagOutput_value($result, $subres);
+                $this->TagStatement_statement($result, $subres);
                 $valid = true;
             } else {
                 $valid = false;
                 $this->parser->failNode($remove);
             }
-            // End 'value:Expr'
+            // End 'statement:Statement'
             if (!$valid) {
                 break;
             }
@@ -136,7 +125,7 @@ class TagOutputParser extends PegParser
         }
         unset($backup1);
         // end sequence
-        // End 'TagOutput'
+        // End 'TagStatement'
         if ($valid) {
             $result['_endpos'] = $this->parser->pos;
             $result['_endline'] = $this->parser->line;
@@ -147,7 +136,7 @@ class TagOutputParser extends PegParser
         return $result;
     }
 
-    public function TagOutput_value (&$result, $subres) {
+    public function TagStatement_statement (&$result, $subres) {
         $result['node'] = new Node\TagOutput($this->parser);
         $result['node']->addSubTree($subres['node'], 'value');
         $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);

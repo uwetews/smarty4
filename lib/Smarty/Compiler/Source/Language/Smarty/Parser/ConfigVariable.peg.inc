@@ -10,6 +10,7 @@ use Smarty\Compiler\Source\Laguage\Smarty\Nodes;
  */
 class ConfigVariableParser
 {
+    public $parser = null;
     /*!*
     <pegparser ConfigVariable>
    #
@@ -23,4 +24,7 @@ class ConfigVariableParser
     </pegparser>
 
     */
+    public function __construct ($parser) {
+        $this->parser = $parser;
+    }
 }

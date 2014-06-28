@@ -23,6 +23,10 @@ class ParserGenerator extends Parser
     public $filename = '';
 
     /**
+     * @var null|Generator
+     */
+    public $context = null;
+    /**
      * @var string
      */
     public $filetime = '';
@@ -762,27 +766,6 @@ class ParserGenerator extends Parser
         )
     );
 
-    /**
-     * Constructor
-     *
-     * @param \Smarty_Compiler|\Smarty_Compiler_CompilerCore $compiler compiler object
-     * @param \Smarty_Template_Context                       $context
-     */
-    function __construct(Compiler $compiler, Context $context)
-    {
-        $this->parser = $this;
-        if ($this->trace) {
-            $this->traceFile = fopen('php://output', 'w');
-        }
-        /**
-        $this->mode = 0;
-        $myrules = $this->rules;
-        $this->rules = array();
-        foreach ($myrules as $name => $rule) {
-            $this->rules[$name] = $this->instanceRule($rule, $this, $this);
-        }
-         * */
-    }
 
     /**
      * Parser rules and action for node 'attrvalue'
@@ -1389,7 +1372,7 @@ class ParserGenerator extends Parser
      * @return mixed
      * @throws \Smarty_Parser_Peg_Exception_NoRule
      */
-    public function getRuleNode($ruleName)
+    public function getRuleAsArray($ruleName)
     {
         if (isset($this->rules[$ruleName])) {
             $rule = $this->rules[$ruleName];
@@ -1398,6 +1381,36 @@ class ParserGenerator extends Parser
             throw new \Smarty_Parser_Peg_Exception_NoRule($ruleName, 0, $this->context);
         }
         return $rule;
+    }
+
+    public function getMatchMethod($ruleName, $quiet = false) {
+      return false;
+    }
+
+
+    /**
+     * Constructor
+     *
+     * @param \Smarty_Compiler|\Smarty_Compiler_CompilerCore $compiler compiler object
+     * @param \Smarty_Template_Context                       $context
+     */
+    function __construct(Compiler $compiler, Context $context)
+    {
+        $this->parser = $this;
+        $this->context = $context;
+        if (isset($this->rules)) {
+            foreach ($this->rules as $name => $rule) {
+                $this->rulePegParserArray[$name] = $this;
+            }
+        }
+        if (isset($this->matchMethods)) {
+            foreach ($this->matchMethods as $name => $rule) {
+                $this->rulePegParserArray[$name] = $this;
+            }
+        }
+        if ($this->trace) {
+            $this->traceFile = fopen('php://output', 'w');
+        }
     }
 
     /**

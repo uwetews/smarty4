@@ -1,24 +1,23 @@
 <?php
 namespace Smarty\Compiler\Source\Language\Smarty\Parser;
 
-use Smarty\Compiler\Source\Shared\Nodes;
-
+use Smarty\PegParser;
 /**
  * Class PegParser
  *
  * @package Smarty\Source\Smarty\Nodes\foreachTag
  */
-class TagForeachParser
+class TagForeachParser extends PegParser
 {
     /*!*
         <pegparser TagForeach>
 
             <node TagForeach>
                 <attribute>attributes=(required=(from,item),optional=(key),subtags=(foreachelse)),options=nocache</attribute>
-                <rule>tag:(Ldel 'foreach' _  from:Value _ 'as' _ (key:Variable _? '=>' _?)? item:Variable Smarty_Tag_Params Rdel) | ..Smarty_Tag_Default body:Body? (!LdelSlash ..elseTagforeach)? close:Smarty_Tag_Block_Close</rule>
+                <rule>tag:(Ldel 'foreach' _  from:Value _ 'as' _ (key:Variable _? '=>' _?)? item:Variable SmartyTagOptions Rdel) | ..Smarty_Tag_Default body:Body? (!LdelSlash ..elseTagforeach)? close:Smarty_Tag_Block_Close</rule>
                 <action _start>
                 {
-                    $i = 1;
+                    $result['node'] = $previous['node'];
                 }
                 </action>
                 <action from>

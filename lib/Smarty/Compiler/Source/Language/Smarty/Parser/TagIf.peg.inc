@@ -1,23 +1,23 @@
 <?php
 namespace Smarty\Compiler\Source\Language\Smarty\Parser;
 
-use Smarty\Compiler\Source\Shared\Nodes;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class TagIfParser
  *
- * @package Smarty\Source\Smarty\Nodes\ifTag
+ * @package Smarty\Compiler\Source\Language\Smarty\Parser
  */
-class TagIfParser
+class TagIfParser extends PegParser
 {
     /*!*
         <pegparser TagIf>
             <node TagIf>
                 <attribute>attributes=(subtags=(elseif,else)),options=nocache</attribute>
-                <rule>Ldel 'if' _ condition:Statement | condition:Logexpr Smarty_Tag_Params Rdel body:Body? (!LdelSlash elseifTagif)* (!LdelSlash elseTagif)? close:Smarty_Tag_Block_Close</rule>
+                <rule>Ldel 'if' _ condition:Statement | condition:Logexpr SmartyTagOptions Rdel body:Body? (!LdelSlash elseifTagif)* (!LdelSlash elseTagif)? close:Smarty_Tag_Block_Close</rule>
                 <action _start>
                 {
-                    $i =1;
+                    $result['node'] = $previous['node'];
                 }
                 </action>
                 <action condition>

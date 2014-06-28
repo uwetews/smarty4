@@ -1,3 +1,2 @@
-
-{if $i == 2}c {$foo} {/if}
+{if $bar}c {4 + $bar / 8} {/if}
 

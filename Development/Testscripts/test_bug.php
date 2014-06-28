@@ -63,7 +63,7 @@ $smarty->setCacheLifetime(400);
 //Smarty_Compiler::parserdebug = true;
 //$smarty->locking_timeout = 10;
 //$smarty->setCaching(1);
-$smarty->assign('bar', 'time');
+$smarty->assign('bar', 99);
 $smarty->assign('foo', array(4,7,5), true);
 $smarty->force_compile = true;
 $smarty->display('bug.tpl');

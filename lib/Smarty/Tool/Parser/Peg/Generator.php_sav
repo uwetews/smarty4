@@ -1375,12 +1375,12 @@ class Generator extends Parser
         $this->context = $context;
         if (isset($this->rules)) {
             foreach ($this->rules as $name => $rule) {
-                $this->rulePegParserArray[$name] = $this;
+                $this->nodePegParser[$name] = $this;
             }
         }
         if (isset($this->matchMethods)) {
             foreach ($this->matchMethods as $name => $rule) {
-                $this->rulePegParserArray[$name] = $this;
+                $this->nodePegParser[$name] = $this;
             }
         }
         if ($this->trace) {

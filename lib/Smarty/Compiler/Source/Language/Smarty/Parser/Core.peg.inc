@@ -1,15 +1,16 @@
 <?php
 namespace Smarty\Compiler\Source\Language\Smarty\Parser;
 
-use Smarty\Nodes;
-use Smarty\Compiler\Source\Shared\Nodes\InternalText;
+use Smarty\Node;
+use Smarty\Compiler\Source\Shared\Node\InternalText;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class CoreParser
  *
- * @package Smarty\Source\Smarty\Nodes\Smarty
+ * @package Smarty\Compiler\Source\Language\Smarty\Parser
  */
-class CoreParser
+class CoreParser extends PegParser
 {
     /*!*
     <pegparser Core>
@@ -19,7 +20,7 @@ class CoreParser
             <rule>/{getLdel}/</rule>
             <action _init(getLdel)>
                 {
-                    return $rule->parser->Ldel;
+                    return $this->parser->Ldel;
                 }
             </action>
         </token>
@@ -30,7 +31,7 @@ class CoreParser
             <rule>/{getLdel}\//</rule>
             <action _init(getLdel)>
                 {
-                    return $rule->parser->Ldel;
+                    return $this->parser->Ldel;
                 }
             </action>
         </token>
@@ -41,7 +42,7 @@ class CoreParser
             <rule>/\s*{getRdel}/</rule>
             <action _init(getRdel)>
                 {
-                    return $rule->parser->Rdel;
+                    return $this->parser->Rdel;
                 }
             </action>
         </token>
@@ -59,7 +60,7 @@ class CoreParser
                     $result = false;
                     return;
                 }
-                $result['node'] = new InternalText($result['_parser']);
+                $result['node'] = new InternalText($this->parser);
                 $result['node']->addText($result['_text'])->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
                 $result['_text'] = '';
                 $result['_silent'] = 1;
@@ -67,12 +68,12 @@ class CoreParser
             </action>
             <action _init(getLdel)>
                 {
-                    return $rule->parser->Ldel;
+                    return $this->parser->Ldel;
                 }
             </action>
             <action _init(getRdel)>
                 {
-                    return $rule->parser->Rdel;
+                    return $this->parser->Rdel;
                 }
             </action>
         </node>

@@ -2,14 +2,14 @@
 namespace Smarty\Compiler\Source\Language\Smarty\Parser;
 
 use Smarty\Node;
-use Smarty\Compiler\Source\Language\Smarty\Nodes;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class VariableParser
  *
- * @package Smarty\Source\Smarty\Nodes\Smarty
+ * @package Smarty\Compiler\Source\Language\Smarty\Parser
  */
-class VariableParser
+class VariableParser  extends PegParser
 {
     /*!*
     <pegparser Variable>
@@ -27,12 +27,12 @@ class VariableParser
             </action>
             <action isvar>
             {
-                $result['node'] = new Node($result['_parser'], 'Variable');
+                $result['node'] = new Node($this->parser, 'Variable');
             }
             </action>
             <action id>
             {
-                $node = new Node\Value\String($result['_parser']);
+                $node = new Node\Value\String($this->parser);
                 $result['node']->addSubTree($node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']), 'name', true);
             }
             </action>
@@ -67,7 +67,7 @@ class VariableParser
             </action>
             <action iv>
             {
-                $node = new Node\Value\String($result['_parser']);
+                $node = new Node\Value\String($this->parser);
                 $result['node']->addSubTree(array('type' => 'arrayelement', 'node' => $node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']) , 'suffix', true));
             }
             </action>
@@ -82,7 +82,7 @@ class VariableParser
             </action>
             <action iv>
             {
-                $node = new Node\Value\String($result['_parser']);
+                $node = new Node\Value\String($this->parser);
                 $node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
                 $result['name'] = $node;
             }

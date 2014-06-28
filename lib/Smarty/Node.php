@@ -32,6 +32,12 @@ class Node extends Magic
      */
     public $name = null;
     /**
+     * Rule name
+     *
+     * @var string
+     */
+    public $ruleName = null;
+    /**
      * Parser node name (defaults to node name)
      *
      * @var string
@@ -118,27 +124,26 @@ class Node extends Magic
      *
      * @param \Smarty\Parser $parser parser context object
      */
-    function __construct(Parser $parser, $name = null, $token = null)
+    function __construct(Parser $parser, $name = null)
     {
         $this->name = isset($name) ? $name : $this->name;
-        if (isset($token)) {
-            $this->setNodeAttributes($token);
-        }
+        $this->ruleName = isset($this->ruleName) ? $this->ruleName : $this->name;
         $this->parser = $parser;
         $this->parserNode = isset($this->parserNode) ? $this->parserNode : $this->name;
         $this->compilerClass = isset($this->compilerClass) ? $this->compilerClass : $this->name;
+        $this->setNodeAttributes($this->parser->getNodeAttributes($this->ruleName));
     }
 
-    public function setNodeAttributes($token)
+    public function setNodeAttributes($attr)
     {
-        if (isset($token['_attr']['attributes'])) {
-            $this->nodeAttributes = $token['_attr']['attributes'];
+        if (isset($attr)) {
+            $this->nodeAttributes = $attr;
         }
     }
 
     public function getNodeAttribute($attribute)
     {
-        return isset($this->nodeAttributes[$attribute]) ? $this->nodeAttributes[$attribute] : false;
+        return isset($this->nodeAttributes['attributes'][$attribute]) ? $this->nodeAttributes['attributes'][$attribute] : false;
     }
 
     /**

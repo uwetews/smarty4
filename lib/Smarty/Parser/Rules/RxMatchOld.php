@@ -16,7 +16,7 @@ Use Smarty\Parser\Token;
  *
  * @package Smarty\Parser\Peg\Nodes
  */
-class RxMatch
+class RxMatchOld
 {
     static $init_rx = '/ { (\w+) } /x';
     static $expression_rx = '/ \$(\w+) /x';
@@ -28,14 +28,16 @@ class RxMatch
     public $regexpCache = array();
     public $_result = null;
     public $parser = null;
+    public $ruleArrayParser = null;
 
     /**
      * @param      $rule
-     * @param      $ruleParser
-     * @param null $peg
+     * @param      $parser
+     *
      */
-    public function __construct($rule, $parser)
+    public function __construct($rule, $parser, $ruleArrayParser)
     {
+        $this->ruleArrayParser = $ruleArrayParser;
         $this->parser = $parser;
         $this->_result = $rule;
         $this->_regexp = $rule['_param'];
@@ -59,7 +61,6 @@ class RxMatch
     /**
      * match regular expression
      *
-     * @param  $result
      *
      * @return bool
      */
@@ -75,7 +76,7 @@ class RxMatch
         $pos = $this->parser->pos;
         if (isset($this->regexpCache[$pos])) {
             $res = $this->regexpCache[$pos];
-        } elseif (isset($params['_attr']['matchall'])) {
+        } elseif (isset($result['_attr']['matchall'])) {
             if (empty($this->regexpCache) && preg_match_all($key . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 //                var_dump($matches);
                 $this->regexpCache[- 1] = true;
@@ -127,10 +128,11 @@ class RxMatch
             $this->parser->pos = $res['_endpos'];
             $this->parser->line += substr_count($res['_text'], "\n");
             $res['_tag'] = $params['_tag'];
-            if (isset($result['_name'])) {
-                $res['_name'] = $result['_name'];
+            $res['_name'] = $result['_name'];
+            if ($result['_silent'] < 2) {
+                $this->ruleArrayParser->ruleMatchArray($result, $res);
             }
-            return $res;
+            return true;
         }
     }
 
@@ -162,8 +164,7 @@ class RxMatch
     function init_replace($matches)
     {
         $method = "{$this->_result['_name']}_INIT_{$matches[1]}";
-        $peg = $this->parser->getPegParser($this->_result['_name']);
-        return $peg->$method($this);
+        return $this->_result['_ruleParser']->$method($this);
     }
 }
 

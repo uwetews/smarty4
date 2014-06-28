@@ -1,12 +1,13 @@
 <?php
 namespace Smarty\Compiler\Source\Language\Smarty\Parser;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class CoreTagParser
  *
- * @package Smarty\Source\Smarty\Nodes\Smarty
+ * @package Smarty\Compiler\Source\Language\Smarty\Parser
  */
-class CoreTagParser
+class CoreTagParser extends PegParser
 {
     /*!*
     <pegparser CoreTag>
@@ -22,7 +23,7 @@ class CoreTagParser
     #
     #
         <token CoreTag>
-            <rule> ( .Ldel .tagname:Id !'(' tag:$tagDispatcher) | tag:TagOutput </rule>
+            <rule> ( .Ldel .tagname:Id !'(' tag:$tagDispatcher) | tag:TagStatement | tag:TagOutput </rule>
             <action _start>
             {
                 $i = 1;
@@ -31,7 +32,7 @@ class CoreTagParser
              <action _expression(tagDispatcher)>
                 {
                     $result['_text'] = '';
-                    return $result['_parser']->tagDispatcher($result);
+                    return $this->parser->tagDispatcher($result);
                 }
             </action>
             <action tag>
@@ -45,7 +46,7 @@ class CoreTagParser
     # Tag attribute
     #
     #           -> named                           ->shorttag
-        <token Smarty_Tag_Attributes>
+        <token SmartyTagAttributes>
             <rule>  ( _ ( name:Id _? '=' _?) value:Value)* </rule>
              <action _start>
             {
@@ -72,15 +73,32 @@ class CoreTagParser
     #
     # Tag options
     #
-    #           -> named                           ->shorttag
-        <token Smarty_Tag_Params>
+    #
+        <token SmartyTagOptions>
             <rule>  ( _ option:Id)* </rule>
             <action _start>
             {
                 $result['node'] = $previous['node'];
             }
             </action>
-            <action option>
+           <action option>
+            {
+                $result['node']->setTagOption(strtolower($subres['_text']));
+            }
+            </action>
+        </token>
+    #
+    # Tag scopes
+    #
+    #
+        <token SmartyTagScopes>
+            <rule> (/scope\s*=\s*(?<scope>(parent|root|global))/)? </rule>
+            <action _start>
+            {
+                $result['node'] = $previous['node'];
+            }
+            </action>
+           <action option>
             {
                 $result['node']->setTagOption(strtolower($subres['_text']));
             }
@@ -98,7 +116,7 @@ class CoreTagParser
     # Default tag syntax
     #
         <node Smarty_Tag_Default>
-            <rule> Ldel Id Smarty_Tag_Attributes Smarty_Tag_Params Rdel </rule>
+            <rule> Ldel Id SmartyTagAttributes SmartyTagOptions Rdel </rule>
             <action _start>
             {
                 $result['node'] = $previous['node'];

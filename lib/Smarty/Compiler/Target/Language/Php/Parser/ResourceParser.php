@@ -2,78 +2,95 @@
 namespace Smarty\Compiler\Target\Language\Php\Parser;
 
 use Smarty\Nodes;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class ResourceParser
  *
- * @package Smarty\Nodes\Resource
+ * @package Smarty\Compiler\Target\Language\Php\Parser
  */
-class ResourceParser
+class ResourceParser extends PegParser
 {
 
    
     /**
      *
-     * Parser generated on 2014-06-21 12:41:38
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Target/Language/Php/Parser/Resource.peg.inc' dated 2014-06-10 22:49:39
+     * Parser generated on 2014-06-28 11:26:33
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Target/Language/Php/Parser/Resource.peg.inc' dated 2014-06-28 02:53:31
      *
     */
 
+    /**
+     Flag that compiled Peg Parser class is valid
+     *
+     * @var bool
+     */
+    public $valid = true;
 
+    /**
+     * Array of match method names for rules of this Peg Parser
+     *
+     * @var array
+     */
+    public $matchMethods = array(
+            "Resource" => "matchNodeResource"
+        );
 
-
-    public $rules = array(
+    /**
+     * Array of node attributes
+     *
+     * @var array
+     */
+    public $nodeAttributes = array(
             "Resource" => array(
-                    "_attr" => array(
-                            "_nodetype" => "node"
-                        ),
-                    "_name" => "Resource",
-                    "_param" => "Template",
-                    "_tag" => "main",
-                    "_type" => "recurse",
-                    "_actions" => array(
-                            "_match" => array(
-                                    "main" => array(
-                                            "Resource_main" => true
-                                        )
-                                )
-                        )
+                    "_nodetype" => "node"
                 )
         );
-    public function matchNodeResource(){
-        $result = $this->parser->resultDefault;
-        $result['_parser'] = $this->parser;
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $iteration1 = 0;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            $valid = $this->parser->matchToken($result, $params);
-            $iteration1 = $valid ? $iteration1++ : $iteration1;
-            if ($valid && $iteration1 == 1) break;
-            if (!$valid && $iteration1 >= 1) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) break;
-        } while (true);
-        return $valid;
-
-    }
-
-
-
     /**
      *
      * Parser rules and action for node 'Resource'
      *
      *  Rule:
-     <node Resource> <rule>  main:Template </rule>  <action main> {
+     <node Resource> <rule>  main:Template </rule>  <action _start> {
+                    $result['node'] = $previous['node'];
+                } </action>  <action main> {
                     $result['node']->templateNode = $subres['node'];
                 } </action> </node> 
      *
     */
+    public function matchNodeResource($previous){
+        $result = $this->parser->resultDefault;
+        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+        $result['_lineno'] = $this->parser->line;
+        $this->Resource___START($result, $previous);
+        // Start 'main:Template' tag 'main' min '1' max '1'
+        $this->parser->addBacktrace(array('Template', $result));
+        $subres = $this->parser->matchRule($result, 'Template');
+        $remove = array_pop($this->parser->backtrace);
+        if ($subres) {
+            $this->parser->successNode(array('Template',  $subres));
+            $result['_text'] .= $subres['_text'];
+            $this->Resource_main($result, $subres);
+            $valid = true;
+        } else {
+            $valid = false;
+            $this->parser->failNode($remove);
+        }
+        // End 'main:Template'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function Resource___START (&$result, $previous) {
+        $result['node'] = $previous['node'];
+    }
+
 
     public function Resource_main (&$result, $subres) {
         $result['node']->templateNode = $subres['node'];

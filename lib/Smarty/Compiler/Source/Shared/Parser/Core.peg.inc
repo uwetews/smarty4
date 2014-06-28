@@ -2,14 +2,16 @@
 namespace Smarty\Compiler\Source\Shared\Parser;
 
 use Smarty\Node;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class CoreParser
  *
- * @package Smarty\Nodes\Core
+ * @package Smarty\Compiler\Source\Shared\Parser
  */
-class CoreParser
+class CoreParser extends PegParser
 {
+
     /*!*
     <pegparser Core>
 

@@ -2,11 +2,10 @@
 namespace Smarty\Tool\Parser\Peg;
 
 Use Smarty\Tool\Parser\Peg\Root;
-Use Smarty\Tool\Parser\Peg\Rules\Result;
 Use Smarty\Template\Context;
 Use Smarty\Compiler;
 Use Smarty\Parser;
-
+use Smarty\Parser\Exception\NoRule;
 /**
  * Class PegParser
  *
@@ -19,6 +18,10 @@ class Generator extends Parser
      * @var null|Generator
      */
     public $parser = null;
+    /**
+     * @var null|Generator
+     */
+    public $context = null;
 
     /**
      * @var string
@@ -144,7 +147,7 @@ class Generator extends Parser
                         $subres['_nodedef']['rule']['_name'] = $subres['_nodedef']['name'];
                         ksort($subres['_nodedef']['rule']);
                         $result['_node']->nodes[$subres['_nodedef']['name']] = $subres['_nodedef']['rule'];
-                        $result['_node']->comments[$subres['_nodedef']['name']] = $subres['_text'];
+                        $result['_node']->comments[$subres['_nodedef']['name']] = $subres['comment'];
                         if (isset($subres['_attr'])) {
                             $result['_node']->attributes[$subres['_nodedef']['name']] = $subres['_attr'];
                         }
@@ -201,6 +204,16 @@ class Generator extends Parser
                             $result['_nodedef']['actions'][$index]['argument'] = $subres['_matchres']['argument'];
                         }
                         unset($subres['_matchres']);
+                    }
+                </action>
+
+                <action _start>
+                    {
+                        $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) -1);
+                        $regexp .= '\s*\<(node|token)\s+[a-zA-Z_]+\>[\s\S]*?\<\/(node|token)\>[\s\S]*?[\n]/';
+                        if (preg_match($regexp, $this->source, $match, 0, $this->pos )) {
+                            $result['comment'] = $match[0];
+                        }
                     }
                 </action>
                 <action _finish>
@@ -299,6 +312,7 @@ class Generator extends Parser
                </action>
                <action _finish>
                     {
+                        $result['_rule']['_tagcomment'] = $result['_text'];
                         $mr = $result['_matchres'];
                         if (isset($mr['osp']) && !empty($mr['osp'])) {
                             $result['_rule']['_type'] = 'whitespace';
@@ -385,27 +399,40 @@ class Generator extends Parser
     function __construct(Compiler $compiler, Context $context)
     {
         $this->parser = $this;
+        $this->context = $context;
+        if (isset($this->rules)) {
+            foreach ($this->rules as $name => $rule) {
+                $this->rulePegParserArray[$name] = $this;
+            }
+        }
+        if (isset($this->matchMethods)) {
+            foreach ($this->matchMethods as $name => $rule) {
+                $this->rulePegParserArray[$name] = $this;
+            }
+        }
         if ($this->trace) {
             $this->traceFile = fopen('php://output', 'w');
         }
-     }
+    }
+
 
     /**
-     * @param $ruleName
+     * @param string $ruleName
      *
+     * @throws \Smarty\Parser\Exception\NoRule
      * @return mixed
-     * @throws \Smarty_Parser_Peg_Exception_NoRule
      */
-    public function getRuleNode($ruleName)
+    public function getRuleAsArray($ruleName)
     {
         if (isset($this->rules[$ruleName])) {
             $rule = $this->rules[$ruleName];
             $rule['_ruleParser'] = $this;
         } else {
-            throw new \Smarty_Parser_Peg_Exception_NoRule($ruleName, 0, $this->context);
+            throw new NoRule($ruleName, 0, $this->context);
         }
         return $rule;
     }
+
 
     /**
      * @param $infile

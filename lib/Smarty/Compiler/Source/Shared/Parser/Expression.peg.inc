@@ -2,23 +2,25 @@
 namespace Smarty\Compiler\Source\Shared\Parser;
 
 use Smarty\Node;
+use Smarty\PegParser;
 
 /**
- * Class PegParser
+ * Class ExpressionParser
  *
- * @package Smarty\Nodes\Core
+ * @package Smarty\Compiler\Source\Shared\Parser
  */
-class ExpressionParser
+class ExpressionParser extends PegParser
 {
+
     /*!*
     <pegparser Expression>
 
         <node Number>
             <attribute>hash</attribute>
-            <rule>/-?[0-9]+(?:\.[0-9]+)?/</rule>
+            <rule>/\[0-9]+(?:\.[0-9]+)?/</rule>
             <action _finish>
             {
-                $result['node'] = new Node\Value\Number($result['_parser']);
+                $result['node'] = new Node\Value\Number($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
             }
             </action>
@@ -29,7 +31,7 @@ class ExpressionParser
             <rule>/'[^'\\]*(?:\\.[^'\\]*)*'/</rule>
             <action _finish>
             {
-                $result['node'] = new Node\Value\String($result['_parser']);
+                $result['node'] = new Node\Value\String($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
             }
             </action>
@@ -40,7 +42,7 @@ class ExpressionParser
             <rule>/(true|false)(?![^a-zA-Z0-9])/</rule>
             <action _finish>
             {
-                $result['node'] = new Node\Value\Boolean($result['_parser']);
+                $result['node'] = new Node\Value\Boolean($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
             }
             </action>
@@ -51,7 +53,7 @@ class ExpressionParser
             <rule>/null(?![^a-zA-Z0-9])/</rule>
             <action _finish>
             {
-                $result['node'] = new Node\Value\Null($result['_parser']);
+                $result['node'] = new Node\Value\Null($this->parser);
                 $result['node']->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
             }
             </action>
@@ -60,23 +62,33 @@ class ExpressionParser
         <token AnyLiteral>
             # This combination of basic nodes is implemented for speed optimization
             <attribute>hash</attribute>
-            <rule>/(?<number>(-?[0-9]+(?:\.[0-9]+)?))|(?<string>('[^'\\]*(?:\\.[^'\\]*)*'))|(((?<null>null)|(?<bool>(true|false)))(?![_a-zA-Z0-9]))/</rule>
+            <rule>/(?<number>([0-9]+(?:\.[0-9]+)?))|(?<string>('[^'\\]*(?:\\.[^'\\]*)*'))|(((?<null>null)|(?<bool>(true|false)))(?![_a-zA-Z0-9]))/</rule>
             <action _start> {
                 $i = 1;
             }
             </action>
-            <action _finish>
+            <action number>
             {
-                if (isset($result['_matchres']['number'])) {
-                    $result['node'] = new Node\Value\Number($result['_parser']);
-                } elseif (isset($result['_matchres']['string'])) {
-                    $result['node'] = new Node\Value\String($result['_parser']);
-                } elseif (isset($result['_matchres']['bool'])) {
-                    $result['node'] = new Node\Value\Boolean($result['_parser']);
-                } else {
-                    $result['node'] = new Node\Value\Null($result['_parser']);
-                }
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                $result['node'] = new Node\Value\Number($this->parser);
+                $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+            }
+            </action>
+            <action string>
+            {
+                $result['node'] = new Node\Value\String($this->parser);
+                $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+            }
+            </action>
+            <action bool>
+            {
+                $result['node'] = new Node\Value\Boolean($this->parser);
+                $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+            }
+            </action>
+            <action null>
+            {
+                $result['node'] = new Node\Value\Null($this->parser);
+                $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
             }
             </action>
         </token>
@@ -106,9 +118,9 @@ class ExpressionParser
             </action>
             <action param>
             {
-                $result['node'] = new Node($result['_parser'], 'Functioncall');
+                $result['node'] = new Node($this->parser, 'Functioncall');
                 if (isset($result['name'])) {
-                    $string = new Node\Value\String($result['_parser']);
+                    $string = new Node\Value\String($this->parser);
                     $string->setValue($result['name'], true);
                     $result['node']->addSubTree($string, 'name');
                 } else {
@@ -139,14 +151,14 @@ class ExpressionParser
             </action>
             <action subexpr>
             {
-                $result['node'] = new Node\Value\Subexpression($result['_parser'], $subres['node']);
+                $result['node'] = new Node\Value\Subexpression($this->parser, $subres['node']);
             }
             </action>
         </token>
 
 
         <token Statement>
-            <rule> var:Variable '=' value:Expr _? </rule>
+            <rule> var:Variable '[]'? '=' value:Expr _? </rule>
         </token>
 
 
@@ -163,7 +175,7 @@ class ExpressionParser
             {
                 if (isset($subres['name'])) {
                         $value = $result['node'];
-                        $result['node'] = new Node($result['_parser'], 'Modifier');
+                        $result['node'] = new Node($this->parser, 'Modifier');
                         $result['node']->addSubTree($value, 'value');
                         $result['node']->addSubTree($subres['name'], 'name');
                         $result['node']->addSubTree(isset($subres['param']) ? $subres['param'] : false, 'param');
@@ -177,7 +189,7 @@ class ExpressionParser
             </action>
             <action name>
             {
-               $string = new Node\Value\String($result['_parser']);
+               $string = new Node\Value\String($this->parser);
                $string->setValue($subres['_text'], true);
                $result['name'] = $string;
             }
@@ -296,7 +308,7 @@ class ExpressionParser
             <rule>/(\s*(\*|\/|%)\s*)|(\s+mod\s+)/</rule>
             <action _finish>
             {
-                $result['node'] = new Node\Operator\Math($result['_parser']);
+                $result['node'] = new Node\Operator\Math($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
             }
             </action>
@@ -307,7 +319,7 @@ class ExpressionParser
             <rule>/\s*(\+|-)\s* /</rule>
             <action _finish>
             {
-                $result['node'] = new Node\Operator\Unimath($result['_parser']);
+                $result['node'] = new Node\Operator\Unimath($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
             }
             </action>
@@ -319,7 +331,7 @@ class ExpressionParser
             <rule>/((!|~)\s*)|(not\s+)/</rule>
             <action _finish>
             {
-                $result['node'] = new Node\Operator\Unilog($result['_parser']);
+                $result['node'] = new Node\Operator\Unilog($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
             }
             </action>
@@ -329,5 +341,6 @@ class ExpressionParser
 
     </pegparser>
     */
+
 }
 
