@@ -14,7 +14,7 @@ class TagOutputParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
+     * Parser generated on 2014-06-29 18:39:02
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/TagOutput.peg.inc' dated 2014-06-28 02:53:31
      *
     */
@@ -50,11 +50,18 @@ class TagOutputParser extends PegParser
      * Parser rules and action for node 'TagOutput'
      *
      *  Rule:
-     <node TagOutput> <rule>  Ldel _? value:Expr Rdel </rule>  <action value> {
+    
+             <node TagOutput>
+                 <rule>Ldel _? value:Expr Rdel</rule>
+                 <action value>
+                 {
                      $result['node'] = new Node\TagOutput($this->parser);
                      $result['node']->addSubTree($subres['node'], 'value');
                      $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
-                 } </action> </node> 
+                 }
+                 </action>
+             </node>
+
      *
     */
     public function matchNodeTagOutput($previous){
@@ -85,9 +92,11 @@ class TagOutputParser extends PegParser
             }
             // Start '_?' min '1' max '1'
             if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
+                if ($match[0]) {
+                    $this->parser->pos += strlen($match[0]);
+                    $this->parser->line += substr_count($match[0], "\n");
+                    $result['_text'] .= ' ';
+                }
             }
             $valid = true;
             // End '_?'

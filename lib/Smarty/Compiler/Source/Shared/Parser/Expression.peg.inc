@@ -165,7 +165,7 @@ class ExpressionParser extends PegParser
 
         <token ModifierValue>
             <attribute>hash</attribute>
-             <rule> .value:Value .addmodifier:('|' name:Id (':' param:Value)*)* </rule>
+             <rule> value:Value addmodifier:('|' name:Id (':' param:Value)*)* </rule>
              <action value>
             {
                $result['node'] = $subres['node'];

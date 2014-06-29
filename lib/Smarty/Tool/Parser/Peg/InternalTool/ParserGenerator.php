@@ -678,7 +678,8 @@ class ParserGenerator extends Parser
             "_param" => array(
                 0 => array(
                     "_param" => "/((?<silent>\\.+)|(?<pla>&)|(?<nla>\\!))?((?<tag>\\w+):)?/",
-                    "_type"   => "rx"
+                    "_type"   => "rx",
+                    "_min"   => 0
                 ),
                 1 => array(
                     "_param" => array(
@@ -718,7 +719,8 @@ class ParserGenerator extends Parser
                 ),
                 2 => array(
                     "_param" => "/((?<quest>\\?)|(?<any>\\*)|(?<must>\\+?)|(\\{(?<min>\\d+)?,(?<max>\\d+)?\\}))?/",
-                    "_type"   => "rx"
+                    "_type"   => "rx",
+                    "_min"   => 0
                 )
             ),
             "_type"     => "sequence",

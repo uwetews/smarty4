@@ -13,7 +13,7 @@ class TagIfParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
+     * Parser generated on 2014-06-29 20:29:11
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/TagIf.peg.inc' dated 2014-06-28 02:53:30
      *
     */
@@ -64,15 +64,32 @@ class TagIfParser extends PegParser
      * Parser rules and action for node 'TagIf'
      *
      *  Rule:
-     <node TagIf> <attribute> attributes =  ( subtags =  ( elseif , else )), options =  nocache</attribute>  <rule>  Ldel 'if' _ condition:Statement | condition:Logexpr SmartyTagOptions Rdel body:Body? (  !LdelSlash elseifTagif )* (  !LdelSlash elseTagif )? close:Smarty_Tag_Block_Close </rule>  <action _start> {
+    
+            <node TagIf>
+                <attribute>attributes=(subtags=(elseif,else)),options=nocache</attribute>
+                <rule>Ldel 'if' _ condition:Statement | condition:Logexpr SmartyTagOptions Rdel body:Body? (!LdelSlash elseifTagif)* (!LdelSlash elseTagif)? close:Smarty_Tag_Block_Close</rule>
+                <action _start>
+                {
                     $result['node'] = $previous['node'];
-                } </action>  <action condition> {
+                }
+                </action>
+                <action condition>
+                {
                     $result['condition'] = $subres['node'];
-                } </action>  <action body> {
+                }
+                </action>
+                <action body>
+                {
                     $result['body'] = $subres['node'];
-                } </action>  <action _finish> {
+                }
+                </action>
+                <action _finish>
+                {
                     $result['node']->addSubTree(array('condition' => $result['condition'], 'body' => isset($result['body']) ? $result['body'] : false),'if');
-                } </action> </node> 
+                }
+                </action>
+            </node>
+
      *
     */
     public function matchNodeTagIf($previous){
@@ -118,9 +135,11 @@ class TagIfParser extends PegParser
             }
             // Start '_' min '1' max '1'
             if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
+                if ($match[0]) {
+                    $this->parser->pos += strlen($match[0]);
+                    $this->parser->line += substr_count($match[0], "\n");
+                    $result['_text'] .= ' ';
+                }
                 $valid = true;
             } else {
                 $valid = false;
@@ -223,7 +242,7 @@ class TagIfParser extends PegParser
             if (!$valid) {
                 break;
             }
-            // Start '(  !LdelSlash elseifTagif )*' min '0' max 'null'
+            // Start '( !LdelSlash elseifTagif)*' min '0' max 'null'
             $iteration11 = 0;
             do {
                 // start sequence
@@ -286,11 +305,11 @@ class TagIfParser extends PegParser
                 }
                 if (!$valid) break;
             } while (true);
-            // End '(  !LdelSlash elseifTagif )*'
+            // End '( !LdelSlash elseifTagif)*'
             if (!$valid) {
                 break;
             }
-            // Start '(  !LdelSlash elseTagif )?' min '0' max '1'
+            // Start '( !LdelSlash elseTagif)?' min '0' max '1'
             // start sequence
             $backup16 = $result;
             $pos16 = $this->parser->pos;
@@ -345,7 +364,7 @@ class TagIfParser extends PegParser
             unset($backup16);
             // end sequence
             $valid = true;
-            // End '(  !LdelSlash elseTagif )?'
+            // End '( !LdelSlash elseTagif)?'
             if (!$valid) {
                 break;
             }
@@ -419,15 +438,30 @@ class TagIfParser extends PegParser
      * Parser rules and action for node 'elseifTagif'
      *
      *  Rule:
-     <token elseifTagif> <rule>  Ldel 'elseif' _ condition:Statement | condition:Logexpr Rdel body:Body? </rule>  <action _start> {
+    <token elseifTagif>
+                <rule>Ldel 'elseif' _ condition:Statement | condition:Logexpr Rdel body:Body?</rule>
+                <action _start>
+                 {
                     $result['node'] = $previous['node'];
-                 } </action>  <action condition> {
+                 }
+                </action>
+                <action condition>
+                {
                     $result['condition'] = $subres['node'];
-                } </action>  <action body> {
+                }
+                </action>
+                <action body>
+                {
                     $result['body'] = $subres['node'];
-                } </action>  <action _finish> {
+                }
+                </action>
+                <action _finish>
+                {
                     $result['node']->addSubTree(array('condition' => $result['condition'], 'body' => isset($result['body']) ? $result['body'] : false),'elseif', true);
-                } </action> </token> 
+                }
+                </action>
+            </token>
+
      *
     */
     public function matchNodeelseifTagif($previous){
@@ -473,9 +507,11 @@ class TagIfParser extends PegParser
             }
             // Start '_' min '1' max '1'
             if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
+                if ($match[0]) {
+                    $this->parser->pos += strlen($match[0]);
+                    $this->parser->line += substr_count($match[0], "\n");
+                    $result['_text'] .= ' ';
+                }
                 $valid = true;
             } else {
                 $valid = false;
@@ -608,13 +644,25 @@ class TagIfParser extends PegParser
      * Parser rules and action for node 'elseTagif'
      *
      *  Rule:
-     <token elseTagif> <rule>  Ldel 'else' Rdel body:Body? </rule>  <action _start> {
+    <token elseTagif>
+                <rule>Ldel 'else'  Rdel body:Body?</rule>
+                <action _start>
+                {
                     $result['node'] = $previous['node'];
-                } </action>  <action body> {
+                }
+                </action>
+                <action body>
+                {
                     $result['body'] = $subres['node'];
-                } </action>  <action _finish> {
+                }
+                </action>
+                <action _finish>
+                {
                     $result['node']->addSubTree(array('body' => isset($result['body']) ? $result['body'] : false),'else');
-                } </action> </token> 
+                }
+                </action>
+            </token>
+
      *
     */
     public function matchNodeelseTagif($previous){

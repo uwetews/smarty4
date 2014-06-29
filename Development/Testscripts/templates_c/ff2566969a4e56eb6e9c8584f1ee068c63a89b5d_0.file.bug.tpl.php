@@ -1,8 +1,8 @@
-<?php /* Smarty version Smarty 4.0-DEV, created on 2014-06-28 13:13:42 */
+<?php /* Smarty version Smarty 4.0-DEV, created on 2014-06-29 20:34:38 */
 use Smarty\Template\Core;
 use Smarty\Variable\Entry;
-if (!class_exists('_SmartyTemplate_53aea3668c74a2_62455463',false)) {
-    class _SmartyTemplate_53aea3668c74a2_62455463 extends Core {
+if (!class_exists('_SmartyTemplate_53b05c3e875419_70046986',false)) {
+    class _SmartyTemplate_53b05c3e875419_70046986 extends Core {
         /* Compiled from "./templates/bug.tpl" */
         public $version = 'Smarty 4.0-DEV';
         public $has_nocache_code = false;
@@ -33,4 +33,4 @@ if (!class_exists('_SmartyTemplate_53aea3668c74a2_62455463',false)) {
         }
     }
 }
-$template_class_name = '_SmartyTemplate_53aea3668c74a2_62455463';
+$template_class_name = '_SmartyTemplate_53b05c3e875419_70046986';

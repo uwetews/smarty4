@@ -128,13 +128,13 @@ class Generator extends Parser
 
 
             <node Parser>
-                <rule>..Header .._? '<pegparser' _ Name '>' Attribute* Node* .._? '</pegparser>' .._? End?</rule>
+                <rule>..Header .._? '<pegparser' _ Name '>' attr:Attribute* node:Node* .._? '</pegparser>' .._? End?</rule>
                 <action _start>
                     {
                         $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Pegparser ($this, null);
                     }
                 </action>
-                <action Attribute>
+                <action attr>
                     {
                         if (!isset($result['_attr'])) {
                             $result['_attr'] = array();
@@ -142,7 +142,7 @@ class Generator extends Parser
                         $result['_attr'] = array_merge($result['_attr'], $subres['_attr']);
                     }
                 </action>
-                <action Node>
+                <action node>
                     {
                         $subres['_nodedef']['rule']['_name'] = $subres['_nodedef']['name'];
                         ksort($subres['_nodedef']['rule']);
@@ -159,7 +159,7 @@ class Generator extends Parser
             </node>
 
             <node Attribute>
-                <rule>.._? '<attribute>' attr '</attribute>' .._?</rule>
+                <rule>.._? '<attribute>' attr:attr '</attribute>' .._?</rule>
                 <action attr>
                     {
                         $result['_attr'] = $subres['_attr'];
@@ -168,7 +168,7 @@ class Generator extends Parser
             </node>
 
             <node Node>
-                <rule>.._?  /\s*\<(?<type>(node|token))\s+(?<nodename>[a-zA-Z_0-9]+)\>/  Attribute* Rule .Action* /<\/(node|token)>/ .._?</rule>
+                <rule>.._?  /\s*\<(?<type>(node|token))\s+(?<nodename>[a-zA-Z_0-9]+)\>/  attr:Attribute* rule:Rule .act:Action* /<\/(node|token)>/ .._?</rule>
                  <action type>
                  {
                         $result['_nodedef']['rule']['_attr'] = array('_nodetype' => $subres['_matchres']['type']);
@@ -181,18 +181,18 @@ class Generator extends Parser
                         unset($subres['_matchres']);
                     }
                 </action>
-                <action Attribute>
+                <action attr>
                     {
                          $result['_nodedef']['rule']['_attr'] = array_merge($result['_nodedef']['rule']['_attr'], $subres['_attr']);
                     }
                 </action>
-                <action Rule>
+                <action rule>
                     {
                         $subres['_rule']['_name'] = $result['nodename'];
                         $result['_nodedef']['rule'] = array_merge($result['_nodedef']['rule'], $subres['_rule']);
                     }
                 </action>
-                <action Action>
+                <action act>
                     {
                         if (!isset($result['_nodedef']['actions'])) {
                            $result['_nodedef']['actions'] = array();
@@ -225,8 +225,8 @@ class Generator extends Parser
 
 
             <node Rule>
-                <rule>.._? '<rule>' .._? Sequence .._? '</rule>' .._?</rule>
-                <action Sequence>
+                <rule>.._? '<rule>' .._? seq:Sequence .._? '</rule>' .._?</rule>
+                <action seq>
                     {
                         $result['_rule'] = $subres['_rule'];
                     }
@@ -299,15 +299,15 @@ class Generator extends Parser
 
 
             <node RuleToken>
-                <rule>/((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/ ( /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<osp>_\?)|(?<wsp>_))|(?<node>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | ('(' .._? Sequence .._? ')')) /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/</rule>
+                <rule>/((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/? ( /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<osp>_\?)|(?<wsp>_))|(?<node>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | ('(' .._? seq:Sequence .._? ')')) /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/?</rule>
                 <action _start>
                     {
                         $result['_rule'] = array();
                     }
                </action>
-                <action Sequence>
+                <action seq>
                     {
-                        $result['_rule'] = $subres['_rule'];
+                        $result['_rule'] = array_merge ($result['_rule'], $subres['_rule']);
                     }
                </action>
                <action _finish>

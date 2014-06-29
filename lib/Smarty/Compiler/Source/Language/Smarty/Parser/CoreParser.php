@@ -15,7 +15,7 @@ class CoreParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
+     * Parser generated on 2014-06-29 20:31:35
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/Core.peg.inc' dated 2014-06-28 02:53:31
      *
     */
@@ -66,9 +66,18 @@ class CoreParser extends PegParser
      * Parser rules and action for node 'Ldel'
      *
      *  Rule:
-     <token Ldel> <attribute> matchall </attribute>  <rule>  /{getLdel}/ </rule>  <action _init(getLdel)> {
+    
+        <token Ldel>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/{getLdel}/</rule>
+            <action _init(getLdel)>
+                {
                     return $this->parser->Ldel;
-                } </action> </token> 
+                }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeLdel($previous){
@@ -89,12 +98,7 @@ class CoreParser extends PegParser
             if (empty($this->parser->regexpCache['Ldel2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['Ldel2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['Ldel2'][$match[1]] = $subres;
                 }
             } else {
@@ -142,9 +146,17 @@ class CoreParser extends PegParser
      * Parser rules and action for node 'LdelSlash'
      *
      *  Rule:
-     <token LdelSlash> <attribute> matchall </attribute>  <rule>  /{getLdel}\// </rule>  <action _init(getLdel)> {
+    <token LdelSlash>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/{getLdel}\//</rule>
+            <action _init(getLdel)>
+                {
                     return $this->parser->Ldel;
-                } </action> </token> 
+                }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeLdelSlash($previous){
@@ -152,7 +164,7 @@ class CoreParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/{getLdel}\//' min '1' max '1'
-        $regexp = "/{getLdel}\//";
+        $regexp = "/{getLdel}\\//";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['LdelSlash2'][$pos])) {
             $subres = $this->parser->regexpCache['LdelSlash2'][$pos];
@@ -165,12 +177,7 @@ class CoreParser extends PegParser
             if (empty($this->parser->regexpCache['LdelSlash2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['LdelSlash2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['LdelSlash2'][$match[1]] = $subres;
                 }
             } else {
@@ -218,9 +225,17 @@ class CoreParser extends PegParser
      * Parser rules and action for node 'Rdel'
      *
      *  Rule:
-     <token Rdel> <attribute> matchall </attribute>  <rule>  /\s*{getRdel}/ </rule>  <action _init(getRdel)> {
+    <token Rdel>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/\s*{getRdel}/</rule>
+            <action _init(getRdel)>
+                {
                     return $this->parser->Rdel;
-                } </action> </token> 
+                }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeRdel($previous){
@@ -228,7 +243,7 @@ class CoreParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/\s*{getRdel}/' min '1' max '1'
-        $regexp = "/\s*{getRdel}/";
+        $regexp = "/\\s*{getRdel}/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Rdel2'][$pos])) {
             $subres = $this->parser->regexpCache['Rdel2'][$pos];
@@ -241,12 +256,7 @@ class CoreParser extends PegParser
             if (empty($this->parser->regexpCache['Rdel2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['Rdel2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['Rdel2'][$match[1]] = $subres;
                 }
             } else {
@@ -294,7 +304,15 @@ class CoreParser extends PegParser
      * Parser rules and action for node 'Text'
      *
      *  Rule:
-     <node Text> <rule>  /({getLdel}\s*literal\s*{getRdel}.*?{getLdel}\/\s*literal\s*{getRdel})?(([\s\S])*?(?=({getLdel})))|[\S\s]+/ </rule>  <action _finish> {
+    <node Text>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            #
+            # Get template text section
+            # Also content between {literal} .. {/literal} tags is processed here
+            #
+            <rule>/({getLdel}\s*literal\s*{getRdel}.*?{getLdel}\/\s*literal\s*{getRdel})?(([\s\S])*?(?=({getLdel})))|[\S\s]+/</rule>
+            <action _finish>
+            {
                 if ($result['_text'] == '') {
                     $result = false;
                     return;
@@ -303,11 +321,20 @@ class CoreParser extends PegParser
                 $result['node']->addText($result['_text'])->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
                 $result['_text'] = '';
                 $result['_silent'] = 1;
-            } </action>  <action _init(getLdel)> {
+            }
+            </action>
+            <action _init(getLdel)>
+                {
                     return $this->parser->Ldel;
-                } </action>  <action _init(getRdel)> {
+                }
+            </action>
+            <action _init(getRdel)>
+                {
                     return $this->parser->Rdel;
-                } </action> </node> 
+                }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeText($previous){
@@ -315,7 +342,7 @@ class CoreParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/({getLdel}\s*literal\s*{getRdel}.*?{getLdel}\/\s*literal\s*{getRdel})?(([\s\S])*?(?=({getLdel})))|[\S\s]+/' min '1' max '1'
-        $regexp = "/({getLdel}\s*literal\s*{getRdel}.*?{getLdel}\/\s*literal\s*{getRdel})?(([\s\S])*?(?=({getLdel})))|[\S\s]+/";
+        $regexp = "/({getLdel}\\s*literal\\s*{getRdel}.*?{getLdel}\\/\\s*literal\\s*{getRdel})?(([\\s\\S])*?(?=({getLdel})))|[\\S\\s]+/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Text2'][$pos])) {
             $subres = $this->parser->regexpCache['Text2'][$pos];
@@ -326,12 +353,7 @@ class CoreParser extends PegParser
                 $this->parser->rxCache['Text2'] = $regexp = $this->parser->initRxReplace('Text',$regexp);
             }
             if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
-                foreach ($match as $n => $v) {
-                    if (is_string($n)) {
-                        $subres['_matchres'][$n] = $v[0];
-                    }
-                }
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
                 if ($subres['_startpos'] != $pos) {
                     $this->parser->regexpCache['Text2'][$subres['_startpos']] = $subres;
                     $this->parser->regexpCache['Text2'][$pos] = false;

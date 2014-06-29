@@ -14,8 +14,8 @@ class BodyParser extends PegParser
     
     /**
      *
-     * Parser generated on 2014-06-28 13:05:41
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/Body.peg.inc' dated 2014-06-28 13:05:38
+     * Parser generated on 2014-06-29 20:23:16
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/Body.peg.inc' dated 2014-06-29 18:20:53
      *
     */
 
@@ -53,7 +53,7 @@ class BodyParser extends PegParser
     
 
         <node  Body>
-            <rule> ( !LdelSlash ((&Ldel nodes:CoreTag) | nodes:Text ))*</rule>
+            <rule> ( !LdelSlash ((&Ldel .nodes:CoreTag) | nodes:Text ))*</rule>
             <action nodes>
                {
                  $result['nodes'][] = $subres['node'];
@@ -79,7 +79,7 @@ class BodyParser extends PegParser
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
-        // Start '(  !LdelSlash (  (  &Ldel nodes:CoreTag ) | nodes:Text ) )*' min '0' max 'null'
+        // Start '( !LdelSlash ( ( &Ldel .nodes:CoreTag) | nodes:Text))*' min '0' max 'null'
         $iteration0 = 0;
         do {
             // start sequence
@@ -110,10 +110,10 @@ class BodyParser extends PegParser
                 if (!$valid) {
                     break;
                 }
-                // Start '(  (  &Ldel nodes:CoreTag ) | nodes:Text )' min '1' max '1'
+                // Start '( ( &Ldel .nodes:CoreTag) | nodes:Text)' min '1' max '1'
                 // start option
                 do {
-                    // Start '(  &Ldel nodes:CoreTag )' min '1' max '1'
+                    // Start '( &Ldel .nodes:CoreTag)' min '1' max '1'
                     // start sequence
                     $backup5 = $result;
                     $pos5 = $this->parser->pos;
@@ -142,20 +142,19 @@ class BodyParser extends PegParser
                         if (!$valid) {
                             break;
                         }
-                        // Start 'nodes:CoreTag' tag 'nodes' min '1' max '1'
+                        // Start '.nodes:CoreTag' tag 'nodes' min '1' max '1'
                         $this->parser->addBacktrace(array('CoreTag', $result));
                         $subres = $this->parser->matchRule($result, 'CoreTag');
                         $remove = array_pop($this->parser->backtrace);
                         if ($subres) {
                             $this->parser->successNode(array('CoreTag',  $subres));
-                            $result['_text'] .= $subres['_text'];
                             $this->Body_nodes($result, $subres);
                             $valid = true;
                         } else {
                             $valid = false;
                             $this->parser->failNode($remove);
                         }
-                        // End 'nodes:CoreTag'
+                        // End '.nodes:CoreTag'
                         if (!$valid) {
                             break;
                         }
@@ -168,7 +167,7 @@ class BodyParser extends PegParser
                     }
                     unset($backup5);
                     // end sequence
-                    // End '(  &Ldel nodes:CoreTag )'
+                    // End '( &Ldel .nodes:CoreTag)'
                     if ($valid) {
                         break;
                     }
@@ -192,7 +191,7 @@ class BodyParser extends PegParser
                     break;
                 } while (true);
                 // end option
-                // End '(  (  &Ldel nodes:CoreTag ) | nodes:Text )'
+                // End '( ( &Ldel .nodes:CoreTag) | nodes:Text)'
                 if (!$valid) {
                     break;
                 }
@@ -212,7 +211,7 @@ class BodyParser extends PegParser
             }
             if (!$valid) break;
         } while (true);
-        // End '(  !LdelSlash (  (  &Ldel nodes:CoreTag ) | nodes:Text ) )*'
+        // End '( !LdelSlash ( ( &Ldel .nodes:CoreTag) | nodes:Text))*'
         if ($valid) {
             $result['_endpos'] = $this->parser->pos;
             $result['_endline'] = $this->parser->line;

@@ -12,7 +12,7 @@ class CoreTagParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
+     * Parser generated on 2014-06-29 20:29:55
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/CoreTag.peg.inc' dated 2014-06-28 02:53:31
      *
     */
@@ -72,14 +72,38 @@ class CoreTagParser extends PegParser
      * Parser rules and action for node 'CoreTag'
      *
      *  Rule:
-     <token CoreTag> <rule>  (  .Ldel .tagname:Id !'(' tag:$tagDispatcher ) | tag:TagStatement | tag:TagOutput </rule>  <action _start> {
+    
+
+    #
+    #   Tag parsing
+    #   ###########
+    #
+    #   Except for the output tag a tag dispatcher is called.
+    #
+    #   The tag dispatcher scans for registered tags, plugins, template functions,
+    #   core language tags and calls the corresponding parser.
+    #
+    #
+        <token CoreTag>
+            <rule> ( .Ldel .tagname:Id !'(' tag:$tagDispatcher) | tag:TagStatement | tag:TagOutput </rule>
+            <action _start>
+            {
                 $i = 1;
-            } </action>  <action _expression(tagDispatcher)> {
+            }
+            </action>
+             <action _expression(tagDispatcher)>
+                {
                     $result['_text'] = '';
                     return $this->parser->tagDispatcher($result);
-                } </action>  <action tag> {
+                }
+            </action>
+            <action tag>
+                {
                     $result['node'] = $subres['node'];
-                } </action> </token> 
+                }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeCoreTag($previous){
@@ -90,7 +114,7 @@ class CoreTagParser extends PegParser
         // Start 'CoreTag' min '1' max '1'
         // start option
         do {
-            // Start '(  .Ldel .tagname:Id !'(' tag:$tagDispatcher )' min '1' max '1'
+            // Start '( .Ldel .tagname:Id !'(' tag:$tagDispatcher)' min '1' max '1'
             // start sequence
             $backup2 = $result;
             $pos2 = $this->parser->pos;
@@ -182,7 +206,7 @@ class CoreTagParser extends PegParser
             }
             unset($backup2);
             // end sequence
-            // End '(  .Ldel .tagname:Id !'(' tag:$tagDispatcher )'
+            // End '( .Ldel .tagname:Id !'(' tag:$tagDispatcher)'
             if ($valid) {
                 break;
             }
@@ -255,15 +279,30 @@ class CoreTagParser extends PegParser
      * Parser rules and action for node 'SmartyTagAttributes'
      *
      *  Rule:
-     <token SmartyTagAttributes> <rule>  (  _ (  name:Id _? '=' _? ) value:Value )* </rule>  <action _start> {
+    <token SmartyTagAttributes>
+            <rule>  ( _ ( name:Id _? '=' _?) value:Value)* </rule>
+             <action _start>
+            {
                 $result['node'] = $previous['node'];
-            } </action>  <action name> {
+            }
+            </action>
+           <action name>
+            {
                 $result['name'] = strtolower($subres['_text']);
-            } </action>  <action value> {
+            }
+            </action>
+            <action value>
+            {
                 $result['node']->setTagAttribute(array(isset($result['name']) ? $result['name'] : null, $subres['node']));
-            } </action>  <action _finish> {
+            }
+            </action>
+            <action _finish>
+            {
                 $i = 1;
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeSmartyTagAttributes($previous){
@@ -271,7 +310,7 @@ class CoreTagParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         $this->SmartyTagAttributes___START($result, $previous);
-        // Start '(  _ (  name:Id _? '=' _? ) value:Value )*' min '0' max 'null'
+        // Start '( _ ( name:Id _? '=' _?) value:Value)*' min '0' max 'null'
         $iteration0 = 0;
         do {
             // start sequence
@@ -281,9 +320,11 @@ class CoreTagParser extends PegParser
             do {
                 // Start '_' min '1' max '1'
                 if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                    $this->parser->pos += strlen($match[0]);
-                    $this->parser->line += substr_count($match[0], "\n");
-                    $result['_text'] .= ' ';
+                    if ($match[0]) {
+                        $this->parser->pos += strlen($match[0]);
+                        $this->parser->line += substr_count($match[0], "\n");
+                        $result['_text'] .= ' ';
+                    }
                     $valid = true;
                 } else {
                     $valid = false;
@@ -292,7 +333,7 @@ class CoreTagParser extends PegParser
                 if (!$valid) {
                     break;
                 }
-                // Start '(  name:Id _? '=' _? )' min '1' max '1'
+                // Start '( name:Id _? '=' _?)' min '1' max '1'
                 // start sequence
                 $backup4 = $result;
                 $pos4 = $this->parser->pos;
@@ -317,9 +358,11 @@ class CoreTagParser extends PegParser
                     }
                     // Start '_?' min '1' max '1'
                     if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                        $this->parser->pos += strlen($match[0]);
-                        $this->parser->line += substr_count($match[0], "\n");
-                        $result['_text'] .= ' ';
+                        if ($match[0]) {
+                            $this->parser->pos += strlen($match[0]);
+                            $this->parser->line += substr_count($match[0], "\n");
+                            $result['_text'] .= ' ';
+                        }
                     }
                     $valid = true;
                     // End '_?'
@@ -342,9 +385,11 @@ class CoreTagParser extends PegParser
                     }
                     // Start '_?' min '1' max '1'
                     if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                        $this->parser->pos += strlen($match[0]);
-                        $this->parser->line += substr_count($match[0], "\n");
-                        $result['_text'] .= ' ';
+                        if ($match[0]) {
+                            $this->parser->pos += strlen($match[0]);
+                            $this->parser->line += substr_count($match[0], "\n");
+                            $result['_text'] .= ' ';
+                        }
                     }
                     $valid = true;
                     // End '_?'
@@ -360,7 +405,7 @@ class CoreTagParser extends PegParser
                 }
                 unset($backup4);
                 // end sequence
-                // End '(  name:Id _? '=' _? )'
+                // End '( name:Id _? '=' _?)'
                 if (!$valid) {
                     break;
                 }
@@ -397,7 +442,7 @@ class CoreTagParser extends PegParser
             }
             if (!$valid) break;
         } while (true);
-        // End '(  _ (  name:Id _? '=' _? ) value:Value )*'
+        // End '( _ ( name:Id _? '=' _?) value:Value)*'
         if ($valid) {
             $result['_endpos'] = $this->parser->pos;
             $result['_endline'] = $this->parser->line;
@@ -434,11 +479,20 @@ class CoreTagParser extends PegParser
      * Parser rules and action for node 'SmartyTagOptions'
      *
      *  Rule:
-     <token SmartyTagOptions> <rule>  (  _ option:Id )* </rule>  <action _start> {
+    <token SmartyTagOptions>
+            <rule>  ( _ option:Id)* </rule>
+            <action _start>
+            {
                 $result['node'] = $previous['node'];
-            } </action>  <action option> {
+            }
+            </action>
+           <action option>
+            {
                 $result['node']->setTagOption(strtolower($subres['_text']));
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeSmartyTagOptions($previous){
@@ -446,7 +500,7 @@ class CoreTagParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         $this->SmartyTagOptions___START($result, $previous);
-        // Start '(  _ option:Id )*' min '0' max 'null'
+        // Start '( _ option:Id)*' min '0' max 'null'
         $iteration0 = 0;
         do {
             // start sequence
@@ -456,9 +510,11 @@ class CoreTagParser extends PegParser
             do {
                 // Start '_' min '1' max '1'
                 if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                    $this->parser->pos += strlen($match[0]);
-                    $this->parser->line += substr_count($match[0], "\n");
-                    $result['_text'] .= ' ';
+                    if ($match[0]) {
+                        $this->parser->pos += strlen($match[0]);
+                        $this->parser->line += substr_count($match[0], "\n");
+                        $result['_text'] .= ' ';
+                    }
                     $valid = true;
                 } else {
                     $valid = false;
@@ -500,7 +556,7 @@ class CoreTagParser extends PegParser
             }
             if (!$valid) break;
         } while (true);
-        // End '(  _ option:Id )*'
+        // End '( _ option:Id)*'
         if ($valid) {
             $result['_endpos'] = $this->parser->pos;
             $result['_endline'] = $this->parser->line;
@@ -526,11 +582,20 @@ class CoreTagParser extends PegParser
      * Parser rules and action for node 'SmartyTagScopes'
      *
      *  Rule:
-     <token SmartyTagScopes> <rule>  (  /scope\s*=\s*(?<scope>(parent|root|global))/ )? </rule>  <action _start> {
+    <token SmartyTagScopes>
+            <rule> (/scope\s*=\s*(?<scope>(parent|root|global))/)? </rule>
+            <action _start>
+            {
                 $result['node'] = $previous['node'];
-            } </action>  <action option> {
+            }
+            </action>
+           <action option>
+            {
                 $result['node']->setTagOption(strtolower($subres['_text']));
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeSmartyTagScopes($previous){
@@ -538,21 +603,26 @@ class CoreTagParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         $this->SmartyTagScopes___START($result, $previous);
-        // Start '(  /scope\s*=\s*(?<scope>(parent|root|global))/ )?' min '0' max '1'
-        $regexp = "/scope\s*=\s*(?<scope>(parent|root|global))/";
+        // Start '( /scope\s*=\s*(?<scope>(parent|root|global))/)?' min '0' max '1'
+        $regexp = "/scope\\s*=\\s*(?<scope>(parent|root|global))/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['SmartyTagScopes2'][$pos])) {
             $subres = $this->parser->regexpCache['SmartyTagScopes2'][$pos];
         } else {
             if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
-                foreach ($match as $n => $v) {
-                    if (is_string($n)) {
-                        $subres['_matchres'][$n] = $v[0];
+                if (strlen($match[0][0]) != 0) {
+                    $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
+                    foreach ($match as $n => $v) {
+                        if (is_string($n) && !empty($v[0])) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
                     }
-                }
-                if ($subres['_startpos'] != $pos) {
-                    $this->parser->regexpCache['SmartyTagScopes2'][$subres['_startpos']] = $subres;
+                    if ($subres['_startpos'] != $pos) {
+                        $this->parser->regexpCache['SmartyTagScopes2'][$subres['_startpos']] = $subres;
+                        $this->parser->regexpCache['SmartyTagScopes2'][$pos] = false;
+                        $subres = false;
+                    }
+                } else {
                     $this->parser->regexpCache['SmartyTagScopes2'][$pos] = false;
                     $subres = false;
                 }
@@ -567,6 +637,7 @@ class CoreTagParser extends PegParser
             $this->parser->line += substr_count($subres['_text'], "\n");
             $subres['_tag'] = false;
             $subres['_name'] = 'SmartyTagScopes';
+            $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
             $valid = true;
         } else {
             $valid = false;
@@ -575,7 +646,7 @@ class CoreTagParser extends PegParser
             $result['_text'] .= $subres['_text'];
         }
         $valid = true;
-        // End '(  /scope\s*=\s*(?<scope>(parent|root|global))/ )?'
+        // End '( /scope\s*=\s*(?<scope>(parent|root|global))/)?'
         if ($valid) {
             $result['_endpos'] = $this->parser->pos;
             $result['_endline'] = $this->parser->line;
@@ -601,7 +672,10 @@ class CoreTagParser extends PegParser
      * Parser rules and action for node 'Smarty_Tag_Block_Close'
      *
      *  Rule:
-     <token Smarty_Tag_Block_Close> <rule>  LdelSlash tag:Id Rdel </rule> </token> 
+    <token Smarty_Tag_Block_Close>
+            <rule> LdelSlash tag:Id Rdel</rule>
+        </token>
+
      *
     */
     public function matchNodeSmarty_Tag_Block_Close($previous){
@@ -695,9 +769,15 @@ class CoreTagParser extends PegParser
      * Parser rules and action for node 'Smarty_Tag_Default'
      *
      *  Rule:
-     <node Smarty_Tag_Default> <rule>  Ldel Id SmartyTagAttributes SmartyTagOptions Rdel </rule>  <action _start> {
+    <node Smarty_Tag_Default>
+            <rule> Ldel Id SmartyTagAttributes SmartyTagOptions Rdel </rule>
+            <action _start>
+            {
                 $result['node'] = $previous['node'];
-            } </action>  <action _finish> {
+            }
+            </action>
+            <action _finish>
+            {
                 $result['tagAttributes'] = array();
                 if (isset($result['attrib'])) {
                     $result['tagAttributes'] = $result['attrib']['attrib'];
@@ -709,7 +789,10 @@ class CoreTagParser extends PegParser
                     unset($result['options']);
                 }
 
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeSmarty_Tag_Default($previous){
@@ -848,7 +931,10 @@ class CoreTagParser extends PegParser
      * Parser rules and action for node 'Smarty_Tag_Block_Default'
      *
      *  Rule:
-     <node Smarty_Tag_Block_Default> <rule>  Smarty_Tag_Default body:Body Smarty_Tag_Block_Close </rule> </node> 
+    <node Smarty_Tag_Block_Default>
+            <rule> Smarty_Tag_Default body:Body Smarty_Tag_Block_Close</rule>
+        </node>
+
      *
     */
     public function matchNodeSmarty_Tag_Block_Default($previous){

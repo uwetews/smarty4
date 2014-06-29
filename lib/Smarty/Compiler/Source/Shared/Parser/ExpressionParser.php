@@ -15,8 +15,8 @@ class ExpressionParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Shared/Parser/Expression.peg.inc' dated 2014-06-28 02:53:30
+     * Parser generated on 2014-06-29 18:39:51
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Shared/Parser/Expression.peg.inc' dated 2014-06-29 18:19:25
      *
     */
 
@@ -149,10 +149,19 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Number'
      *
      *  Rule:
-     <node Number> <attribute> hash </attribute>  <rule>  /\[0-9]+(?:\.[0-9]+)?/ </rule>  <action _finish> {
+    
+
+        <node Number>
+            <attribute>hash</attribute>
+            <rule>/\[0-9]+(?:\.[0-9]+)?/</rule>
+            <action _finish>
+            {
                 $result['node'] = new Node\Value\Number($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeNumber($previous){
@@ -168,18 +177,13 @@ class ExpressionParser extends PegParser
             return $result;
         }
         // Start '/\[0-9]+(?:\.[0-9]+)?/' min '1' max '1'
-        $regexp = "/\[0-9]+(?:\.[0-9]+)?/";
+        $regexp = "/\\[0-9]+(?:\\.[0-9]+)?/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Number2'][$pos])) {
             $subres = $this->parser->regexpCache['Number2'][$pos];
         } else {
             if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
-                foreach ($match as $n => $v) {
-                    if (is_string($n)) {
-                        $subres['_matchres'][$n] = $v[0];
-                    }
-                }
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
                 if ($subres['_startpos'] != $pos) {
                     $this->parser->regexpCache['Number2'][$subres['_startpos']] = $subres;
                     $this->parser->regexpCache['Number2'][$pos] = false;
@@ -227,10 +231,17 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'String'
      *
      *  Rule:
-     <node String> <attribute> hash </attribute>  <rule>  /'[^'\\]*(?:\\.[^'\\]*)*'/ </rule>  <action _finish> {
+    <node String>
+            <attribute>hash</attribute>
+            <rule>/'[^'\\]*(?:\\.[^'\\]*)*'/</rule>
+            <action _finish>
+            {
                 $result['node'] = new Node\Value\String($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeString($previous){
@@ -246,18 +257,13 @@ class ExpressionParser extends PegParser
             return $result;
         }
         // Start '/'[^'\\]*(?:\\.[^'\\]*)*'/' min '1' max '1'
-        $regexp = "/'[^'\\]*(?:\\.[^'\\]*)*'/";
+        $regexp = "/'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['String2'][$pos])) {
             $subres = $this->parser->regexpCache['String2'][$pos];
         } else {
             if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
-                foreach ($match as $n => $v) {
-                    if (is_string($n)) {
-                        $subres['_matchres'][$n] = $v[0];
-                    }
-                }
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
                 if ($subres['_startpos'] != $pos) {
                     $this->parser->regexpCache['String2'][$subres['_startpos']] = $subres;
                     $this->parser->regexpCache['String2'][$pos] = false;
@@ -305,10 +311,17 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Boolean'
      *
      *  Rule:
-     <node Boolean> <attribute> hash </attribute>  <rule>  /(true|false)(?![^a-zA-Z0-9])/ </rule>  <action _finish> {
+    <node Boolean>
+            <attribute>hash</attribute>
+            <rule>/(true|false)(?![^a-zA-Z0-9])/</rule>
+            <action _finish>
+            {
                 $result['node'] = new Node\Value\Boolean($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeBoolean($previous){
@@ -330,12 +343,7 @@ class ExpressionParser extends PegParser
             $subres = $this->parser->regexpCache['Boolean2'][$pos];
         } else {
             if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
-                foreach ($match as $n => $v) {
-                    if (is_string($n)) {
-                        $subres['_matchres'][$n] = $v[0];
-                    }
-                }
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
                 if ($subres['_startpos'] != $pos) {
                     $this->parser->regexpCache['Boolean2'][$subres['_startpos']] = $subres;
                     $this->parser->regexpCache['Boolean2'][$pos] = false;
@@ -383,10 +391,17 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Null'
      *
      *  Rule:
-     <node Null> <attribute> hash </attribute>  <rule>  /null(?![^a-zA-Z0-9])/ </rule>  <action _finish> {
+    <node Null>
+            <attribute>hash</attribute>
+            <rule>/null(?![^a-zA-Z0-9])/</rule>
+            <action _finish>
+            {
                 $result['node'] = new Node\Value\Null($this->parser);
                 $result['node']->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeNull($previous){
@@ -408,12 +423,7 @@ class ExpressionParser extends PegParser
             $subres = $this->parser->regexpCache['Null2'][$pos];
         } else {
             if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
-                foreach ($match as $n => $v) {
-                    if (is_string($n)) {
-                        $subres['_matchres'][$n] = $v[0];
-                    }
-                }
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
                 if ($subres['_startpos'] != $pos) {
                     $this->parser->regexpCache['Null2'][$subres['_startpos']] = $subres;
                     $this->parser->regexpCache['Null2'][$pos] = false;
@@ -461,21 +471,40 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'AnyLiteral'
      *
      *  Rule:
-     <token AnyLiteral> <attribute> hash </attribute>  <rule>  /(?<number>([0-9]+(?:\.[0-9]+)?))|(?<string>('[^'\\]*(?:\\.[^'\\]*)*'))|(((?<null>null)|(?<bool>(true|false)))(?![_a-zA-Z0-9]))/ </rule>  <action _start> {
+    <token AnyLiteral>
+            # This combination of basic nodes is implemented for speed optimization
+            <attribute>hash</attribute>
+            <rule>/(?<number>([0-9]+(?:\.[0-9]+)?))|(?<string>('[^'\\]*(?:\\.[^'\\]*)*'))|(((?<null>null)|(?<bool>(true|false)))(?![_a-zA-Z0-9]))/</rule>
+            <action _start> {
                 $i = 1;
-            } </action>  <action number> {
+            }
+            </action>
+            <action number>
+            {
                 $result['node'] = new Node\Value\Number($this->parser);
                 $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-            } </action>  <action string> {
+            }
+            </action>
+            <action string>
+            {
                 $result['node'] = new Node\Value\String($this->parser);
                 $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-            } </action>  <action bool> {
+            }
+            </action>
+            <action bool>
+            {
                 $result['node'] = new Node\Value\Boolean($this->parser);
                 $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-            } </action>  <action null> {
+            }
+            </action>
+            <action null>
+            {
                 $result['node'] = new Node\Value\Null($this->parser);
                 $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeAnyLiteral($previous){
@@ -492,20 +521,25 @@ class ExpressionParser extends PegParser
         }
         $this->AnyLiteral___START($result, $previous);
         // Start '/(?<number>([0-9]+(?:\.[0-9]+)?))|(?<string>('[^'\\]*(?:\\.[^'\\]*)*'))|(((?<null>null)|(?<bool>(true|false)))(?![_a-zA-Z0-9]))/' min '1' max '1'
-        $regexp = "/(?<number>([0-9]+(?:\.[0-9]+)?))|(?<string>('[^'\\]*(?:\\.[^'\\]*)*'))|(((?<null>null)|(?<bool>(true|false)))(?![_a-zA-Z0-9]))/";
+        $regexp = "/(?<number>([0-9]+(?:\\.[0-9]+)?))|(?<string>('[^'\\\\]*(?:\\\\.[^'\\\\]*)*'))|(((?<null>null)|(?<bool>(true|false)))(?![_a-zA-Z0-9]))/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['AnyLiteral2'][$pos])) {
             $subres = $this->parser->regexpCache['AnyLiteral2'][$pos];
         } else {
             if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
-                foreach ($match as $n => $v) {
-                    if (is_string($n)) {
-                        $subres['_matchres'][$n] = $v[0];
+                if (strlen($match[0][0]) != 0) {
+                    $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
+                    foreach ($match as $n => $v) {
+                        if (is_string($n) && !empty($v[0])) {
+                            $subres['_matchres'][$n] = $v[0];
+                        }
                     }
-                }
-                if ($subres['_startpos'] != $pos) {
-                    $this->parser->regexpCache['AnyLiteral2'][$subres['_startpos']] = $subres;
+                    if ($subres['_startpos'] != $pos) {
+                        $this->parser->regexpCache['AnyLiteral2'][$subres['_startpos']] = $subres;
+                        $this->parser->regexpCache['AnyLiteral2'][$pos] = false;
+                        $subres = false;
+                    }
+                } else {
                     $this->parser->regexpCache['AnyLiteral2'][$pos] = false;
                     $subres = false;
                 }
@@ -522,16 +556,21 @@ class ExpressionParser extends PegParser
             $subres['_name'] = 'AnyLiteral';
             if (isset($subres['_matchres']['number'])) {
                 $this->AnyLiteral_number($result, $subres);
+                unset($subres['_matchres']['number']);
             }
             if (isset($subres['_matchres']['string'])) {
                 $this->AnyLiteral_string($result, $subres);
+                unset($subres['_matchres']['string']);
             }
             if (isset($subres['_matchres']['null'])) {
                 $this->AnyLiteral_null($result, $subres);
+                unset($subres['_matchres']['null']);
             }
             if (isset($subres['_matchres']['bool'])) {
                 $this->AnyLiteral_bool($result, $subres);
+                unset($subres['_matchres']['bool']);
             }
+            $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
             $valid = true;
         } else {
             $valid = false;
@@ -585,7 +624,10 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Array'
      *
      *  Rule:
-     <token Array> <rule>  (  'array' _? '(' item:Arrayitem (  ',' item:Arrayitem )* ','? ')' ) | (  '[' item:Arrayitem (  ',' item:Arrayitem )* ','? ']' ) </rule> </token> 
+    <token Array>
+            <rule> ( 'array' _? '(' item:Arrayitem (',' item:Arrayitem)* ','? ')' ) | ('[' item:Arrayitem (',' item:Arrayitem)* ','? ']')</rule>
+        </token>
+
      *
     */
     public function matchNodeArray($previous){
@@ -595,7 +637,7 @@ class ExpressionParser extends PegParser
         // Start 'Array' min '1' max '1'
         // start option
         do {
-            // Start '(  'array' _? '(' item:Arrayitem (  ',' item:Arrayitem )* ','? ')' )' min '1' max '1'
+            // Start '( 'array' _? '(' item:Arrayitem ( ',' item:Arrayitem)* ','? ')')' min '1' max '1'
             // start sequence
             $backup2 = $result;
             $pos2 = $this->parser->pos;
@@ -617,9 +659,11 @@ class ExpressionParser extends PegParser
                 }
                 // Start '_?' min '1' max '1'
                 if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                    $this->parser->pos += strlen($match[0]);
-                    $this->parser->line += substr_count($match[0], "\n");
-                    $result['_text'] .= ' ';
+                    if ($match[0]) {
+                        $this->parser->pos += strlen($match[0]);
+                        $this->parser->line += substr_count($match[0], "\n");
+                        $result['_text'] .= ' ';
+                    }
                 }
                 $valid = true;
                 // End '_?'
@@ -664,7 +708,7 @@ class ExpressionParser extends PegParser
                 if (!$valid) {
                     break;
                 }
-                // Start '(  ',' item:Arrayitem )*' min '0' max 'null'
+                // Start '( ',' item:Arrayitem)*' min '0' max 'null'
                 $iteration7 = 0;
                 do {
                     // start sequence
@@ -726,7 +770,7 @@ class ExpressionParser extends PegParser
                     }
                     if (!$valid) break;
                 } while (true);
-                // End '(  ',' item:Arrayitem )*'
+                // End '( ',' item:Arrayitem)*'
                 if (!$valid) {
                     break;
                 }
@@ -768,11 +812,11 @@ class ExpressionParser extends PegParser
             }
             unset($backup2);
             // end sequence
-            // End '(  'array' _? '(' item:Arrayitem (  ',' item:Arrayitem )* ','? ')' )'
+            // End '( 'array' _? '(' item:Arrayitem ( ',' item:Arrayitem)* ','? ')')'
             if ($valid) {
                 break;
             }
-            // Start '(  '[' item:Arrayitem (  ',' item:Arrayitem )* ','? ']' )' min '1' max '1'
+            // Start '( '[' item:Arrayitem ( ',' item:Arrayitem)* ','? ']')' min '1' max '1'
             // start sequence
             $backup14 = $result;
             $pos14 = $this->parser->pos;
@@ -816,7 +860,7 @@ class ExpressionParser extends PegParser
                 if (!$valid) {
                     break;
                 }
-                // Start '(  ',' item:Arrayitem )*' min '0' max 'null'
+                // Start '( ',' item:Arrayitem)*' min '0' max 'null'
                 $iteration17 = 0;
                 do {
                     // start sequence
@@ -878,7 +922,7 @@ class ExpressionParser extends PegParser
                     }
                     if (!$valid) break;
                 } while (true);
-                // End '(  ',' item:Arrayitem )*'
+                // End '( ',' item:Arrayitem)*'
                 if (!$valid) {
                     break;
                 }
@@ -920,7 +964,7 @@ class ExpressionParser extends PegParser
             }
             unset($backup14);
             // end sequence
-            // End '(  '[' item:Arrayitem (  ',' item:Arrayitem )* ','? ']' )'
+            // End '( '[' item:Arrayitem ( ',' item:Arrayitem)* ','? ']')'
             if ($valid) {
                 break;
             }
@@ -943,14 +987,17 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Arrayitem'
      *
      *  Rule:
-     <token  Arrayitem> <rule>  (  index:Value _? '=>' _? )? value:Value </rule> </token> 
+    <token  Arrayitem>
+           <rule> ( index:Value _? '=>' _?)? value:Value  </rule>
+        </token>
+
      *
     */
     public function matchNodeArrayitem($previous){
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
-        // Start '(  index:Value _? '=>' _? )?' min '0' max '1'
+        // Start '( index:Value _? '=>' _?)?' min '0' max '1'
         // start sequence
         $backup1 = $result;
         $pos1 = $this->parser->pos;
@@ -982,9 +1029,11 @@ class ExpressionParser extends PegParser
             }
             // Start '_?' min '1' max '1'
             if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
+                if ($match[0]) {
+                    $this->parser->pos += strlen($match[0]);
+                    $this->parser->line += substr_count($match[0], "\n");
+                    $result['_text'] .= ' ';
+                }
             }
             $valid = true;
             // End '_?'
@@ -1007,9 +1056,11 @@ class ExpressionParser extends PegParser
             }
             // Start '_?' min '1' max '1'
             if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
+                if ($match[0]) {
+                    $this->parser->pos += strlen($match[0]);
+                    $this->parser->line += substr_count($match[0], "\n");
+                    $result['_text'] .= ' ';
+                }
             }
             $valid = true;
             // End '_?'
@@ -1050,7 +1101,7 @@ class ExpressionParser extends PegParser
         unset($backup1);
         // end sequence
         $valid = true;
-        // End '(  index:Value _? '=>' _? )?'
+        // End '( index:Value _? '=>' _?)?'
         if ($valid) {
             $result['_endpos'] = $this->parser->pos;
             $result['_endline'] = $this->parser->line;
@@ -1066,11 +1117,20 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Functioncall'
      *
      *  Rule:
-     <node Functioncall> <rule>  (  name:Id | namevar:Variable ) param:Parameter </rule>  <action name> {
+    <node Functioncall>
+            <rule>(name:Id | namevar:Variable) param:Parameter</rule>
+            <action name>
+            {
                 $result['name'] = $subres['_text'];
-            } </action>  <action namevar> {
+            }
+            </action>
+            <action namevar>
+            {
                 $result['namevar'] = $subres['node'];
-            } </action>  <action param> {
+            }
+            </action>
+            <action param>
+            {
                 $result['node'] = new Node($this->parser, 'Functioncall');
                 if (isset($result['name'])) {
                     $string = new Node\Value\String($this->parser);
@@ -1080,7 +1140,10 @@ class ExpressionParser extends PegParser
                     $result['node']->addSubTree($result['namevar'], 'name');
                 }
                 $result['node']->addSubTree(isset($subres['funcpar']) ? $subres['funcpar'] : false, 'param');
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeFunctioncall($previous){
@@ -1093,7 +1156,7 @@ class ExpressionParser extends PegParser
         $pos1 = $this->parser->pos;
         $line1 = $this->parser->line;
         do {
-            // Start '(  name:Id | namevar:Variable )' min '1' max '1'
+            // Start '( name:Id | namevar:Variable)' min '1' max '1'
             // start option
             do {
                 // Start 'name:Id' tag 'name' min '1' max '1'
@@ -1133,7 +1196,7 @@ class ExpressionParser extends PegParser
                 break;
             } while (true);
             // end option
-            // End '(  name:Id | namevar:Variable )'
+            // End '( name:Id | namevar:Variable)'
             if (!$valid) {
                 break;
             }
@@ -1203,9 +1266,15 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Parameter'
      *
      *  Rule:
-     <token Parameter> <rule>  '(' (  param:Expr (  ',' param:Expr )* )? ')' </rule>  <action param> {
+    <token Parameter>
+            <rule> '(' ( param:Expr ( ',' param:Expr)*)? ')' </rule>
+            <action param>
+            {
                 $result['funcpar'][] = $subres['node'];
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeParameter($previous){
@@ -1232,7 +1301,7 @@ class ExpressionParser extends PegParser
             if (!$valid) {
                 break;
             }
-            // Start '(  param:Expr (  ',' param:Expr )* )?' min '0' max '1'
+            // Start '( param:Expr ( ',' param:Expr)*)?' min '0' max '1'
             // start sequence
             $backup4 = $result;
             $pos4 = $this->parser->pos;
@@ -1255,7 +1324,7 @@ class ExpressionParser extends PegParser
                 if (!$valid) {
                     break;
                 }
-                // Start '(  ',' param:Expr )*' min '0' max 'null'
+                // Start '( ',' param:Expr)*' min '0' max 'null'
                 $iteration6 = 0;
                 do {
                     // start sequence
@@ -1310,7 +1379,7 @@ class ExpressionParser extends PegParser
                     }
                     if (!$valid) break;
                 } while (true);
-                // End '(  ',' param:Expr )*'
+                // End '( ',' param:Expr)*'
                 if (!$valid) {
                     break;
                 }
@@ -1324,7 +1393,7 @@ class ExpressionParser extends PegParser
             unset($backup4);
             // end sequence
             $valid = true;
-            // End '(  param:Expr (  ',' param:Expr )* )?'
+            // End '( param:Expr ( ',' param:Expr)*)?'
             if (!$valid) {
                 break;
             }
@@ -1372,11 +1441,21 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Value'
      *
      *  Rule:
-     <token Value> <attribute> hash </attribute>  <rule>  (  value:Variable !'(' ) | value:AnyLiteral | (  '(' subexpr:Expr ')' ) | value:Functioncall | value:Array </rule>  <action value> {
+    <token Value>
+            <attribute>hash</attribute>
+            <rule>  (value:Variable !'(') | value:AnyLiteral | ( '(' subexpr:Expr ')' ) | value:Functioncall  | value:Array </rule>
+            <action value>
+            {
                 $result['node'] = $subres['node'];
-            } </action>  <action subexpr> {
+            }
+            </action>
+            <action subexpr>
+            {
                 $result['node'] = new Node\Value\Subexpression($this->parser, $subres['node']);
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeValue($previous){
@@ -1394,7 +1473,7 @@ class ExpressionParser extends PegParser
         // Start 'Value' min '1' max '1'
         // start option
         do {
-            // Start '(  value:Variable !'(' )' min '1' max '1'
+            // Start '( value:Variable !'(')' min '1' max '1'
             // start sequence
             $backup2 = $result;
             $pos2 = $this->parser->pos;
@@ -1447,7 +1526,7 @@ class ExpressionParser extends PegParser
             }
             unset($backup2);
             // end sequence
-            // End '(  value:Variable !'(' )'
+            // End '( value:Variable !'(')'
             if ($valid) {
                 break;
             }
@@ -1468,7 +1547,7 @@ class ExpressionParser extends PegParser
             if ($valid) {
                 break;
             }
-            // Start '(  '(' subexpr:Expr ')' )' min '1' max '1'
+            // Start '( '(' subexpr:Expr ')')' min '1' max '1'
             // start sequence
             $backup7 = $result;
             $pos7 = $this->parser->pos;
@@ -1528,7 +1607,7 @@ class ExpressionParser extends PegParser
             }
             unset($backup7);
             // end sequence
-            // End '(  '(' subexpr:Expr ')' )'
+            // End '( '(' subexpr:Expr ')')'
             if ($valid) {
                 break;
             }
@@ -1596,7 +1675,10 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Statement'
      *
      *  Rule:
-     <token Statement> <rule>  var:Variable '[]'? '=' value:Expr _? </rule> </token> 
+    <token Statement>
+            <rule> var:Variable '[]'? '=' value:Expr _? </rule>
+        </token>
+
      *
     */
     public function matchNodeStatement($previous){
@@ -1688,9 +1770,11 @@ class ExpressionParser extends PegParser
             }
             // Start '_?' min '1' max '1'
             if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
+                if ($match[0]) {
+                    $this->parser->pos += strlen($match[0]);
+                    $this->parser->line += substr_count($match[0], "\n");
+                    $result['_text'] .= ' ';
+                }
             }
             $valid = true;
             // End '_?'
@@ -1722,9 +1806,16 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'ModifierValue'
      *
      *  Rule:
-     <token ModifierValue> <attribute> hash </attribute>  <rule>  .value:Value .addmodifier:(  '|' name:Id (  ':' param:Value )* )* </rule>  <action value> {
+    <token ModifierValue>
+            <attribute>hash</attribute>
+             <rule> value:Value addmodifier:('|' name:Id (':' param:Value)*)* </rule>
+             <action value>
+            {
                $result['node'] = $subres['node'];
-            } </action>  <action addmodifier> {
+            }
+            </action>
+            <action addmodifier>
+            {
                 if (isset($subres['name'])) {
                         $value = $result['node'];
                         $result['node'] = new Node($this->parser, 'Modifier');
@@ -1732,13 +1823,22 @@ class ExpressionParser extends PegParser
                         $result['node']->addSubTree($subres['name'], 'name');
                         $result['node']->addSubTree(isset($subres['param']) ? $subres['param'] : false, 'param');
                 }
-            } </action>  <action param> {
+            }
+            </action>
+            <action param>
+            {
                $result['param'][] = $subres['node'];
-            } </action>  <action name> {
+            }
+            </action>
+            <action name>
+            {
                $string = new Node\Value\String($this->parser);
                $string->setValue($subres['_text'], true);
                $result['name'] = $string;
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeModifierValue($previous){
@@ -1759,23 +1859,24 @@ class ExpressionParser extends PegParser
         $pos1 = $this->parser->pos;
         $line1 = $this->parser->line;
         do {
-            // Start '.value:Value' tag 'value' min '1' max '1'
+            // Start 'value:Value' tag 'value' min '1' max '1'
             $this->parser->addBacktrace(array('Value', $result));
             $subres = $this->parser->matchRule($result, 'Value');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
                 $this->parser->successNode(array('Value',  $subres));
+                $result['_text'] .= $subres['_text'];
                 $this->ModifierValue_value($result, $subres);
                 $valid = true;
             } else {
                 $valid = false;
                 $this->parser->failNode($remove);
             }
-            // End '.value:Value'
+            // End 'value:Value'
             if (!$valid) {
                 break;
             }
-            // Start '.addmodifier:(  '|' name:Id (  ':' param:Value )* )*' tag 'addmodifier' min '0' max 'null'
+            // Start 'addmodifier:( '|' name:Id ( ':' param:Value)*)*' tag 'addmodifier' min '0' max 'null'
             $iteration3 = 0;
             do {
                 // start sequence
@@ -1814,7 +1915,7 @@ class ExpressionParser extends PegParser
                     if (!$valid) {
                         break;
                     }
-                    // Start '(  ':' param:Value )*' min '0' max 'null'
+                    // Start '( ':' param:Value)*' min '0' max 'null'
                     $iteration7 = 0;
                     do {
                         // start sequence
@@ -1869,7 +1970,7 @@ class ExpressionParser extends PegParser
                         }
                         if (!$valid) break;
                     } while (true);
-                    // End '(  ':' param:Value )*'
+                    // End '( ':' param:Value)*'
                     if (!$valid) {
                         break;
                     }
@@ -1881,6 +1982,7 @@ class ExpressionParser extends PegParser
                     $result = $backup4;
                 }
                 if ($valid) {
+                    $backup4['_text'] .= $result['_text'];
                     $this->ModifierValue_addmodifier($backup4, $result);
                 }
                 $result = $backup4;
@@ -1893,7 +1995,7 @@ class ExpressionParser extends PegParser
                 }
                 if (!$valid) break;
             } while (true);
-            // End '.addmodifier:(  '|' name:Id (  ':' param:Value )* )*'
+            // End 'addmodifier:( '|' name:Id ( ':' param:Value)*)*'
             if (!$valid) {
                 break;
             }
@@ -1951,9 +2053,15 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Expr'
      *
      *  Rule:
-     <token Expr> <rule>  value:Mathexpr | value:Logexpr _? </rule>  <action _all> {
+    <token Expr>
+            <rule> value:Mathexpr | value:Logexpr _? </rule>
+             <action _all>
+            {
                $result['node'] = $subres['node'];
-            } </action> </token> 
+            }
+            </action>
+       </token>
+
      *
     */
     public function matchNodeExpr($previous){
@@ -2012,9 +2120,11 @@ class ExpressionParser extends PegParser
             }
             // Start '_?' min '1' max '1'
             if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
+                if ($match[0]) {
+                    $this->parser->pos += strlen($match[0]);
+                    $this->parser->line += substr_count($match[0], "\n");
+                    $result['_text'] .= ' ';
+                }
             }
             $valid = true;
             // End '_?'
@@ -2051,12 +2161,18 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Mathexpr'
      *
      *  Rule:
-     <token Mathexpr> <rule>  (  operator:Unimath left:ModifierValue ) | (  left:ModifierValue ) (  operator:Unimath | (  operator:Math operator:Unimath? ) right:ModifierValue )* </rule>  <action _all> {
+    <token Mathexpr>
+            <rule> (operator:Unimath left:ModifierValue) | (left:ModifierValue)  (operator:Unimath | (operator:Math operator:Unimath?) right:ModifierValue )* </rule>
+            <action _all>
+            {
                 if (!isset($result['node'])) {
                     $result['node'] = array();
                 }
                 $result['node'][] = $subres['node'];
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeMathexpr($previous){
@@ -2072,7 +2188,7 @@ class ExpressionParser extends PegParser
             // Start 'Mathexpr' min '1' max '1'
             // start option
             do {
-                // Start '(  operator:Unimath left:ModifierValue )' min '1' max '1'
+                // Start '( operator:Unimath left:ModifierValue)' min '1' max '1'
                 // start sequence
                 $backup4 = $result;
                 $pos4 = $this->parser->pos;
@@ -2121,11 +2237,11 @@ class ExpressionParser extends PegParser
                 }
                 unset($backup4);
                 // end sequence
-                // End '(  operator:Unimath left:ModifierValue )'
+                // End '( operator:Unimath left:ModifierValue)'
                 if ($valid) {
                     break;
                 }
-                // Start '(  left:ModifierValue )' tag 'left' min '1' max '1'
+                // Start '( left:ModifierValue)' tag 'left' min '1' max '1'
                 $this->parser->addBacktrace(array('ModifierValue', $result));
                 $subres = $this->parser->matchRule($result, 'ModifierValue');
                 $remove = array_pop($this->parser->backtrace);
@@ -2138,7 +2254,7 @@ class ExpressionParser extends PegParser
                     $valid = false;
                     $this->parser->failNode($remove);
                 }
-                // End '(  left:ModifierValue )'
+                // End '( left:ModifierValue)'
                 if ($valid) {
                     break;
                 }
@@ -2149,7 +2265,7 @@ class ExpressionParser extends PegParser
             if (!$valid) {
                 break;
             }
-            // Start '(  operator:Unimath | (  operator:Math operator:Unimath? ) right:ModifierValue )*' min '0' max 'null'
+            // Start '( operator:Unimath | ( operator:Math operator:Unimath?) right:ModifierValue)*' min '0' max 'null'
             $iteration8 = 0;
             do {
                 // start sequence
@@ -2177,7 +2293,7 @@ class ExpressionParser extends PegParser
                         if ($valid) {
                             break;
                         }
-                        // Start '(  operator:Math operator:Unimath? )' min '1' max '1'
+                        // Start '( operator:Math operator:Unimath?)' min '1' max '1'
                         // start sequence
                         $backup13 = $result;
                         $pos13 = $this->parser->pos;
@@ -2227,7 +2343,7 @@ class ExpressionParser extends PegParser
                         }
                         unset($backup13);
                         // end sequence
-                        // End '(  operator:Math operator:Unimath? )'
+                        // End '( operator:Math operator:Unimath?)'
                         if ($valid) {
                             break;
                         }
@@ -2271,7 +2387,7 @@ class ExpressionParser extends PegParser
                 }
                 if (!$valid) break;
             } while (true);
-            // End '(  operator:Unimath | (  operator:Math operator:Unimath? ) right:ModifierValue )*'
+            // End '( operator:Unimath | ( operator:Math operator:Unimath?) right:ModifierValue)*'
             if (!$valid) {
                 break;
             }
@@ -2308,12 +2424,18 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Logexpr'
      *
      *  Rule:
-     <token Logexpr> <rule>  (  operator:Unilog left:ModifierValue ) | (  left:ModifierValue operator:NamedCondition? ) (  (  operator:Condition | operator:NamedCondition2 ) (  operator:Unilog right:ModifierValue ) | (  right:ModifierValue operator:NamedCondition? ) )* </rule>  <action _all> {
+    <token Logexpr>
+            <rule> (operator:Unilog left:ModifierValue)|(left:ModifierValue operator:NamedCondition?) ( (operator:Condition|operator:NamedCondition2) (operator:Unilog right:ModifierValue)|(right:ModifierValue operator:NamedCondition?) )* </rule>
+            <action _all>
+            {
                 if (!isset($result['node'])) {
                     $result['node'] = array();
                 }
                 $result['node'][] = $subres['node'];
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeLogexpr($previous){
@@ -2329,7 +2451,7 @@ class ExpressionParser extends PegParser
             // Start 'Logexpr' min '1' max '1'
             // start option
             do {
-                // Start '(  operator:Unilog left:ModifierValue )' min '1' max '1'
+                // Start '( operator:Unilog left:ModifierValue)' min '1' max '1'
                 // start sequence
                 $backup4 = $result;
                 $pos4 = $this->parser->pos;
@@ -2378,11 +2500,11 @@ class ExpressionParser extends PegParser
                 }
                 unset($backup4);
                 // end sequence
-                // End '(  operator:Unilog left:ModifierValue )'
+                // End '( operator:Unilog left:ModifierValue)'
                 if ($valid) {
                     break;
                 }
-                // Start '(  left:ModifierValue operator:NamedCondition? )' min '1' max '1'
+                // Start '( left:ModifierValue operator:NamedCondition?)' min '1' max '1'
                 // start sequence
                 $backup8 = $result;
                 $pos8 = $this->parser->pos;
@@ -2432,7 +2554,7 @@ class ExpressionParser extends PegParser
                 }
                 unset($backup8);
                 // end sequence
-                // End '(  left:ModifierValue operator:NamedCondition? )'
+                // End '( left:ModifierValue operator:NamedCondition?)'
                 if ($valid) {
                     break;
                 }
@@ -2443,7 +2565,7 @@ class ExpressionParser extends PegParser
             if (!$valid) {
                 break;
             }
-            // Start '(  (  operator:Condition | operator:NamedCondition2 ) (  operator:Unilog right:ModifierValue ) | (  right:ModifierValue operator:NamedCondition? ) )*' min '0' max 'null'
+            // Start '( ( operator:Condition | operator:NamedCondition2) ( operator:Unilog right:ModifierValue) | ( right:ModifierValue operator:NamedCondition?))*' min '0' max 'null'
             $iteration11 = 0;
             do {
                 // start sequence
@@ -2451,7 +2573,7 @@ class ExpressionParser extends PegParser
                 $pos12 = $this->parser->pos;
                 $line12 = $this->parser->line;
                 do {
-                    // Start '(  operator:Condition | operator:NamedCondition2 )' min '1' max '1'
+                    // Start '( operator:Condition | operator:NamedCondition2)' min '1' max '1'
                     // start option
                     do {
                         // Start 'operator:Condition' tag 'operator' min '1' max '1'
@@ -2491,14 +2613,14 @@ class ExpressionParser extends PegParser
                         break;
                     } while (true);
                     // end option
-                    // End '(  operator:Condition | operator:NamedCondition2 )'
+                    // End '( operator:Condition | operator:NamedCondition2)'
                     if (!$valid) {
                         break;
                     }
                     // Start 'Logexpr' min '1' max '1'
                     // start option
                     do {
-                        // Start '(  operator:Unilog right:ModifierValue )' min '1' max '1'
+                        // Start '( operator:Unilog right:ModifierValue)' min '1' max '1'
                         // start sequence
                         $backup18 = $result;
                         $pos18 = $this->parser->pos;
@@ -2547,11 +2669,11 @@ class ExpressionParser extends PegParser
                         }
                         unset($backup18);
                         // end sequence
-                        // End '(  operator:Unilog right:ModifierValue )'
+                        // End '( operator:Unilog right:ModifierValue)'
                         if ($valid) {
                             break;
                         }
-                        // Start '(  right:ModifierValue operator:NamedCondition? )' min '1' max '1'
+                        // Start '( right:ModifierValue operator:NamedCondition?)' min '1' max '1'
                         // start sequence
                         $backup22 = $result;
                         $pos22 = $this->parser->pos;
@@ -2601,7 +2723,7 @@ class ExpressionParser extends PegParser
                         }
                         unset($backup22);
                         // end sequence
-                        // End '(  right:ModifierValue operator:NamedCondition? )'
+                        // End '( right:ModifierValue operator:NamedCondition?)'
                         if ($valid) {
                             break;
                         }
@@ -2628,7 +2750,7 @@ class ExpressionParser extends PegParser
                 }
                 if (!$valid) break;
             } while (true);
-            // End '(  (  operator:Condition | operator:NamedCondition2 ) (  operator:Unilog right:ModifierValue ) | (  right:ModifierValue operator:NamedCondition? ) )*'
+            // End '( ( operator:Condition | operator:NamedCondition2) ( operator:Unilog right:ModifierValue) | ( right:ModifierValue operator:NamedCondition?))*'
             if (!$valid) {
                 break;
             }
@@ -2665,7 +2787,11 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Condition'
      *
      *  Rule:
-     <token Condition> <attribute> matchall </attribute>  <rule>  /(\s*(?<op>(===|!==|==|!=|<>|<=|<|>=|>))\s*)|(\s+(?<op2>(eq|ne|ge|gte|gt|le|lte|lt|instanceof))\s+)/ </rule>  <action op> {
+    <token Condition>
+            <attribute>matchall</attribute>
+            <rule>/(\s*(?<op>(===|!==|==|!=|<>|<=|<|>=|>))\s*)|(\s+(?<op2>(eq|ne|ge|gte|gt|le|lte|lt|instanceof))\s+)/ </rule>
+            <action op>
+            {
                 $result->_type = 'operator';
                 $result->_subtype = 'bool';
                 switch ($subres['_matchres']['op']) {
@@ -2678,7 +2804,10 @@ class ExpressionParser extends PegParser
                 }
                 $result->_compile = ' ' . $result->_compile . ' ';
                 unset($subres['_matchres']['op']);
-            } </action>  <action op2> {
+            }
+            </action>
+            <action op2>
+            {
                 $result->_type = 'operator';
                 $result->_subtype = 'bool';
                 switch ($subres['_matchres']['op2']) {
@@ -2711,7 +2840,10 @@ class ExpressionParser extends PegParser
                 }
                 $result->_compile = ' ' . $result->_compile . ' ';
                 unset($subres['_matchres']['op2']);
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeCondition($previous){
@@ -2719,7 +2851,7 @@ class ExpressionParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/(\s*(?<op>(===|!==|==|!=|<>|<=|<|>=|>))\s*)|(\s+(?<op2>(eq|ne|ge|gte|gt|le|lte|lt|instanceof))\s+)/' min '1' max '1'
-        $regexp = "/(\s*(?<op>(===|!==|==|!=|<>|<=|<|>=|>))\s*)|(\s+(?<op2>(eq|ne|ge|gte|gt|le|lte|lt|instanceof))\s+)/";
+        $regexp = "/(\\s*(?<op>(===|!==|==|!=|<>|<=|<|>=|>))\\s*)|(\\s+(?<op2>(eq|ne|ge|gte|gt|le|lte|lt|instanceof))\\s+)/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Condition2'][$pos])) {
             $subres = $this->parser->regexpCache['Condition2'][$pos];
@@ -2727,11 +2859,16 @@ class ExpressionParser extends PegParser
             if (empty($this->parser->regexpCache['Condition2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['Condition2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
+                    if (strlen($match[0]) != 0) {
+                        $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
+                        foreach ($match as $n => $v) {
+                            if (is_string($n) && !empty($v[0])) {
+                                $subres['_matchres'][$n] = $v[0];
+                            }
                         }
+                    } else {
+                        $this->parser->regexpCache['Condition2'][$pos] = false;
+                        $subres = false;
                     }
                     $this->parser->regexpCache['Condition2'][$match[1]] = $subres;
                 }
@@ -2754,10 +2891,13 @@ class ExpressionParser extends PegParser
             $subres['_name'] = 'Condition';
             if (isset($subres['_matchres']['op'])) {
                 $this->Condition_op($result, $subres);
+                unset($subres['_matchres']['op']);
             }
             if (isset($subres['_matchres']['op2'])) {
                 $this->Condition_op2($result, $subres);
+                unset($subres['_matchres']['op2']);
             }
+            $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
             $valid = true;
         } else {
             $valid = false;
@@ -2821,7 +2961,11 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'NamedCondition'
      *
      *  Rule:
-     <token NamedCondition> <attribute> matchall </attribute>  <rule>  /\s+is\s+(not\s+)?(((odd|even|div)\s+by)|in)\s+/ </rule> </token> 
+    <token NamedCondition>
+            <attribute>matchall</attribute>
+            <rule>/\s+is\s+(not\s+)?(((odd|even|div)\s+by)|in)\s+/ </rule>
+        </token>
+
      *
     */
     public function matchNodeNamedCondition($previous){
@@ -2829,7 +2973,7 @@ class ExpressionParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/\s+is\s+(not\s+)?(((odd|even|div)\s+by)|in)\s+/' min '1' max '1'
-        $regexp = "/\s+is\s+(not\s+)?(((odd|even|div)\s+by)|in)\s+/";
+        $regexp = "/\\s+is\\s+(not\\s+)?(((odd|even|div)\\s+by)|in)\\s+/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['NamedCondition2'][$pos])) {
             $subres = $this->parser->regexpCache['NamedCondition2'][$pos];
@@ -2837,12 +2981,7 @@ class ExpressionParser extends PegParser
             if (empty($this->parser->regexpCache['NamedCondition2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['NamedCondition2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['NamedCondition2'][$match[1]] = $subres;
                 }
             } else {
@@ -2885,7 +3024,13 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'NamedCondition2'
      *
      *  Rule:
-     <token NamedCondition2> <attribute> matchall </attribute>  <rule>  /\s+is\s+(not\s+)?(((odd|even|div)\s+by)|in)\s+/ </rule> </token> 
+    
+
+        <token Logop>
+            <attribute>matchall</attribute>
+            <rule>/\s*((\|\||\|&&|&|^)\s*)|((and|or|xor)\s+)/</rule>
+        </token>
+
      *
     */
     public function matchNodeNamedCondition2($previous){
@@ -2893,7 +3038,7 @@ class ExpressionParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/\s+is\s+(not\s+)?(((odd|even|div)\s+by)|in)\s+/' min '1' max '1'
-        $regexp = "/\s+is\s+(not\s+)?(((odd|even|div)\s+by)|in)\s+/";
+        $regexp = "/\\s+is\\s+(not\\s+)?(((odd|even|div)\\s+by)|in)\\s+/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['NamedCondition22'][$pos])) {
             $subres = $this->parser->regexpCache['NamedCondition22'][$pos];
@@ -2901,12 +3046,7 @@ class ExpressionParser extends PegParser
             if (empty($this->parser->regexpCache['NamedCondition22']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['NamedCondition22'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['NamedCondition22'][$match[1]] = $subres;
                 }
             } else {
@@ -2949,7 +3089,11 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Logop'
      *
      *  Rule:
-     <token Logop> <attribute> matchall </attribute>  <rule>  /\s*((\|\||\|&&|&|^)\s*)|((and|or|xor)\s+)/ </rule> </token> 
+    <token Logop>
+            <attribute>matchall</attribute>
+            <rule>/\s*((\|\||\|&&|&|^)\s*)|((and|or|xor)\s+)/</rule>
+        </token>
+
      *
     */
     public function matchNodeLogop($previous){
@@ -2957,7 +3101,7 @@ class ExpressionParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/\s*((\|\||\|&&|&|^)\s*)|((and|or|xor)\s+)/' min '1' max '1'
-        $regexp = "/\s*((\|\||\|&&|&|^)\s*)|((and|or|xor)\s+)/";
+        $regexp = "/\\s*((\\|\\||\\|&&|&|^)\\s*)|((and|or|xor)\\s+)/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Logop2'][$pos])) {
             $subres = $this->parser->regexpCache['Logop2'][$pos];
@@ -2965,12 +3109,7 @@ class ExpressionParser extends PegParser
             if (empty($this->parser->regexpCache['Logop2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['Logop2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['Logop2'][$match[1]] = $subres;
                 }
             } else {
@@ -3013,10 +3152,17 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Math'
      *
      *  Rule:
-     <node Math> <attribute> matchall </attribute>  <rule>  /(\s*(\*|\/|%)\s*)|(\s+mod\s+)/ </rule>  <action _finish> {
+    <node Math>
+            <attribute>matchall</attribute>
+            <rule>/(\s*(\*|\/|%)\s*)|(\s+mod\s+)/</rule>
+            <action _finish>
+            {
                 $result['node'] = new Node\Operator\Math($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeMath($previous){
@@ -3024,7 +3170,7 @@ class ExpressionParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/(\s*(\*|\/|%)\s*)|(\s+mod\s+)/' min '1' max '1'
-        $regexp = "/(\s*(\*|\/|%)\s*)|(\s+mod\s+)/";
+        $regexp = "/(\\s*(\\*|\\/|%)\\s*)|(\\s+mod\\s+)/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Math2'][$pos])) {
             $subres = $this->parser->regexpCache['Math2'][$pos];
@@ -3032,12 +3178,7 @@ class ExpressionParser extends PegParser
             if (empty($this->parser->regexpCache['Math2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['Math2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['Math2'][$match[1]] = $subres;
                 }
             } else {
@@ -3087,10 +3228,17 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Unimath'
      *
      *  Rule:
-     <node Unimath> <attribute> matchall </attribute>  <rule>  /\s*(\+|-)\s* / </rule>  <action _finish> {
+    <node Unimath>
+            <attribute>matchall</attribute>
+            <rule>/\s*(\+|-)\s* /</rule>
+            <action _finish>
+            {
                 $result['node'] = new Node\Operator\Unimath($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            } </action> </node> 
+            }
+            </action>
+         </node>
+
      *
     */
     public function matchNodeUnimath($previous){
@@ -3098,7 +3246,7 @@ class ExpressionParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/\s*(\+|-)\s* /' min '1' max '1'
-        $regexp = "/\s*(\+|-)\s* /";
+        $regexp = "/\\s*(\\+|-)\\s* /";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Unimath2'][$pos])) {
             $subres = $this->parser->regexpCache['Unimath2'][$pos];
@@ -3106,12 +3254,7 @@ class ExpressionParser extends PegParser
             if (empty($this->parser->regexpCache['Unimath2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['Unimath2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['Unimath2'][$match[1]] = $subres;
                 }
             } else {
@@ -3161,10 +3304,17 @@ class ExpressionParser extends PegParser
      * Parser rules and action for node 'Unilog'
      *
      *  Rule:
-     <node Unilog> <attribute> matchall </attribute>  <rule>  /((!|~)\s*)|(not\s+)/ </rule>  <action _finish> {
+    <node Unilog>
+            <attribute>matchall</attribute>
+            <rule>/((!|~)\s*)|(not\s+)/</rule>
+            <action _finish>
+            {
                 $result['node'] = new Node\Operator\Unilog($this->parser);
                 $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeUnilog($previous){
@@ -3172,7 +3322,7 @@ class ExpressionParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/((!|~)\s*)|(not\s+)/' min '1' max '1'
-        $regexp = "/((!|~)\s*)|(not\s+)/";
+        $regexp = "/((!|~)\\s*)|(not\\s+)/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Unilog2'][$pos])) {
             $subres = $this->parser->regexpCache['Unilog2'][$pos];
@@ -3180,12 +3330,7 @@ class ExpressionParser extends PegParser
             if (empty($this->parser->regexpCache['Unilog2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 $this->parser->regexpCache['Unilog2'][- 1] = true;
                 foreach ($matches[0] as $match) {
-                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
-                    foreach ($match as $n => $v) {
-                        if (is_string($n)) {
-                            $subres['_matchres'][$n] = $v[0];
-                        }
-                    }
+                    $subres = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]), '_matchres' => array());
                     $this->parser->regexpCache['Unilog2'][$match[1]] = $subres;
                 }
             } else {

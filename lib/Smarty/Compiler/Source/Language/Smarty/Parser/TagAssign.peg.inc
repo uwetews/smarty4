@@ -14,7 +14,7 @@ class TagAssignParser extends PegParser
 
             <node TagAssign>
                 <attribute>attributes=(required=(name,value)),options=nocache</attribute>
-                <rule>tag:(Ldel 'assign' SmartyTagAttributes SmartyTagScopes SmartyTagOptions </rule>
+                <rule>Ldel 'assign' SmartyTagAttributes SmartyTagScopes SmartyTagOptions </rule>
                 <action _start>
                 {
                     $result['node'] = $previous['node'];

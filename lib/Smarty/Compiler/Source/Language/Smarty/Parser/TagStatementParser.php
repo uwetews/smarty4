@@ -14,7 +14,7 @@ class TagStatementParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
+     * Parser generated on 2014-06-29 20:27:43
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/TagStatement.peg.inc' dated 2014-06-28 02:53:31
      *
     */
@@ -50,11 +50,18 @@ class TagStatementParser extends PegParser
      * Parser rules and action for node 'TagStatement'
      *
      *  Rule:
-     <node TagStatement> <rule>  Ldel statement:Statement Rdel </rule>  <action statement> {
+    
+             <node TagStatement>
+                 <rule>Ldel statement:Statement Rdel</rule>
+                 <action statement>
+                 {
                      $result['node'] = new Node\TagOutput($this->parser);
                      $result['node']->addSubTree($subres['node'], 'value');
                      $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
-                 } </action> </node> 
+                 }
+                 </action>
+             </node>
+
      *
     */
     public function matchNodeTagStatement($previous){

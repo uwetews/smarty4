@@ -406,7 +406,7 @@ class Pegparser
             $regquo = preg_quote('/?<(\w+)>/', '"');
             preg_match_all('/\?<(\w+)>/', $regexp, $matches);
 //        }
-        //$regexp = preg_quote($regexp, '"');
+       $regexp = addcslashes($regexp, '"\\');
         $this->php("\$regexp = \"{$regexp}\";\n");
         $hasInitExpression = preg_match('/{(\w+)}/', $regexp);
         $hasExpression = preg_match('/\$(\w+)/', $regexp);
@@ -430,14 +430,26 @@ class Pegparser
             }
             $this->php("if (empty(\$this->parser->regexpCache['{$cacheName}']) && preg_match_all(\$regexp . 'Sx', \$this->parser->source, \$matches, PREG_OFFSET_CAPTURE, \$pos)) {\n", 1)
                  ->php("\$this->parser->regexpCache['{$cacheName}'][- 1] = true;\n")
-                 ->php("foreach (\$matches[0] as \$match) {\n", 1)
-                 ->php("\$subres = array('_silent' => 0, '_text' => \$match[0], '_startpos' => \$match[1], '_endpos' => \$match[1] + strlen(\$match[0]));\n")
-                 ->php("foreach (\$match as \$n => \$v) {\n", 1)
-                 ->php("if (is_string(\$n)) {\n", 1)
+                 ->php("foreach (\$matches[0] as \$match) {\n", 1);
+            if (isset($matches[1][0])) {
+                $this->php("if (strlen(\$match[0]) != 0) {\n",1);
+            }
+            $this->php("\$subres = array('_silent' => 0, '_text' => \$match[0], '_startpos' => \$match[1], '_endpos' => \$match[1] + strlen(\$match[0]), '_matchres' => array());\n");
+            if (isset($matches[1][0])) {
+                $this->php("foreach (\$match as \$n => \$v) {\n", 1)
+                 ->php("if (is_string(\$n) && !empty(\$v[0])) {\n", 1)
                  ->php("\$subres['_matchres'][\$n] = \$v[0];\n")
                  ->php("}\n", - 1)
-                 ->php("}\n", - 1)
-                 ->php("\$this->parser->regexpCache['{$cacheName}'][\$match[1]] = \$subres;\n")
+                ->php("}\n", - 1);
+                if (isset($matches[1][0])) {
+                    $this->outdent()
+                         ->php("} else {\n", 1)
+                         ->php("\$this->parser->regexpCache['{$cacheName}'][\$pos] = false;\n")
+                         ->php("\$subres = false;\n")
+                         ->php("}\n", - 1);
+                }
+            }
+                 $this->php("\$this->parser->regexpCache['{$cacheName}'][\$match[1]] = \$subres;\n")
                  ->php("}\n", - 1)
                  ->outdent()
                  ->php("} else {\n", 1)
@@ -452,7 +464,7 @@ class Pegparser
                  ->php("\$this->parser->regexpCache['{$cacheName}'][\$pos] = false;\n")
                  ->php("\$subres = false;\n")
                  ->php("}\n", - 1);
-        } else {
+         } else {
             $this->php("\$pos = \$this->parser->pos;\n")
                  ->php("if (isset(\$this->parser->regexpCache['{$cacheName}'][\$pos])) {\n", 1)
                  ->php("\$subres = \$this->parser->regexpCache['{$cacheName}'][\$pos];\n")
@@ -466,14 +478,19 @@ class Pegparser
                      ->php("\$this->parser->rxCache['{$cacheName}'] = \$regexp = \$this->parser->initRxReplace('{$params['_name']}',\$regexp);\n")
                      ->php("}\n", - 1);
             }
-            $this->php("if (preg_match(\$regexp . 'Sxs', \$this->parser->source, \$match, PREG_OFFSET_CAPTURE, \$pos)) {\n", 1)
-                 ->php("\$subres = array('_silent' => 0, '_text' => \$match[0][0], '_startpos' => \$match[0][1], '_endpos' => \$match[0][1] + strlen(\$match[0][0]));\n")
-                 ->php("foreach (\$match as \$n => \$v) {\n", 1)
-                 ->php("if (is_string(\$n)) {\n", 1)
-                 ->php("\$subres['_matchres'][\$n] = \$v[0];\n")
-                 ->php("}\n", - 1)
-                 ->php("}\n", - 1)
-                 ->php("if (\$subres['_startpos'] != \$pos) {\n", 1)
+            $this->php("if (preg_match(\$regexp . 'Sxs', \$this->parser->source, \$match, PREG_OFFSET_CAPTURE, \$pos)) {\n", 1);
+            if (isset($matches[1][0])) {
+                $this->php("if (strlen(\$match[0][0]) != 0) {\n",1);
+            }
+                 $this->php("\$subres = array('_silent' => 0, '_text' => \$match[0][0], '_startpos' => \$match[0][1], '_endpos' => \$match[0][1] + strlen(\$match[0][0]), '_matchres' => array());\n");
+            if (isset($matches[1][0])) {
+                $this->php("foreach (\$match as \$n => \$v) {\n", 1)
+                     ->php("if (is_string(\$n) && !empty(\$v[0])) {\n", 1)
+                     ->php("\$subres['_matchres'][\$n] = \$v[0];\n")
+                     ->php("}\n", - 1)
+                     ->php("}\n", - 1);
+            }
+                 $this->php("if (\$subres['_startpos'] != \$pos) {\n", 1)
                  ->php("\$this->parser->regexpCache['{$cacheName}'][\$subres['_startpos']] = \$subres;\n")
                  ->php("\$this->parser->regexpCache['{$cacheName}'][\$pos] = false;\n")
                  ->php("\$subres = false;\n")
@@ -482,8 +499,15 @@ class Pegparser
                  ->php("} else {\n", 1)
                  ->php("\$this->parser->regexpCache['{$cacheName}'][\$pos] = false;\n")
                  ->php("\$subres = false;\n")
-                 ->php("}\n", - 1)
                  ->php("}\n", - 1);
+            if (isset($matches[1][0])) {
+                $this->outdent()
+                    ->php("} else {\n", 1)
+                     ->php("\$this->parser->regexpCache['{$cacheName}'][\$pos] = false;\n")
+                     ->php("\$subres = false;\n")
+                     ->php("}\n", - 1);
+            }
+                 $this->php("}\n", - 1);
         }
         $this->php("if (\$subres) {\n", 1)
             ->php("\$subres['_lineno'] = \$this->parser->line;\n")
@@ -517,9 +541,13 @@ class Pegparser
                     foreach ($params['_actions']['_match'][$match] as $method => $foo) {
                         $this->php("\$this->{$method}(\$result, \$subres);\n");
                     }
-                    $this->php("}\n",-1);
+                    $this->php("unset(\$subres['_matchres']['{$match}']);\n")
+                    ->php("}\n",-1);
                 }
             }
+        }
+        if (isset($matches[1][0])) {
+            $this->php("\$result['_matchres'] = array_merge(\$result['_matchres'], \$subres['_matchres']);\n");
         }
 //        if ($params['_silent'] == 0) {
 //            $this->php("\$result['_text'] .= \$subres['_text'];\n");
@@ -630,11 +658,13 @@ class Pegparser
     {
         $this->php("if (preg_match(\$this->parser->whitespacePattern, \$this->parser->source, \$match, 0, \$this->parser->pos)) {\n")
              ->indent()
+            ->php("if (\$match[0]) {\n",1)
              ->php("\$this->parser->pos += strlen(\$match[0]);\n")
              ->php("\$this->parser->line += substr_count(\$match[0], \"\\n\");\n");
         if ($params['_silent'] == 0) {
             $this->php("\$result['_text'] .= ' ';\n");
         }
+        $this->php("}\n",-1);
         if ($params['_param']) {
             $this->outdent()
                  ->php("}\n")

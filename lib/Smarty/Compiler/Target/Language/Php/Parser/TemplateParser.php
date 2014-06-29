@@ -14,7 +14,7 @@ class TemplateParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
+     * Parser generated on 2014-06-29 20:34:38
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Target/Language/Php/Parser/Template.peg.inc' dated 2014-06-28 02:53:31
      *
     */
@@ -54,13 +54,23 @@ class TemplateParser extends PegParser
      * Parser rules and action for node 'Template'
      *
      *  Rule:
-     <node Template> <rule>  .Bom? nodes:Body? Unexpected? </rule>  <action _start> {
+    
+             <node Template>
+                 <rule>.Bom? nodes:Body?  Unexpected?</rule>
+                 <action _start>
+                 {
                      $result['node'] = new Node\Template($this->parser, $result);
-                 } </action>  <action nodes> {
+                 }
+                </action>
+                 <action nodes>
+                 {
                      $result['node']->templateBodyNode = $subres['node'];
                      $result['node']->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
                      $result['node']->templateBodyNode->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-                 } </action> </node> 
+                 }
+                </action>
+             </node>
+
      *
     */
     public function matchNodeTemplate($previous){
@@ -162,7 +172,10 @@ class TemplateParser extends PegParser
      * Parser rules and action for node 'Bom'
      *
      *  Rule:
-     <node Bom> <rule>  /\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/ </rule> </node> 
+    <node Bom>
+                 <rule>/\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/</rule>
+             </node>
+
      *
     */
     public function matchNodeBom($previous){
@@ -170,18 +183,13 @@ class TemplateParser extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start '/\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/' min '1' max '1'
-        $regexp = "/\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/";
+        $regexp = "/\\xEF\\xBB\\xBF|\\xFE\\xFF|\\xFF\\xFE/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Bom2'][$pos])) {
             $subres = $this->parser->regexpCache['Bom2'][$pos];
         } else {
             if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
-                foreach ($match as $n => $v) {
-                    if (is_string($n)) {
-                        $subres['_matchres'][$n] = $v[0];
-                    }
-                }
+                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
                 if ($subres['_startpos'] != $pos) {
                     $this->parser->regexpCache['Bom2'][$subres['_startpos']] = $subres;
                     $this->parser->regexpCache['Bom2'][$pos] = false;

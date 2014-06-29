@@ -15,7 +15,7 @@ class BodyParser extends PegParser
     <pegparser Body>
 
         <node  Body>
-            <rule> ( !LdelSlash ((&Ldel nodes:CoreTag) | nodes:Text ))*</rule>
+            <rule> ( !LdelSlash ((&Ldel .nodes:CoreTag) | nodes:Text ))*</rule>
             <action nodes>
                {
                  $result['nodes'][] = $subres['node'];

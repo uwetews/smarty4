@@ -13,7 +13,7 @@ use Smarty\Parser\RuleArrayParser;
  *
  * @package Smarty\Parser
  */
-class Parser
+class Parser extends Magic
 {
 
     /**
@@ -383,6 +383,9 @@ class Parser
             if (class_exists($class)) {
                 $compiler = new $class($this->compiler, $this->context);
                 $this->context->smarty->_writeFile($parserFilePath, $compiler->compileFile($ruleFilePath));
+                $compiler->parser = null;
+                $compiler->cleanup();
+                unset($compiler);
                 return true;
             } else {
                 throw new Exception\NoGeneratorClass($class);

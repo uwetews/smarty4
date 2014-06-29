@@ -15,7 +15,7 @@ class ResourceParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
+     * Parser generated on 2014-06-29 20:34:38
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Target/Language/Php/Parser/Resource.peg.inc' dated 2014-06-28 02:53:31
      *
     */
@@ -51,11 +51,21 @@ class ResourceParser extends PegParser
      * Parser rules and action for node 'Resource'
      *
      *  Rule:
-     <node Resource> <rule>  main:Template </rule>  <action _start> {
+    
+            <node Resource>
+                <rule>main:Template</rule>
+                <action _start>
+                {
                     $result['node'] = $previous['node'];
-                } </action>  <action main> {
+                }
+                </action>
+                <action main>
+                {
                     $result['node']->templateNode = $subres['node'];
-                } </action> </node> 
+                }
+                </action>
+            </node>
+
      *
     */
     public function matchNodeResource($previous){

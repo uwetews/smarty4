@@ -41,7 +41,7 @@ class Generator extends Parser
    
     /**
      *
-     * Parser generated on 2014-06-29 17:56:13
+     * Parser generated on 2014-06-29 17:10:59
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Tool/Parser/Peg/InternalTool/ParserGenerator.peg.inc' dated 2014-06-29 17:10:50
      *
     */
@@ -137,7 +137,7 @@ class Generator extends Parser
             // start option
             do {
                 // Start 'attrvalue' min '1' max '1'
-                $regexp = "/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|(\"[^\"]*\")|\\d+|\\w+))/";
+                $regexp = "/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|(\"[^\"]*\")|\d+|\w+))/";
                 $pos = $this->parser->pos;
                 if (isset($this->parser->regexpCache['attrvalue6'][$pos])) {
                     $subres = $this->parser->regexpCache['attrvalue6'][$pos];
@@ -589,7 +589,7 @@ class Generator extends Parser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start 'Name' min '1' max '1'
-        $regexp = "/\\w+/";
+        $regexp = "/\w+/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Name2'][$pos])) {
             $subres = $this->parser->regexpCache['Name2'][$pos];
@@ -643,7 +643,7 @@ class Generator extends Parser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start 'Header' min '1' max '1'
-        $regexp = "/\\s*\\/\\*!\\* /";
+        $regexp = "/\s*\/\*!\* /";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Header2'][$pos])) {
             $subres = $this->parser->regexpCache['Header2'][$pos];
@@ -697,7 +697,7 @@ class Generator extends Parser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start 'End' min '1' max '1'
-        $regexp = "/\\s*\\*\\//";
+        $regexp = "/\s*\*\//";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['End2'][$pos])) {
             $subres = $this->parser->regexpCache['End2'][$pos];
@@ -750,7 +750,7 @@ class Generator extends Parser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         // Start 'Comment' min '1' max '1'
-        $regexp = "/[\\s\\t]*(([#][^\\r\\n]*)?([\\r\\n]+[\\s\\t]*))* /";
+        $regexp = "/[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))* /";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Comment2'][$pos])) {
             $subres = $this->parser->regexpCache['Comment2'][$pos];
@@ -809,7 +809,7 @@ class Generator extends Parser
         $result['_lineno'] = $this->parser->line;
         $this->Text___START($result, $previous);
         // Start 'Text' min '1' max '1'
-        $regexp = "/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/";
+        $regexp = "/([\S\s]+(?=([^\S\r\n]\/\*!\*)))|[\S\s]+/";
         $pos = $this->parser->pos;
         if (isset($this->parser->regexpCache['Text2'][$pos])) {
             $subres = $this->parser->regexpCache['Text2'][$pos];
@@ -1300,7 +1300,7 @@ class Generator extends Parser
                 break;
             }
             // Start 'Node' min '1' max '1'
-            $regexp = "/\\s*\\<(?<type>(node|token))\\s+(?<nodename>[a-zA-Z_0-9]+)\\>/";
+            $regexp = "/\s*\<(?<type>(node|token))\s+(?<nodename>[a-zA-Z_0-9]+)\>/";
             $pos = $this->parser->pos;
             if (isset($this->parser->regexpCache['Node5'][$pos])) {
                 $subres = $this->parser->regexpCache['Node5'][$pos];
@@ -1422,7 +1422,7 @@ class Generator extends Parser
                 break;
             }
             // Start 'Node' min '1' max '1'
-            $regexp = "/<\\/(node|token)>/";
+            $regexp = "/<\/(node|token)>/";
             $pos = $this->parser->pos;
             if (isset($this->parser->regexpCache['Node10'][$pos])) {
                 $subres = $this->parser->regexpCache['Node10'][$pos];
@@ -1699,7 +1699,7 @@ class Generator extends Parser
                 break;
             }
             // Start 'Action' min '1' max '1'
-            $regexp = "/\\<action\\s+(?<funcname>\\w+)(\\((?<argument>\\w+)\\))?\\>/";
+            $regexp = "/\<action\s+(?<funcname>\w+)(\((?<argument>\w+)\))?\>/";
             $pos = $this->parser->pos;
             if (isset($this->parser->regexpCache['Action5'][$pos])) {
                 $subres = $this->parser->regexpCache['Action5'][$pos];
@@ -1755,7 +1755,7 @@ class Generator extends Parser
                 break;
             }
             // Start 'Action' tag 'code' min '1' max '1'
-            $regexp = "/(\\{(?:(?>[^{}]+|(?R))*)?\\})/";
+            $regexp = "/(\{(?:(?>[^{}]+|(?R))*)?\})/";
             $pos = $this->parser->pos;
             if (isset($this->parser->regexpCache['Action8'][$pos])) {
                 $subres = $this->parser->regexpCache['Action8'][$pos];
@@ -1870,7 +1870,7 @@ class Generator extends Parser
         $line1 = $this->parser->line;
         do {
             // Start 'PHP' min '1' max '1'
-            $regexp = "/.[\\n\\t ]* /";
+            $regexp = "/.[\n\t ]* /";
             $pos = $this->parser->pos;
             if (isset($this->parser->regexpCache['PHP4'][$pos])) {
                 $subres = $this->parser->regexpCache['PHP4'][$pos];
@@ -1905,7 +1905,7 @@ class Generator extends Parser
                 break;
             }
             // Start 'PHP' tag 'b' min '1' max '1'
-            $regexp = "/(\\{|\\}|[^\\n\\}\\{]+)* /";
+            $regexp = "/(\{|\}|[^\n\}\{]+)* /";
             $pos = $this->parser->pos;
             if (isset($this->parser->regexpCache['PHP6'][$pos])) {
                 $subres = $this->parser->regexpCache['PHP6'][$pos];
@@ -2670,7 +2670,7 @@ class Generator extends Parser
         $line1 = $this->parser->line;
         do {
             // Start 'RuleToken' min '0' max '1'
-            $regexp = "/((?<silent>\\.+)|(?<pla>&)|(?<nla>\\!))?((?<tag>\\w+):)?/";
+            $regexp = "/((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/";
             $pos = $this->parser->pos;
             if (isset($this->parser->regexpCache['RuleToken4'][$pos])) {
                 $subres = $this->parser->regexpCache['RuleToken4'][$pos];
@@ -2720,7 +2720,7 @@ class Generator extends Parser
             // start option
             do {
                 // Start 'RuleToken' min '1' max '1'
-                $regexp = "/(?<rx>\\G(\\/|~|@|%|§)(((\\\\\\\\)*\\\\\\2)|.*?(?=(\\\\|\\2)))*\\2)|((?<osp>_\\?)|(?<wsp>_))|(?<node>\\w+)|(?<literal>(\"[^\"]*\")|('[^']*'))|(\\$(?<expression>\\w+))/";
+                $regexp = "/(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<osp>_\?)|(?<wsp>_))|(?<node>\w+)|(?<literal>(\"[^\"]*\")|('[^']*'))|(\$(?<expression>\w+))/";
                 $pos = $this->parser->pos;
                 if (isset($this->parser->regexpCache['RuleToken7'][$pos])) {
                     $subres = $this->parser->regexpCache['RuleToken7'][$pos];
@@ -2857,7 +2857,7 @@ class Generator extends Parser
                 break;
             }
             // Start 'RuleToken' min '0' max '1'
-            $regexp = "/((?<quest>\\?)|(?<any>\\*)|(?<must>\\+?)|(\\{(?<min>\\d+)?,(?<max>\\d+)?\\}))?/";
+            $regexp = "/((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/";
             $pos = $this->parser->pos;
             if (isset($this->parser->regexpCache['RuleToken16'][$pos])) {
                 $subres = $this->parser->regexpCache['RuleToken16'][$pos];

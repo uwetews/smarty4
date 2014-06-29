@@ -14,7 +14,7 @@ class VariableParser  extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-28 11:26:33
+     * Parser generated on 2014-06-29 20:28:30
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Source/Language/Smarty/Parser/Variable.peg.inc' dated 2014-06-28 02:53:31
      *
     */
@@ -59,20 +59,47 @@ class VariableParser  extends PegParser
      * Parser rules and action for node 'Variable'
      *
      *  Rule:
-     <node Variable> <attribute> hash </attribute>  <rule>  isvar:'$' (  (  id:Id | (  '{' var:Variable '}' ) )+ (  '@' property:Id )? (  Arrayelement | Object )* ) | Unexpected </rule>  <action _start> {
+    
+    #
+    # Template variable
+    #
+    #                -> name can be nested variable                    -> array access     -> property or method
+        <node Variable>
+            <attribute>hash</attribute>
+            <rule> isvar:'$' ((id:Id | ('{' var:Variable '}'))+ ('@' property:Id)? (Arrayelement | Object)*) | Unexpected </rule>
+            <action _start>
+            {
                 $i = 1;
-            } </action>  <action isvar> {
+            }
+            </action>
+            <action isvar>
+            {
                 $result['node'] = new Node($this->parser, 'Variable');
-            } </action>  <action id> {
+            }
+            </action>
+            <action id>
+            {
                 $node = new Node\Value\String($this->parser);
                 $result['node']->addSubTree($node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']), 'name', true);
-            } </action>  <action var> {
+            }
+            </action>
+            <action var>
+            {
                 $result['node']->addSubTree($subres['node'], 'name', true);
-            } </action>  <action property> {
+            }
+            </action>
+            <action property>
+            {
                 $result['node']->addSubTree($subres['_text'], 'property');
-            } </action>  <action _finish> {
+            }
+            </action>
+            <action _finish>
+            {
                     $result['node']->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeVariable($previous){
@@ -112,13 +139,13 @@ class VariableParser  extends PegParser
             // Start 'Variable' min '1' max '1'
             // start option
             do {
-                // Start '(  (  id:Id | (  '{' var:Variable '}' ) )+ (  '@' property:Id )? (  Arrayelement | Object )* )' min '1' max '1'
+                // Start '( ( id:Id | ( '{' var:Variable '}'))+ ( '@' property:Id)? ( Arrayelement | Object)*)' min '1' max '1'
                 // start sequence
                 $backup5 = $result;
                 $pos5 = $this->parser->pos;
                 $line5 = $this->parser->line;
                 do {
-                    // Start '(  id:Id | (  '{' var:Variable '}' ) )+' min '1' max 'null'
+                    // Start '( id:Id | ( '{' var:Variable '}'))+' min '1' max 'null'
                     $iteration6 = 0;
                     do {
                         // start option
@@ -140,7 +167,7 @@ class VariableParser  extends PegParser
                             if ($valid) {
                                 break;
                             }
-                            // Start '(  '{' var:Variable '}' )' min '1' max '1'
+                            // Start '( '{' var:Variable '}')' min '1' max '1'
                             // start sequence
                             $backup9 = $result;
                             $pos9 = $this->parser->pos;
@@ -200,7 +227,7 @@ class VariableParser  extends PegParser
                             }
                             unset($backup9);
                             // end sequence
-                            // End '(  '{' var:Variable '}' )'
+                            // End '( '{' var:Variable '}')'
                             if ($valid) {
                                 break;
                             }
@@ -214,11 +241,11 @@ class VariableParser  extends PegParser
                         }
                         if (!$valid) break;
                     } while (true);
-                    // End '(  id:Id | (  '{' var:Variable '}' ) )+'
+                    // End '( id:Id | ( '{' var:Variable '}'))+'
                     if (!$valid) {
                         break;
                     }
-                    // Start '(  '@' property:Id )?' min '0' max '1'
+                    // Start '( '@' property:Id)?' min '0' max '1'
                     // start sequence
                     $backup14 = $result;
                     $pos14 = $this->parser->pos;
@@ -265,11 +292,11 @@ class VariableParser  extends PegParser
                     unset($backup14);
                     // end sequence
                     $valid = true;
-                    // End '(  '@' property:Id )?'
+                    // End '( '@' property:Id)?'
                     if (!$valid) {
                         break;
                     }
-                    // Start '(  Arrayelement | Object )*' min '0' max 'null'
+                    // Start '( Arrayelement | Object)*' min '0' max 'null'
                     $iteration17 = 0;
                     do {
                         // start option
@@ -316,7 +343,7 @@ class VariableParser  extends PegParser
                         }
                         if (!$valid) break;
                     } while (true);
-                    // End '(  Arrayelement | Object )*'
+                    // End '( Arrayelement | Object)*'
                     if (!$valid) {
                         break;
                     }
@@ -329,7 +356,7 @@ class VariableParser  extends PegParser
                 }
                 unset($backup5);
                 // end sequence
-                // End '(  (  id:Id | (  '{' var:Variable '}' ) )+ (  '@' property:Id )? (  Arrayelement | Object )* )'
+                // End '( ( id:Id | ( '{' var:Variable '}'))+ ( '@' property:Id)? ( Arrayelement | Object)*)'
                 if ($valid) {
                     break;
                 }
@@ -414,14 +441,26 @@ class VariableParser  extends PegParser
      * Parser rules and action for node 'Arrayelement'
      *
      *  Rule:
-     <node Arrayelement> <rule>  (  (  '.' (  iv:Id | value:Value ) ) | (  '[' value:Expr ']' ) )+ </rule>  <action _start> {
+    <node Arrayelement>
+            <rule>(('.' ( iv:Id | value:Value)) | ('['  value:Expr ']'))+</rule>
+            <action _start>
+            {
                 $result['node'] = $previous['node'];
-            } </action>  <action value> {
+            }
+            </action>
+            <action value>
+            {
                 $result['node']->addSubTree(array('type' => 'arrayelement', 'node' => $subres['node']) , 'suffix', true);
-            } </action>  <action iv> {
+            }
+            </action>
+            <action iv>
+            {
                 $node = new Node\Value\String($this->parser);
                 $result['node']->addSubTree(array('type' => 'arrayelement', 'node' => $node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']) , 'suffix', true));
-            } </action> </node> 
+            }
+            </action>
+        </node>
+
      *
     */
     public function matchNodeArrayelement($previous){
@@ -429,12 +468,12 @@ class VariableParser  extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         $this->Arrayelement___START($result, $previous);
-        // Start '(  (  '.' (  iv:Id | value:Value ) ) | (  '[' value:Expr ']' ) )+' min '1' max 'null'
+        // Start '( ( '.' ( iv:Id | value:Value)) | ( '[' value:Expr ']'))+' min '1' max 'null'
         $iteration0 = 0;
         do {
             // start option
             do {
-                // Start '(  '.' (  iv:Id | value:Value ) )' min '1' max '1'
+                // Start '( '.' ( iv:Id | value:Value))' min '1' max '1'
                 // start sequence
                 $backup2 = $result;
                 $pos2 = $this->parser->pos;
@@ -454,7 +493,7 @@ class VariableParser  extends PegParser
                     if (!$valid) {
                         break;
                     }
-                    // Start '(  iv:Id | value:Value )' min '1' max '1'
+                    // Start '( iv:Id | value:Value)' min '1' max '1'
                     // start option
                     do {
                         // Start 'iv:Id' tag 'iv' min '1' max '1'
@@ -494,7 +533,7 @@ class VariableParser  extends PegParser
                         break;
                     } while (true);
                     // end option
-                    // End '(  iv:Id | value:Value )'
+                    // End '( iv:Id | value:Value)'
                     if (!$valid) {
                         break;
                     }
@@ -507,11 +546,11 @@ class VariableParser  extends PegParser
                 }
                 unset($backup2);
                 // end sequence
-                // End '(  '.' (  iv:Id | value:Value ) )'
+                // End '( '.' ( iv:Id | value:Value))'
                 if ($valid) {
                     break;
                 }
-                // Start '(  '[' value:Expr ']' )' min '1' max '1'
+                // Start '( '[' value:Expr ']')' min '1' max '1'
                 // start sequence
                 $backup8 = $result;
                 $pos8 = $this->parser->pos;
@@ -571,7 +610,7 @@ class VariableParser  extends PegParser
                 }
                 unset($backup8);
                 // end sequence
-                // End '(  '[' value:Expr ']' )'
+                // End '( '[' value:Expr ']')'
                 if ($valid) {
                     break;
                 }
@@ -585,7 +624,7 @@ class VariableParser  extends PegParser
             }
             if (!$valid) break;
         } while (true);
-        // End '(  (  '.' (  iv:Id | value:Value ) ) | (  '[' value:Expr ']' ) )+'
+        // End '( ( '.' ( iv:Id | value:Value)) | ( '[' value:Expr ']'))+'
         if ($valid) {
             $result['_endpos'] = $this->parser->pos;
             $result['_endline'] = $this->parser->line;
@@ -617,19 +656,37 @@ class VariableParser  extends PegParser
      * Parser rules and action for node 'Object'
      *
      *  Rule:
-     <token Object> <rule>  (  addsuffix:(  '->' (  .iv:Id | .var:Variable ) method:Parameter? ) )+ </rule>  <action _start> {
+    <token Object>
+            <rule>(addsuffix:('->' ( .iv:Id | .var:Variable) method:Parameter?))+</rule>
+            <action _start>
+            {
                 $result['node'] = $previous['node'];
-            } </action>  <action iv> {
+            }
+            </action>
+            <action iv>
+            {
                 $node = new Node\Value\String($this->parser);
                 $node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
                 $result['name'] = $node;
-            } </action>  <action var> {
+            }
+            </action>
+            <action var>
+            {
                 $result['name'] = $subres['node'];
-            } </action>  <action method> {
+            }
+            </action>
+            <action method>
+            {
                 $result['method'] = $subres['node'];
-            } </action>  <action addsuffix> {
+            }
+            </action>
+            <action addsuffix>
+            {
                 $result['node']->addSubTree(array('type' => 'object', 'name' => $subres['name'], 'method' => isset($subres['method']) ? $subres['method'] : null) , 'suffix', true);
-            } </action> </token> 
+            }
+            </action>
+        </token>
+
      *
     */
     public function matchNodeObject($previous){
@@ -637,7 +694,7 @@ class VariableParser  extends PegParser
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         $this->Object___START($result, $previous);
-        // Start '(  addsuffix:(  '->' (  .iv:Id | .var:Variable ) method:Parameter? ) )+' tag 'addsuffix' min '1' max 'null'
+        // Start '( addsuffix:( '->' ( .iv:Id | .var:Variable) method:Parameter?))+' tag 'addsuffix' min '1' max 'null'
         $iteration0 = 0;
         do {
             // start sequence
@@ -659,7 +716,7 @@ class VariableParser  extends PegParser
                 if (!$valid) {
                     break;
                 }
-                // Start '(  .iv:Id | .var:Variable )' min '1' max '1'
+                // Start '( .iv:Id | .var:Variable)' min '1' max '1'
                 // start option
                 do {
                     // Start '.iv:Id' tag 'iv' min '1' max '1'
@@ -697,7 +754,7 @@ class VariableParser  extends PegParser
                     break;
                 } while (true);
                 // end option
-                // End '(  .iv:Id | .var:Variable )'
+                // End '( .iv:Id | .var:Variable)'
                 if (!$valid) {
                     break;
                 }
@@ -740,7 +797,7 @@ class VariableParser  extends PegParser
             }
             if (!$valid) break;
         } while (true);
-        // End '(  addsuffix:(  '->' (  .iv:Id | .var:Variable ) method:Parameter? ) )+'
+        // End '( addsuffix:( '->' ( .iv:Id | .var:Variable) method:Parameter?))+'
         if ($valid) {
             $result['_endpos'] = $this->parser->pos;
             $result['_endline'] = $this->parser->line;
