@@ -1,4 +1,7 @@
 <?php
+namespace Smarty\Resource\Cache\Extension;
+
+use Smarty\Exception\Magic;
 
 /**
  * Smarty Internal Plugin
@@ -12,7 +15,7 @@
  *
  * @package Smarty\Resource\Cache
  */
-class Smarty_Resource_Cache_Extension_Create extends Smarty_Exception_Magic
+class Create extends Magic
 {
 
     /**

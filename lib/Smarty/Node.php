@@ -1,17 +1,4 @@
 <?php
-/**
- * Smarty Compiler Node
- *
- * @package Smarty\Compiler
- * @author  Uwe Tews
- */
-
-/**
- * Smarty Compiler Node
- * Basic Parent Compiler Node
- *
- * @package Smarty\Compiler
- */
 namespace Smarty;
 
 use Smarty\Exception\Magic;
@@ -21,9 +8,9 @@ use Smarty\Compiler\Code;
 /**
  * Class Node
  *
- * @package Smarty\Nodes
+ * @package Smarty
  */
-class Node extends Magic
+class Node// extends Magic
 {
     /**
      * Node name
@@ -101,6 +88,7 @@ class Node extends Magic
 
     /**
      * node value
+     *
      * var mixed
      */
     public $value;
@@ -111,7 +99,15 @@ class Node extends Magic
      * @var Code
      */
     public $codeObj = null;
+
+    // TODO if this is needed
+    /**
+     * Flag that node is parsed
+     *
+     * @var bool
+     */
     public $isParsed = false;
+
     /**
      * Parser object
      *
@@ -119,31 +115,48 @@ class Node extends Magic
      */
     public $parser = null;
 
+    public $errors = array();
+
     /**
      * Constructor
      *
      * @param \Smarty\Parser $parser parser context object
+     * @param string|null           $name
      */
     function __construct(Parser $parser, $name = null)
     {
         $this->name = isset($name) ? $name : $this->name;
-        $this->ruleName = isset($this->ruleName) ? $this->ruleName : $this->name;
         $this->parser = $parser;
+        $this->ruleName = isset($this->ruleName) ? $this->ruleName : $this->name;
         $this->parserNode = isset($this->parserNode) ? $this->parserNode : $this->name;
         $this->compilerClass = isset($this->compilerClass) ? $this->compilerClass : $this->name;
         $this->setNodeAttributes($this->parser->getNodeAttributes($this->ruleName));
+        $this->sourceLineNo = $parser->line;
+        $this->sourceStartPos = $parser->pos;
     }
 
-    public function setNodeAttributes($attr)
+    /**
+     * Set all node attributes
+     *
+     * @param array $attributes
+     */
+    public function setNodeAttributes($attributes)
     {
-        if (isset($attr)) {
-            $this->nodeAttributes = $attr;
+        if (isset($attributes)) {
+            $this->nodeAttributes = $attributes;
         }
     }
 
-    public function getNodeAttribute($attribute)
+    /**
+     * Get node attribute by it's name
+     *
+     * @param string $attributeName
+     *
+     * @return bool
+     */
+    public function getNodeAttribute($attributeName)
     {
-        return isset($this->nodeAttributes['attributes'][$attribute]) ? $this->nodeAttributes['attributes'][$attribute] : false;
+        return isset($this->nodeAttributes['attributes'][$attributeName]) ? $this->nodeAttributes['attributes'][$attributeName] : false;
     }
 
     /**
@@ -162,6 +175,11 @@ class Node extends Magic
     /**
      * Set trace info
      *
+     * @param int|null $line
+     * @param string|null $text
+     * @param int|null $startPos
+     * @param int|null $endPos
+     *
      * @return Node  $this
      */
     public function setTraceInfo($line = null, $text = null, $startPos = null, $endPos = null)
@@ -172,8 +190,13 @@ class Node extends Magic
         $this->sourceEndPos = $endPos;
         return $this;
     }
+
     /**
      * Add subtree node
+     *
+     * @param Node $node  Node object or array of objects
+     * @param string|null $name if set name of subtree
+     * @param bool $multiple
      *
      * @return Node  $this
      */
@@ -205,7 +228,9 @@ class Node extends Magic
     /**
      * Load source into parser
      *
-     * @return mixed
+     * @param string $source
+     *
+     * @return $this
      */
     public function setSource($source)
     {
@@ -213,10 +238,13 @@ class Node extends Magic
         return $this;
     }
 
+    public function addError($error) {
+        $this->errors = array_merge($this->errors, $error);
+    }
     /**
      * Call parser
      *
-     * @return mixed
+     * @return $this
      */
     public function parse()
     {
@@ -225,6 +253,17 @@ class Node extends Magic
         return $this;
     }
 
+    /**
+     * Call compiler for this node
+     *
+     * @param Code $codeTargetObj
+     * @param bool $delete
+     *
+     * @return Code
+     * @throws Exception
+     * @throws NodeCompilerClassNotFound
+     * @throws \Exception
+     */
     public function compile(Code $codeTargetObj = null, $delete = true)
     {
         if (!isset($codeTargetObj) && !isset($this->codeObj)) {

@@ -99,6 +99,7 @@ function smarty_block_textformat($params, $content, $tpl_obj, &$repeat)
 
     if ($assign) {
         $tpl_obj->assign($assign, $_output);
+        return;
     } else {
         return $_output;
     }

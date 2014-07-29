@@ -3,17 +3,25 @@
 Namespace Smarty\Tool\Parser\Peg\Nodes;
 
 /**
- * Class Node
+ * Class Text
  *
  * @package Smarty\Tool\Parser\Peg\Nodes
  */
 class Text
 {
+    /**
+     * @var string
+     */
     public $type = 'text';
+    /**
+     * @var string
+     */
     public $name = 'Text';
 
     /**
-     * @return mixed
+     * Compile returns just the plain text
+     *
+     * @return string
      */
     public function compile()
     {

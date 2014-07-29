@@ -1,18 +1,12 @@
 <?php
-
-/**
- * Smarty Resource Compiled File Plugin
- *
- * @package Smarty\Resource\Compiled * @author Uwe Tews
- */
 namespace Smarty\Resource\Compiled;
 
 use Smarty\Template\Context;
 
 /**
- * Smarty Resource Compiled File Plugin
- * Meta Data Container for Compiled Template Files
-
+ * Class File
+ *
+ * @package Smarty\Resource\Compiled
  */
 class File //extends Smarty_Exception_Magic
 {

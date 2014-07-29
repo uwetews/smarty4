@@ -14,8 +14,8 @@ class TemplateParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-29 20:34:38
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Target/Language/Php/Parser/Template.peg.inc' dated 2014-06-28 02:53:31
+     * Parser generated on 2014-07-18 00:01:59
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Target/Language/Php/Parser/Template.peg.inc' dated 2014-07-16 23:45:52
      *
     */
 
@@ -73,8 +73,9 @@ class TemplateParser extends PegParser
 
      *
     */
-    public function matchNodeTemplate($previous){
+    public function matchNodeTemplate($previous, &$errorResult){
         $result = $this->parser->resultDefault;
+        $error = array();
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         $this->Template___START($result, $previous);
@@ -83,29 +84,40 @@ class TemplateParser extends PegParser
         $backup1 = $result;
         $pos1 = $this->parser->pos;
         $line1 = $this->parser->line;
+        $error1 = $error;
+        $this->parser->addBacktrace(array('_s1_', ''));
         do {
+            $error = array();
             // Start '.Bom?' min '0' max '1'
-            $this->parser->addBacktrace(array('Bom', $result));
-            $subres = $this->parser->matchRule($result, 'Bom');
+            $error = array();
+            $this->parser->addBacktrace(array('Bom', ''));
+            $subres = $this->parser->matchRule($result, 'Bom', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Bom',  $subres));
+                $this->parser->successNode(array('Bom',  $subres['_text']));
                 $valid = true;
             } else {
                 $valid = false;
                 $this->parser->failNode($remove);
             }
+            if (!$valid) {
+                $this->parser->logOption($errorResult, 'Template', $error);
+            }
             $valid = true;
             // End '.Bom?'
             if (!$valid) {
+                $this->parser->matchError($error1, 'SequenceElement', $error);
+                $error = $error1;
                 break;
             }
+            $error = array();
             // Start 'nodes:Body?' tag 'nodes' min '0' max '1'
-            $this->parser->addBacktrace(array('Body', $result));
-            $subres = $this->parser->matchRule($result, 'Body');
+            $error = array();
+            $this->parser->addBacktrace(array('Body', ''));
+            $subres = $this->parser->matchRule($result, 'Body', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Body',  $subres));
+                $this->parser->successNode(array('Body',  $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $this->Template_nodes($result, $subres);
                 $valid = true;
@@ -113,116 +125,138 @@ class TemplateParser extends PegParser
                 $valid = false;
                 $this->parser->failNode($remove);
             }
+            if (!$valid) {
+                $this->parser->logOption($errorResult, 'Template', $error);
+            }
             $valid = true;
             // End 'nodes:Body?'
             if (!$valid) {
+                $this->parser->matchError($error1, 'SequenceElement', $error);
+                $error = $error1;
                 break;
             }
+            $error = array();
             // Start 'Unexpected?' min '0' max '1'
-            $this->parser->addBacktrace(array('Unexpected', $result));
-            $subres = $this->parser->matchRule($result, 'Unexpected');
+            $error = array();
+            $this->parser->addBacktrace(array('Unexpected', ''));
+            $subres = $this->parser->matchRule($result, 'Unexpected', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Unexpected',  $subres));
+                $this->parser->successNode(array('Unexpected',  $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
                 $valid = false;
                 $this->parser->failNode($remove);
             }
+            if (!$valid) {
+                $this->parser->logOption($errorResult, 'Template', $error);
+            }
             $valid = true;
             // End 'Unexpected?'
             if (!$valid) {
+                $this->parser->matchError($error1, 'SequenceElement', $error);
+                $error = $error1;
                 break;
             }
             break;
         } while (true);
+        $remove = array_pop($this->parser->backtrace);
         if (!$valid) {
+            $this->parser->failNode($remove);
             $this->parser->pos = $pos1;
             $this->parser->line = $line1;
             $result = $backup1;
+        } else {
+            $this->parser->successNode($remove);
+            }
+            $error = $error1;
+            unset($backup1);
+            // end sequence
+            // End 'Template'
+            if ($valid) {
+                $result['_endpos'] = $this->parser->pos;
+                $result['_endline'] = $this->parser->line;
+            }
+            if (!$valid) {
+                $result = false;
+                $this->parser->matchError($errorResult, 'token', $error, 'Template');
+            }
+            return $result;
         }
-        unset($backup1);
-        // end sequence
-        // End 'Template'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
+
+        public function Template___START (&$result, $previous) {
+            $result['node'] = new Node\Template($this->parser, $result);
         }
-        if (!$valid) {
-            $result = false;
+
+
+        public function Template_nodes (&$result, $subres) {
+            $result['node']->templateBodyNode = $subres['node'];
+            $result['node']->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+            $result['node']->templateBodyNode->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
         }
-        return $result;
-    }
-
-    public function Template___START (&$result, $previous) {
-        $result['node'] = new Node\Template($this->parser, $result);
-    }
 
 
-    public function Template_nodes (&$result, $subres) {
-        $result['node']->templateBodyNode = $subres['node'];
-        $result['node']->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-        $result['node']->templateBodyNode->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-    }
-
-
-    /**
-     *
-     * Parser rules and action for node 'Bom'
-     *
-     *  Rule:
-    <node Bom>
-                 <rule>/\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/</rule>
+        /**
+         *
+         * Parser rules and action for node 'Bom'
+         *
+         *  Rule:
+        <node Bom>
+                 <rule>/^(\xEF\xBB\xBF)|(\xFE\xFF)|(\xFF\xFE)/</rule>
              </node>
 
-     *
-    */
-    public function matchNodeBom($previous){
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start '/\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/' min '1' max '1'
-        $regexp = "/\\xEF\\xBB\\xBF|\\xFE\\xFF|\\xFF\\xFE/";
-        $pos = $this->parser->pos;
-        if (isset($this->parser->regexpCache['Bom2'][$pos])) {
-            $subres = $this->parser->regexpCache['Bom2'][$pos];
-        } else {
-            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                if ($subres['_startpos'] != $pos) {
-                    $this->parser->regexpCache['Bom2'][$subres['_startpos']] = $subres;
+         *
+        */
+        public function matchNodeBom($previous, &$errorResult){
+            $result = $this->parser->resultDefault;
+            $error = array();
+            $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
+            $result['_lineno'] = $this->parser->line;
+            // Start '/^(\xEF\xBB\xBF)|(\xFE\xFF)|(\xFF\xFE)/' min '1' max '1'
+            $regexp = "/^(\\xEF\\xBB\\xBF)|(\\xFE\\xFF)|(\\xFF\\xFE)/";
+            $pos = $this->parser->pos;
+            if (isset($this->parser->regexpCache['Bom2'][$pos])) {
+                $subres = $this->parser->regexpCache['Bom2'][$pos];
+            } else {
+                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
+                    $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
+                    if ($subres['_startpos'] != $pos) {
+                        $this->parser->regexpCache['Bom2'][$subres['_startpos']] = $subres;
+                        $this->parser->regexpCache['Bom2'][$pos] = false;
+                        $subres = false;
+                    }
+                } else {
                     $this->parser->regexpCache['Bom2'][$pos] = false;
                     $subres = false;
                 }
-            } else {
-                $this->parser->regexpCache['Bom2'][$pos] = false;
-                $subres = false;
             }
-        }
-        if ($subres) {
-            $subres['_lineno'] = $this->parser->line;
-            $this->parser->pos = $subres['_endpos'];
-            $this->parser->line += substr_count($subres['_text'], "\n");
-            $subres['_tag'] = false;
-            $subres['_name'] = 'Bom';
-            $valid = true;
-        } else {
-            $valid = false;
-        }
-        if ($valid) {
-            $result['_text'] .= $subres['_text'];
-        }
-        // End '/\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
+            if ($subres) {
+                $subres['_lineno'] = $this->parser->line;
+                $this->parser->pos = $subres['_endpos'];
+                $this->parser->line += substr_count($subres['_text'], "\n");
+                $subres['_tag'] = false;
+                $subres['_name'] = 'Bom';
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            if ($valid) {
+                $result['_text'] .= $subres['_text'];
+                } else {
+                    $this->parser->matchError($error, 'rx', "/^(\\xEF\\xBB\\xBF)|(\\xFE\\xFF)|(\\xFF\\xFE)/");
+                }
+                // End '/^(\xEF\xBB\xBF)|(\xFE\xFF)|(\xFF\xFE)/'
+                if ($valid) {
+                    $result['_endpos'] = $this->parser->pos;
+                    $result['_endline'] = $this->parser->line;
+                }
+                if (!$valid) {
+                    $result = false;
+                    $this->parser->matchError($errorResult, 'token', $error, 'Bom');
+                }
+                return $result;
+            }
 
 
 }

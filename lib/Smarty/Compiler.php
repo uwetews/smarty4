@@ -63,7 +63,11 @@ class Compiler extends Magic
     public static $_tag_objects = array();
     public $baseDir = '';
     public $compilerConfig = null;
+    public $compilerConfigXml = null;
     public $smartyConfig = null;
+    public $sourceConfig = null;
+    public $sourceConfigXML = null;
+    public $targetConfig = null;
     public $context = null;
     /**
      * @var array
@@ -291,16 +295,20 @@ class Compiler extends Magic
         $this->context = $context;
 
         $this->smartyConfig = $context->smarty->smartyConfig;
-
         $file = __DIR__ . '/CompilerConfig.xml';
         if (is_file($file)) {
-            $this->compilerConfig = simplexml_load_file($file);
+            $this->compilerConfigXml = simplexml_load_file($file);
         } else {
             throw new NoConfigFile($file);
         }
-        $this->baseDir = !empty($this->compilerConfig->baseDir) ? (string) $this->compilerConfig->baseDir : __DIR__;
-
-        // make sure that we don't run into backtrack limit errors
+        {
+            $this->compilerConfig = $this->context->smarty->simpleXMLToArray($this->compilerConfigXml->compiler, 'param');
+            $this->baseDir = !empty($this->compilerConfig->baseDir) ? (string) $this->compilerConfig->baseDir : __DIR__;
+            $this->sourceConfig['rootDir'] = $this->baseDir . $this->compilerConfig['source']['rootDir'];
+            $this->sourceConfigXML = simplexml_load_file($this->sourceConfig['rootDir'] . $this->compilerConfig['source']['configFile']);
+            $this->sourceConfig = array_merge($this->sourceConfig, $this->context->smarty->simpleXMLToArray($this->sourceConfigXML, 'param'));
+        }
+         // make sure that we don't run into backtrack limit errors
         ini_set('pcre.backtrack_limit', - 1);
     }
 
@@ -403,7 +411,7 @@ class Compiler extends Magic
      * @throws ParserClassNotFound
      * @return \Smarty\Node
      */
-    public function instanceNode($nodeName, Context $context = null, $parser = null, $tokenName = null, $ruleGroups = self::ALL)
+    public function instanceNode($nodeName, Context $context = null, $parser = null, $tokenName = null, $quiet = false, $ruleGroups = self::ALL)
     {
         $tokenName = isset($tokenName)  ? $tokenName : $nodeName;
         $context = isset($context) ? $context : $this->context;
@@ -427,9 +435,9 @@ class Compiler extends Magic
                     }
                 }
                 if ($groups | self::SOURCE == self::SOURCE) {
-                    $classArray[] = "Smarty\Compiler\Source\Language\\{$context->getSourceLanguage()}\Node\\";
+                    $classArray[] = "Smarty\Parser\Source\Language\\{$context->getSourceLanguage()}\Node\\";
                     if ($groups | self::SHARED == self::SHARED) {
-                        $classArray[] = "Smarty\Compiler\Source\Shared\Node\\";
+                        $classArray[] = "Smarty\Parser\Source\Shared\Node\\";
                     }
                 }
                 if ($groups | self::COMMON == self::COMMON) {
@@ -447,8 +455,11 @@ class Compiler extends Magic
                 return new $nodeClass($parser, $tokenName);
             }
         }
-
-        throw new NodeClassNotFound($nodeName, 0, $this->context);
+        if ($quiet) {
+            return false;
+        } else {
+            throw new NodeClassNotFound($nodeName, 0, $this->context);
+        }
     }
 
     /**
@@ -1040,4 +1051,5 @@ class Compiler extends Magic
     {
         return '_SmartyTemplate_' . str_replace(array('.', ','), '_', uniqid('', true));
     }
+
 }

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Smarty Internal Plugin Compile Foreach
- * Compiles the {foreach} {foreachelse} {/foreach} tags
- *
- * @package Compiler
- * @author  Uwe Tews
- */
 namespace Smarty\Compiler\Target\Language\Php\Compiler;
 
 use Smarty\Node;
@@ -14,9 +7,9 @@ use Smarty\Compiler\Code;
 use Smarty\Exception\Magic;
 
 /**
- * Smarty Internal Plugin Compile Foreach Class
+ * Class TagForeach
  *
- * @package Compiler
+ * @package Smarty\Compiler\Target\Language\Php\Compiler
  */
 class TagForeach extends Magic
 {
@@ -71,12 +64,12 @@ class TagForeach extends Magic
          */
 
         // compile tag
-        $item = self::getCompiledItem($node, $node->tagAttributes['item']->nameSegments);
+        $item = self::getCompiledVariable($node, $node->tagAttributes['item']->nameSegments);
         $codeTargetObj->lineNo($node->sourceLineNo)
             ->code("\$_scope->_tpl_vars->{$item} = new Entry;\n")
             ->code("\$_scope->_tpl_vars->{$item}->_loop = false;\n");
         if (isset($node->tagAttributes['key'])) {
-            $key = self::getCompiledItem($node, $node->tagAttributes['key']->nameSegments);
+            $key = self::getCompiledVariable($node, $node->tagAttributes['key']->nameSegments);
             $codeTargetObj->code("\$_scope->_tpl_vars->{$key} = new Entry;\n")
                 ->code("\$_scope->_tpl_vars->{$key}->_loop = false;\n");
         } else {
@@ -199,7 +192,15 @@ class TagForeach extends Magic
         }
     }
 
-    public static function getCompiledItem($node, $item)
+    /**
+     * Compile code for 'key' or 'item' variable
+     *
+     * @param Node $node
+     * @param Node $item
+     *
+     * @return string
+     */
+    public static function getCompiledVariable(Node $node, Node $item)
     {
         $comp = new Code($node);
         $comp->compileNodeItems($item, false);

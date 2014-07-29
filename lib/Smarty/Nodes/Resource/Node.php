@@ -2,6 +2,7 @@
 namespace Smarty\Nodes\Resource;
 
 use Smarty\Compiler\Php\Format;
+use Smarty\Parser;
 
 /**
  * Class Node
@@ -81,7 +82,7 @@ class Node extends Format
      *                         return new  $parser parser context object
      * @param string $nodeType node type
      */
-    function __construct(\Smarty\Parser $parser, $nodeType)
+    function __construct(Parser $parser, $nodeType)
     {
         parent::__construct($parser, $nodeType);
     }

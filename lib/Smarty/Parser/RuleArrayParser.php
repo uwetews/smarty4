@@ -19,7 +19,14 @@ class RuleArrayParser
      *
      * @var Parser
      */
-    private  $parser = null;
+    private $parser = null;
+
+    /**
+     * Index for temporary variables
+     *
+     * @var int
+     */
+    private $index = 0;
 
     /**
      * Constructor
@@ -34,9 +41,9 @@ class RuleArrayParser
     /**
      * Get rule definition as array
      *
-     * @param  string $ruleName  rule name
+     * @param  string $ruleName rule name
      *
-
+     * @throws Exception\NoRule
      * @return mixed
      */
     public function getRuleAsArray($ruleName)
@@ -45,7 +52,7 @@ class RuleArrayParser
         if (isset($this->parser->rules[$ruleName])) {
             $rule = $this->parser->rules[$ruleName];
         } else {
-            throw new NoRule($ruleName, 0, $this->context);
+            throw new NoRule($ruleName, 0, $this->parser->context);
         }
         if (is_array($rule)) {
             $rule['_ruleParser'] = $pegParser;
@@ -57,170 +64,263 @@ class RuleArrayParser
     }
 
     /**
-     * Rule result array initialization
+     * Match token rule
      *
-     * @param array     $result
-     * @param null|array $previous optional result array of calling rule
+     * @param array  $previous    previous result array
+     * @param string $ruleName    rule name
+     * @param array  $errorResult error array
+     *
+     * @throws Exception\NoRule
+     * @return bool|array  result array or false if match failed
      */
-    public function ruleStart(&$result, $previous = null)
+    public function matchArrayRule(&$result, $ruleName, &$errorResult)
     {
-        if (!isset($result['_parser'])) {
-            $result['_parser'] = $this;
-        }
-        $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        if (isset($result['_actions']['_start'])) {
-            foreach ($result['_actions']['_start'] as $method => $foo) {
-                $callback = array($result['_ruleParser'], $method);
-                call_user_func_array($callback, array(&$result, $previous));
+        $this->index = 0;
+        $rule = $this->buildParams($this->getRuleAsArray($ruleName));
+        $this->parser->addBacktrace(array($ruleName, ''));
+        $error = array();
+        // TODO  get hash attribute
+        //$hash = $this->parser->getAttribute($rule['_name'], 'hash');
+        $hash = false;
+        $wasHashed = false;
+        if ($hash) {
+            if (isset($this->parser->packCache[$this->parser->pos][$rule['_name']])) {
+                $wasHashed = true;
+                $subres = $this->parser->packCache[$this->parser->pos][$rule['_name']];
+                $error = $this->parser->errorCache[$this->parser->pos][$rule['_name']];
+                if ($subres) {
+                    $this->parser->pos = $subres['_endpos'];
+                    $this->parser->line = $subres['_endline'];
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    $this->parser->matchError($errorResult, 'token', $error, $rule['_name']);
+                }
             }
         }
+        if (!$wasHashed) {
+            $subres = $this->parser->resultDefault;
+            $pos0 = $subres['_startpos'] = $subres['_endpos'] = $this->parser->pos;
+            $subres['_lineno'] = $this->parser->line;
+            if (isset($rule['_actions']['_start'])) {
+                foreach ($rule['_actions']['_start'] as $method => $foo) {
+                    $rule['_ruleParser']->{$method}($subres, $result);
+                }
+            }
+
+            if (isset($rule['_actions'])) {
+                $subres['_actions'] = $rule['_actions'];
+                $subres['_ruleParser'] = $rule['_ruleParser'];
+            }
+            $valid = $this->matchArrayToken($subres, $rule, $error);
+            if ($valid) {
+                $subres['_endpos'] = $this->parser->pos;
+                $subres['_endline'] = $this->parser->line;
+                if (isset($rule['_actions']['_finish'])) {
+                    foreach ($rule['_actions']['_finish'] as $method => $foo) {
+                        if ($result !== false) {
+                            $rule['_ruleParser']->{$method}($subres);
+                        }
+                    }
+                }
+            } else {
+                $subres = false;
+            }
+            if ($hash) {
+                $this->parser->packCache[$pos0][$rule['_name']] = $subres;
+                $this->parser->errorCache[$pos0][$rule['_name']] = $error;
+            }
+        }
+        $remove = array_pop($this->parser->backtrace);
+        if ($valid) {
+            if (!$rule['_pla']) {
+                $this->parser->successNode(array($ruleName, $subres['_text']));
+            }
+            $this->ruleArrayAction($result, $subres);
+            if ($rule['_nla']) {
+                $valid = false;
+            } else {
+                $valid = true;
+            }
+        } else {
+            if ($rule['_nla']) {
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            $this->parser->failNode($remove);
+            $this->parser->matchError($errorResult, 'token', $error, $ruleName);
+        }
+        return ($valid) ? $result : false;
+
     }
 
     /**
      * Match token rule observing all parameter
      *
      * @param array $result result array
-     * @param array $params rule parameter array
+     * @param array $rule   rule parameter array
+     * @param array $error  error array
      *
      * @return bool
      */
-    public function matchRuleArray(&$result, $params)
+    public function matchArrayToken(&$result, $rule, &$error)
     {
-        $iteration = 0;
-        if ($params['_pla'] || $params['_nla']) {
+        $index = $this->index ++;
+        if ($rule['_pla'] || $rule['_nla']) {
             $backup = $result;
+            $pos = $this->parser->pos;
+            $line = $this->parser->line;
+        } else {
+            if ($rule['_min'] == 0 && $rule['_max'] == 1) {
+                $error = array();
+            }
         }
-        $pos = $this->parser->pos;
-        $line = $this->parser->line;
+        $iteration = 0;
         do {
-            $a = substr($this->parser->source, $this->parser->pos, 30);
-            $valid = $this->matchTokenArray($result, $params);
-            if ($params['_pla'] || $params['_nla']) {
+            switch ($rule['_type']) {
+                case 'recurse':
+                    $subres = $this->parser->matchRule($result, $rule['_param'], $error);
+                    $result = $subres;
+                    $valid = !!$subres;
+                    //                    $valid =  $this->matchArrayRecurse($result, $rule, $error);
+                    break;
+                case 'rx':
+                    $rx = isset($this->parser->rxCache[$rule['_param']]) ? $this->parser->rxCache[$rule['_param']] : $this->parser->rxCache[$rule['_param']] = new RxMatchOld($rule, $this->parser, $this);
+                    $valid = $rx->matchRx($result, $rule);
+                    break;
+                case 'option':
+                    $valid = $this->matchArrayOption($result, $rule, $error);
+                    break;
+                case 'sequence':
+                    $valid = $this->matchArraySequence($result, $rule, $error);
+                    break;
+                case 'whitespace':
+                    $valid = $this->matchArrayWhitespace($result, $rule, $error);
+                    break;
+                case 'literal':
+                    $valid = $this->matchArrayLiteral($result, $rule, $error);
+                    break;
+                case 'expression':
+                    $valid = $this->matchArrayExpression($result, $rule, $error);
+                    break;
+                default:
+                    //TODO
+                    $valid = false;
+                    break;
+            }
+            //        $this->php("\$valid = {$neg}\$this->parser->matchToken(\$result, \$rule);\n");
+            if ($rule['_pla'] || $rule['_nla']) {
                 $this->parser->pos = $pos;
                 $this->parser->line = $line;
                 $result = $backup;
+                unset($backup);
+            } else {
+                //$this->php("\$result['_endpos'] = \$this->parser->pos;\n");
             }
-            if ($params['_nla']) {
-                $valid = !$valid;
-            }
-            if ($valid) {
-                $iteration ++;
-            }
-            if ($valid && $params['_max'] != null && $iteration == $params['_max']) {
-                break;
-            }
-            if (!$valid && $iteration >= $params['_min']) {
-                $valid = true;
-                break;
-            }
-            if (!$valid) {
+            if ($rule['_loop']) {
+                $iteration = $valid ? ($iteration + 1) : $iteration;
+                if ($rule['_max'] !== null) {
+                    if ($valid && $iteration == $rule['_max']) {
+                        break;
+                    }
+                }
+                if (!$valid && $iteration >= $rule['_min']) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) {
+                    break;
+                }
+            } else {
                 break;
             }
         } while (true);
-        return $valid;
-    }
 
-    /**
-     * Match rule token by its type
-     *
-     * @param array $result   result array
-     * @param array $params   rule parameter array
-     *
-     * @return bool  result of match
-     */
-    public function matchTokenArray(&$result, $params)
-    {
-        switch ($params['_type']) {
-            case 'recurse':
-                return $this->matchRecurseArray($result, $params);
-                break;
-            case 'rx':
-                $rx = isset($this->parser->rxCache[$params['_param']]) ? $this->parser->rxCache[$params['_param']] : $this->parser->rxCache[$params['_param']] = new RxMatchOld($params, $this->parser, $this);
-                return $rx->matchRx($result, $params);
-                break;
-            case 'option':
-                return $this->matchOptionArray($result, $params);
-                break;
-            case 'sequence':
-                return $this->matchSequenceArray($result, $params);
-                break;
-            case 'whitespace':
-                return $this->matchWhitespaceArray($result, $params);
-                break;
-            case 'literal':
-                return $this->matchLiteralArray($result, $params);
-                break;
-            case 'expression':
-                return $this->matchExpressionArray($result, $params);
-                break;
-            default:
-                //TODO
-                return false;
-                break;
+        if ($rule['_min'] == 0 && $rule['_max'] == 1) {
+            if (!($rule['_pla'] || $rule['_nla'])) {
+                if (!$valid) {
+                    $this->parser->logOption($errorResult, $rule['_name'], $error);
+                }
+            }
+            $valid = true;
         }
+        return $valid;
     }
 
     /**
      * Match Token by its node name
      *     *
      *
-     * @param array     $result result array
-     * @param array $params rule parameter array
+     * @param array $result result array
+     * @param array $rule   rule parameter array
+     * @param array $error  error array
      *
      * @return bool result of match
      */
-    public function matchRecurseArray(&$result, $params)
+    public function matchArrayRecurse(&$result, $rule, &$error)
     {
-        $subres = array_merge($this->parser->resultDefault, $this->getRuleAsArray($params['_param']));
-        $newParams = $this->parser->buildParams($subres);
 
-        $this->parser->backtrace[] = $subres;
-        $hashed = isset($subres['_attr']['hash']);
-        $pos = $this->parser->pos;
-        $hashvalid = false;
-        if ($hashed && isset($this->parser->packCache[$pos][$subres['_name']])) {
-            $subres = $this->parser->packCache[$pos][$subres['_name']];
-            $hashvalid = $valid = !(false === $subres);
-            if ($hashvalid) {
-                $subres['_tag'] = $params['_tag'];
-                $this->parser->pos = $subres['_endpos'];
-            }
-        } else {
-            $this->ruleStart($subres, $result);
-            $subres['_tag'] = $params['_tag'];
-            $valid = ($newParams['_extended']) ? $this->matchRuleArray($subres, $newParams) : $this->matchTokenArray($subres, $newParams);
-            if ($hashed) {
-                if ($valid) {
-                    $this->parser->packCache[$pos][$subres['_name']] = $subres;
-                } else {
-                    $this->parser->packCache[$pos][$subres['_name']] = false;
-                }
-            }
-        }
+        $this->parser->addBacktrace(array($rule['_param'], ''));
+        $subres = $this->parser->matchRule($result, $rule['_param'], $error);
         $remove = array_pop($this->parser->backtrace);
-        if ($valid) {
-            $this->parser->successNode($subres);
-            if ($subres['_silent'] < 2) {
-                if (!$hashvalid && isset($subres['_actions']['_finish'])) {
-                    foreach ($subres['_actions']['_finish'] as $method => $foo) {
-                        $callback = array($subres['_ruleParser'], $method);
-                        call_user_func_array($callback, array(&$subres));
-                        if ($subres === false) {
-                            return false;
-                        }
-                    }
-                }
-                $this->ruleMatchArray($result, $subres);
+        if ($subres) {
+            if (!$rule['_pla']) {
+                $this->parser->successNode(array($rule['_param'], $subres['_text']));
+            }
+            $this->ruleArrayAction($result, $subres);
+            if ($rule['_nla']) {
+                $valid = false;
             } else {
-                $result['_endpos'] = $this->parser->pos;
+                $valid = true;
             }
         } else {
+            if ($rule['_nla']) {
+                $valid = true;
+            } else {
+                $valid = false;
+            }
             $this->parser->failNode($remove);
         }
         return $valid;
     }
 
+    /**
+     * Match Token by its node name
+     *     *
+     *
+     * @param array $result result array
+     * @param array $rule   rule parameter array
+     * @param array $error  error array
+     *
+     * @return bool result of match
+     */
+    public function matchArrayRecursex(&$result, $rule, &$error)
+    {
+
+        $this->parser->addBacktrace(array($rule['_param'], ''));
+        $subres = $this->parser->matchRule($result, $rule['_param'], $error);
+        $remove = array_pop($this->parser->backtrace);
+        if ($subres) {
+            if (!$rule['_pla']) {
+                $this->parser->successNode(array($rule['_param'], $subres['_text']));
+            }
+            $this->ruleArrayAction($result, $subres);
+            if ($rule['_nla']) {
+                $valid = false;
+            } else {
+                $valid = true;
+            }
+        } else {
+            if ($rule['_nla']) {
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            $this->parser->failNode($remove);
+        }
+        return $valid;
+    }
 
     /**
      * Calls store actions on matching rules
@@ -228,22 +328,13 @@ class RuleArrayParser
      * @param array $result result array
      * @param array $subres result array of matched token
      */
-    public function ruleMatchArray(&$result, $subres)
+    public function ruleArrayAction(&$result, $subres)
     {
         $result['_endpos'] = $this->parser->pos;
         if ($subres['_silent'] == 0) {
             $result['_text'] .= $subres['_text'];
         }
         $storetag = (isset($subres['_tag']) && !empty($subres['_tag'])) ? $subres['_tag'] : false;
-        // TODO
-        if (false && $this->parser->trace) {
-            $backlinks = $this->parser->getBacklinks();
-            fprintf($this->parser->traceFile, "%sParser Match [", $this->parser->tracePrompt);
-            foreach ($backlinks as $bl) {
-                fprintf($this->parser->traceFile, "%s ", $bl['_name']);
-            }
-            fprintf($this->parser->traceFile, "= %s]\n", $subres['_name']);
-        }
 
         /**
          * if ($storetag) {
@@ -312,142 +403,232 @@ class RuleArrayParser
          */
     }
 
-
     /**
      * Match optional tokens
      *
-     * @param array $result result array
-     * @param array $params rule parameter array
+     * @param array $result      result array
+     * @param array $rule        rule parameter array
+     * @param array $resultError error array
      *
      * @return bool result of match
      */
-    public function matchOptionArray(&$result, $params)
+    public function matchArrayOption(&$result, $rule, &$resultError)
     {
         $backup = $result;
         $pos = $this->parser->pos;
         $line = $this->parser->line;
-        $count = count($params['_param']);
+        $count = count($rule['_param']);
         $loop = 0;
+        $resultOptionError = array();
+        $index = $this->index ++;
+        $this->parser->addBacktrace(array('_o{$index}_', ''));
         do {
-            $newParams = $this->parser->buildParams($params['_param'][$loop]);
-            $valid = ($newParams['_extended']) ? $this->matchRuleArray($result, $newParams) : $this->matchTokenArray($result, $newParams);
+            //TODO
+            $error = array();
+            $ruleOption = $this->buildParams($rule['_param'][$loop]);
+            if (isset($rule['_actions'])) {
+                $ruleOption['_actions'] = $rule['_actions'];
+            }
+            $ruleOption['_name'] = $rule['_name'];
+            array_pop($this->parser->backtrace);
+            $this->parser->addBacktrace(array("_o{$index}:{$loop}_", ''));
+            $valid = $this->matchArrayToken($result, $ruleOption, $error);
             if ($valid) {
-                return true;
+                $this->parser->successNode(array_pop($this->parser->backtrace));
+                if ($ruleOption['_nla']) {
+                    $this->parser->shouldNotMatchError($error{$index}, $ruleOption['_name'], $error);
+                }
+                break;
+            } else {
+                $this->parser->logOption($resultOptionError, $ruleOption['_name'], $error);
+            }
+            if ($ruleOption['_nla']) {
+                $this->parser->matchError($resultError, 'Option', $resultOptionError);
             }
             $loop ++;
+            if ($loop == $count) {
+                array_pop($this->parser->backtrace);
+                break;
+            }
         } while ($loop < $count);
+        if ($ruleOption['_nla']) {
+            $valid = !$valid;
+        }
         $this->parser->pos = $pos;
         $this->parser->line = $line;
         $result = $backup;
-        return false;
+        return $valid;
     }
 
     /**
      * Match sequence of tokens
      *
      * @param array $result result array
-     * @param array $params rule parameter array
+     * @param array $rule   rule parameter array
      *
      * @return bool result of match
      */
-    public function matchSequenceArray(&$result, $params)
+    public function matchArraySequence(&$result, $rule, &$resultError)
     {
+        $index = $this->index ++;
         $backup = $result;
         $pos = $this->parser->pos;
         $line = $this->parser->line;
-        $count = count($params['_param']);
+        $resultSequenceError = array();
+        $count = count($rule['_param']);
         $loop = 0;
+        $index = $this->index ++;
+        $this->parser->addBacktrace(array("_s{$index}_", ''));
         do {
-            $newParams = $this->parser->buildParams($params['_param'][$loop]);
-            $valid = ($newParams['_extended']) ? $this->matchRuleArray($result, $newParams) : $this->matchTokenArray($result, $newParams);
+            $error = array();
+            $ruleSequence = $this->buildParams($rule['_param'][$loop]);
+            /**
+             * if (isset($rule['_actions'])) {
+             * $ruleSequence['_actions'] = $rule['_actions'];
+             * }
+             * */
+            $ruleSequence['_name'] = $rule['_name'];
+            $valid = $this->matchArrayToken($result, $ruleSequence, $error);
             if ($valid === false) {
-                $this->parser->pos = $pos;
-                $this->parser->line = $line;
-                $result = $backup;
-                return false;
+                $this->parser->matchError($resultError, 'SequenceElement', $error);
+                break;
+            } else {
+                if ($ruleSequence['_nla']) {
+                    $this->parser->shouldNotMatchError($resultError, 'SequenceElement', $error);
+                }
             }
             $loop ++;
         } while ($loop < $count);
-       if ($params['_tag']) {
-            $result['_tag'] = $params['_tag'];
-            $this->ruleMatchArray($backup, $result);
+        if ($rule['_tag']) {
+            $result['_tag'] = $rule['_tag'];
+            $this->ruleArrayAction($backup, $result);
             $result = $backup;
         }
-        return true;
+        return $valid;
     }
 
     /**
      * Match whitespace token
      *
-     * @param array $result result array
-     * @param array $params rule parameter array ($params['_param'] == true is optional)
+     * @param array  $result result array
+     * @param array  $rule   rule parameter array ($rule['_param'] == true is optional)
+     * @param  array $error  error array
      *
      * @return bool result of match
      */
-    public function matchWhitespaceArray(&$result, $params)
+    public function matchArrayWhitespace(&$result, $rule, &$error)
     {
         if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-            $result['_text'] .= ' ';
-            $this->parser->pos += strlen($match[0]);
-            $this->parser->line += substr_count($match[0], "\n");
-            $result['_endpos'] = $this->parser->pos;
-            return true;
+            if (!empty($match[0])) {
+                $this->parser->pos += strlen($match[0]);
+                $this->parser->line += substr_count($match[0], "\n");
+                if ($rule['_silent'] == 0) {
+                    $result['_text'] .= ' ';
+                }
+                $result['_endpos'] = $this->parser->pos;
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+        } else {
+            $valid = false;
         }
-        if ($params['_param']) {
-            return true;
+        if (!$rule['_param']) {
+            if ($valid) {
+                $this->parser->successNode(array("' '", ' '));;
+                if ($rule['_nla'] === false) {
+                    $this->parser->shouldNotMatchError($error, 'whitespace');
+                }
+            } else {
+                $this->parser->failNode(array("' '", ''));
+            }
+            if ($rule['_nla'] === false) {
+                $this->parser->matchError($error, 'whitespace');
+            }
+        } else {
+
+            $this->parser->successNode(array("' '", $match[0]));
+            $valid = true;
+            if ($rule['_nla']) {
+                if ($valid) {
+                    $this->parser->shouldNotMatchError($error, 'whitespace');
+                }
+            } else {
+                if (!$valid) {
+                    $this->parser->matchError($error, 'whitespace');
+                }
+            }
         }
-        return false;
+        if ($rule['_nla']) {
+            $valid = !$valid;
+        }
+        return $valid;
     }
 
     /**
      * Match literal token
      *
      * @param array $result result array
-     * @param array $params rule parameter array ($params['_param'] contains literal)
+     * @param array $rule   rule parameter array ($rule['_param'] contains literal)
+     * @param array $error  error array
      *
      * @return bool result of match
      */
-    public function matchLiteralArray(&$result, $params)
+    public function matchArrayLiteral(&$result, $rule, &$error)
     {
-        if ($params['_param'] == substr($this->parser->source, $this->parser->pos, strlen($params['_param']))) {
-            $this->parser->pos += strlen($params['_param']);
-            $result['_text'] .= $params['_param'];
+        $len = strlen($rule['_param']);
+        if ($rule['_param'] == substr($this->parser->source, $this->parser->pos, $len)) {
+            $this->parser->pos += $len;
+            if ($rule['_silent'] == 0) {
+                $result['_text'] .= $rule['_param'];
+            }
             $result['_endpos'] = $this->parser->pos;
-            $this->parser->successLiteral($params['_param']);
-            // if literal was tagged call matching action
-            if ($params['_tag']) {
-                if (isset($result['_actions']['_match'][$params['_tag']])) {
-                    foreach ($result['_actions']['_match'][$params['_tag']] as $method => $foo) {
+            if ($rule['_nla']) {
+                $this->parser->shouldNotMatchError($error, 'literal', $rule['_param']);
+            }
+            if (isset($rule['_actions']['_match'])) {
+                $type = (isset($rule['_tag']) && $rule['_tag'] !== false) ? $rule['_tag'] : $rule['_name'];
+                if (isset($rule['_actions']['_match'][$type])) {
+                    foreach ($rule['_actions']['_match'][$type] as $method => $foo) {
                         $callback = array($result['_ruleParser'], $method);
                         $subres = array();
                         call_user_func_array($callback, array(&$result, $subres));
-                        return true;
                     }
                 }
             }
-            return true;
+            $valid = true;
+            $this->parser->successNode(array("'{$rule['_param']}'", $rule['_param']));
+            if ($rule['_nla']) {
+                $this->parser->shouldNotMatchError($error, 'literal', "'{$rule['_param']}'");
+                $valid = false;
+            }
+        } else {
+            if ($rule['_nla'] === false) {
+                $this->parser->matchError($error, 'literal', "'{$rule['_param']}'");
+            }
+            $this->parser->failNode(array("'{$rule['_param']}'", ''));
+            $valid = $rule['_nla'];
         }
-        $this->parser->failLiteral($params['_param']);
-        return false;
+        return $valid;
     }
-
 
     /**
      * Match expression token
      *
      * @param array $result result array
-     * @param array $params rule parameter array
+     * @param array $rule   rule parameter array
+     * @param array $error  error array
      *
      * @return bool result of match
      */
-    public function matchExpressionArray(&$result, $params)
+    public function matchArrayExpression(&$result, $rule, &$error)
     {
         $subres = $result;
-        $subres['_tag'] = $params['_tag'];
-        $this->parser->backtrace[] = $result;
+        $subres['_tag'] = $rule['_tag'];
+        $this->parser->addBacktrace(array("'{$rule['_name']}'", ''));
         $valid = false;
         // call runtime function to perform the match
-        $method = "{$result['_name']}_EXP_{$params['_param']}";
+        $method = "{$result['_name']}_EXP_{$rule['_param']}";
         if (isset($result['_actions']['_expression'][$method])) {
             $callback = array($result['_ruleParser'], $method);
             $valid = call_user_func_array($callback, array(&$subres));
@@ -463,14 +644,49 @@ class RuleArrayParser
                         call_user_func_array($callback, array(&$subres));
                     }
                 }
-                $this->ruleMatchArray($result, $subres);
+                $this->ruleArrayAction($result, $subres);
             } else {
                 $result['_endpos'] = $this->parser->pos;
             }
         } else {
+            $this->parser->matchError($error, 'expression', $result['_name']);
             $this->parser->failNode($remove);
         }
         return $valid;
     }
 
+    /**
+     * Build rule parameter array
+     *
+     * @param array $rule rule array
+     *
+     * @return array
+     */
+    public function buildParams($rule)
+    {
+        $param = array();
+        $param['_pla'] = isset($rule['_pla']) ? $rule['_pla'] : false;
+        $param['_nla'] = isset($rule['_nla']) ? $rule['_nla'] : false;
+        $param['_min'] = array_key_exists('_min', $rule) ? $rule['_min'] : 1;
+        $param['_max'] = array_key_exists('_max', $rule) ? $rule['_max'] : 1;
+        $param['_tag'] = isset($rule['_tag']) ? $rule['_tag'] : false;
+        $param['_silent'] = isset($rule['_silent']) ? $rule['_silent'] : 0;
+        if (isset($rule['_type'])) {
+            $param['_type'] = $rule['_type'];
+        }
+        if (isset($rule['_name'])) {
+            $param['_name'] = $rule['_name'];
+        }
+        if (isset($rule['_param'])) {
+            $param['_param'] = $rule['_param'];
+        }
+        if (isset($rule['_actions'])) {
+            $param['_actions'] = $rule['_actions'];
+        }
+        if (isset($rule['_ruleParser'])) {
+            $param['_ruleParser'] = $rule['_ruleParser'];
+        }
+        $param['_loop'] = ($param['_min'] != 0 && $param['_min'] != 1) || $param['_max'] != 1;
+        return $param;
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-
+namespace Smarty\Resource\Cache\Extension;
 /**
  * Smarty Resource Cache File Plugin
  *
@@ -13,7 +13,7 @@
 
 
  */
-class Smarty_Resource_Cache_Extension_File
+class File
 {
 
     /**

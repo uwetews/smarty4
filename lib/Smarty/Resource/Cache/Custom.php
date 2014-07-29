@@ -1,19 +1,13 @@
 <?php
+namespace Smarty\Resource\Cache;
 
-/**
- * Smarty Internal Plugin
- *
- * @package Smarty\Resource\Cache
- * @author  Rodney Rehm
- * @author  Uwe Tews
- * */
-
+use Smarty\Template\Context;
 /**
  * Cache Handler API
  *
  * @package Smarty\Resource\Cache
  */
-abstract class Smarty_Resource_Cache_Custom extends Smarty_Resource_Cache_File
+abstract class Custom extends File
 {
     /**
      * Cache Filepath

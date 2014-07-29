@@ -3,6 +3,7 @@
 namespace Smarty\Nodes\Template;
 
 use Smarty\Compiler\Php\Format;
+use Smarty\Parser;
 
 /**
  * Class Node
@@ -98,10 +99,10 @@ class Node extends Format
     /**
      * Constructor
      *
-     * @param \Smarty\Parser $parser   parser context object
+     * @param Parser $parser   parser context object
      * @param string         $nodeType node type
      */
-    function __construct(\Smarty\Parser $parser)
+    function __construct(Parser $parser)
     {
         parent::__construct($parser);
         $this->template_scope = $parser->compiler->instanceTemplateScope($parser->context);

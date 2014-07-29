@@ -1,20 +1,17 @@
 <?php
+namespace Smarty\Resource\Cache;
+
+use Smarty\Template\Context;
 
 /**
- * Smarty Resource Cache File
+ * Class File
  *
- * @package Smarty\Resource\Cache
- * @author  Rodney Rehm
- * @author  Uwe Tews
- */
-
-/**
  * This class does contain all necessary methods for the HTML cache on file system
  * Implements the file system as resource for the HTML cache Version using nocache inserts.
  *
  * @package Smarty\Resource\Cache
  */
-class Smarty_Resource_Cache_File //extends Smarty_Exception_Magic
+class File //extends Smarty_Exception_Magic
 {
 
     /**
@@ -154,8 +151,10 @@ class Smarty_Resource_Cache_File //extends Smarty_Exception_Magic
         if (is_file($filepath)) {
             $timestamp = filemtime($filepath);
             $exists = true;
+            return true;
         } else {
             $timestamp = $exists = false;
+            return false;
         }
     }
 

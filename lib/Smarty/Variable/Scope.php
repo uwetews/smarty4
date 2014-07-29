@@ -7,6 +7,8 @@
  * @author  Uwe Tews
  */
 namespace Smarty\Variable;
+
+use Smarty\Template\Core;
 /**
  * class for a variable scope
  * This class holds all assigned variables
@@ -24,12 +26,12 @@ class Scope
      */
     public function __get($varname)
     {
-        if (class_exists('Smarty_Template', false) && Smarty_Template::$call_stack[0][0]->smarty) {
+        if (class_exists('Smarty\Template\Core', false) && Core::$call_stack[0][0]->smarty) {
             //get variable from default handler
-            $var = Smarty_Template::$call_stack[0][0]->smarty->_getDefaultVariable($varname);
+            $var = Core::$call_stack[0][0]->smarty->_getDefaultVariable($varname);
             if ($var != null) {
                 //assign value and bubble up if necessary
-                Smarty_Template::$call_stack[0][0]->_assignInScope($varname, $var);
+                Core::$call_stack[0][0]->_assignInScope($varname, $var);
             }
             return $var;
         } else {

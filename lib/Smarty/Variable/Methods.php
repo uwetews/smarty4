@@ -9,6 +9,7 @@
  */
 namespace Smarty\Variable;
 
+use Smarty;
 use Smarty\Exception\Magic;
 
 /**
@@ -37,12 +38,12 @@ class Methods extends Magic
      *
      * @return Smarty_Variable_Methods current Smarty_Variable_Methods (or Smarty) instance for chaining
      */
-    public function assign($tpl_var, $value = null, $nocache = false, $scope_type = \Smarty::SCOPE_LOCAL)
+    public function assign($tpl_var, $value = null, $nocache = false, $scope_type = Smarty::SCOPE_LOCAL)
     {
         if (is_array($tpl_var)) {
             foreach ($tpl_var as $varname => $value) {
                 if ($varname != '') {
-                    if ($this->_usage == \Smarty::IS_TEMPLATE || $scope_type != \Smarty::SCOPE_LOCAL) {
+                    if ($this->_usage == Smarty::IS_TEMPLATE || $scope_type != Smarty::SCOPE_LOCAL) {
                         $this->_assignInScope($varname, new Entry($value, $nocache), $scope_type);
                     } else {
                         $this->_tpl_vars->$varname = new Entry($value, $nocache);
@@ -51,7 +52,7 @@ class Methods extends Magic
             }
         } else {
             if ($tpl_var != '') {
-                if ($this->_usage == \Smarty::IS_TEMPLATE || $scope_type != \Smarty::SCOPE_LOCAL) {
+                if ($this->_usage == Smarty::IS_TEMPLATE || $scope_type != Smarty::SCOPE_LOCAL) {
                     $this->_assignInScope($tpl_var, new Entry($value, $nocache), $scope_type);
                 } else {
                     $this->_tpl_vars->$tpl_var = new Entry($value, $nocache);
@@ -74,13 +75,13 @@ class Methods extends Magic
      *
      * @return bool
      */
-    public function _assignInScope($varname, $variable_obj, $scope_type = \Smarty::SCOPE_LOCAL)
+    public function _assignInScope($varname, $variable_obj, $scope_type = Smarty::SCOPE_LOCAL)
     {
-        if ($scope_type == \Smarty::SCOPE_GLOBAL) {
-            \Smarty::$_global_tpl_vars->{$varname} = $variable_obj;
-            if ($this->_usage == \Smarty::IS_TEMPLATE) {
+        if ($scope_type == Smarty::SCOPE_GLOBAL) {
+            Smarty::$_global_tpl_vars->{$varname} = $variable_obj;
+            if ($this->_usage == Smarty::IS_TEMPLATE) {
                 // we must bubble from current template
-                $scope_type = \Smarty::SCOPE_ROOT;
+                $scope_type = Smarty::SCOPE_ROOT;
             } else {
                 // otherwise done
                 return false;
@@ -91,30 +92,30 @@ class Methods extends Magic
         $this->_tpl_vars->{$varname} = $variable_obj;
 
         // if called on data object return
-        if ($this->_usage == \Smarty::IS_DATA) {
+        if ($this->_usage == Smarty::IS_DATA) {
             return false;
         }
 
         // if called from template object ($this->scope_type set) we must consider
         // the scope type if template object
-        if ($this->_usage == \Smarty::IS_TEMPLATE) {
-            if (($this->scope_type == \Smarty::SCOPE_ROOT || $this->scope_type == \Smarty::SCOPE_PARENT) &&
-                $scope_type != \Smarty::SCOPE_ROOT && $scope_type != \Smarty::SCOPE_SMARTY
+        if ($this->_usage == Smarty::IS_TEMPLATE) {
+            if (($this->scope_type == Smarty::SCOPE_ROOT || $this->scope_type == Smarty::SCOPE_PARENT) &&
+                $scope_type != Smarty::SCOPE_ROOT && $scope_type != Smarty::SCOPE_SMARTY
             ) {
                 $scope_type = $this->scope_type;
             }
         }
 
-        if ($scope_type == \Smarty::SCOPE_LOCAL) {
+        if ($scope_type == Smarty::SCOPE_LOCAL) {
             return false;
         }
 
         $node = $this->parent;
         while ($node) {
             // bubble up only in template objects
-            if ($node->_usage == \Smarty::IS_TEMPLATE || ($scope_type == \Smarty::SCOPE_SMARTY && $node->_usage != \Smarty::IS_DATA)) {
+            if ($node->_usage == Smarty::IS_TEMPLATE || ($scope_type == Smarty::SCOPE_SMARTY && $node->_usage != Smarty::IS_DATA)) {
                 $node->_tpl_vars->{$varname} = $variable_obj;
-                if ($scope_type == \Smarty::SCOPE_PARENT) {
+                if ($scope_type == Smarty::SCOPE_PARENT) {
                     break;
                 }
             }
@@ -136,10 +137,10 @@ class Methods extends Magic
     public function assignGlobal($varname, $value = null, $nocache = false)
     {
         if ($varname != '') {
-            if ($this->_usage == \Smarty::IS_TEMPLATE) {
-                $this->_assignInScope($varname, new Entry($value, $nocache), \Smarty::SCOPE_GLOBAL);
+            if ($this->_usage == Smarty::IS_TEMPLATE) {
+                $this->_assignInScope($varname, new Entry($value, $nocache), Smarty::SCOPE_GLOBAL);
             } else {
-                \Smarty::$_global_tpl_vars->$varname = new Entry($value, $nocache);
+                Smarty::$_global_tpl_vars->$varname = new Entry($value, $nocache);
             }
         }
         return $this;

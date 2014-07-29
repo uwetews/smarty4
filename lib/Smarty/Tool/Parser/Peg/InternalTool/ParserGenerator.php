@@ -4,6 +4,8 @@ namespace Smarty\Tool\Parser\Peg\InternalTool;
 Use Smarty\Template\Context;
 Use Smarty\Compiler;
 Use Smarty\Parser;
+use Smarty\Tool\Parser\Peg\Nodes\ParserCompiler;
+use Smarty\Tool\Parser\Peg\Nodes\Text;
 
 /**
  * Class PegParser
@@ -893,7 +895,7 @@ class ParserGenerator extends Parser
 
     public function Text___START(&$result)
     {
-        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Text ($this, null);
+        $result['_node'] = new Text ($this, null);
     }
 
     public function Text___ALL(&$result, $subres)
@@ -904,7 +906,7 @@ class ParserGenerator extends Parser
     /**
      * Parser rules and action for node 'Parser'
      *  Rule: ->  <node Parser> <rule>  ..Header .._? '<pegparser' _ Name '>' Attribute* Node* .._? '</pegparser>' .._? End? </rule>  <action _start> {
-     * $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Pegparser ($this, null);
+     * $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\ParserCompiler ($this, null);
      * } </action>  <action Attribute> {
      * if (!isset($result['_attr'])) {
      * $result['_attr'] = array();
@@ -929,7 +931,7 @@ class ParserGenerator extends Parser
 
     public function Parser___START(&$result)
     {
-        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Pegparser ($this, null);
+        $result['_node'] = new ParserCompiler ($this, null);
     }
 
     public function Parser_Attribute(&$result, $subres)
@@ -1410,6 +1412,7 @@ class ParserGenerator extends Parser
                 $this->rulePegParserArray[$name] = $this;
             }
         }
+        $this->trace = true;
         if ($this->trace) {
             $this->traceFile = fopen('php://output', 'w');
         }

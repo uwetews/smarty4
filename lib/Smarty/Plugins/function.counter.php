@@ -11,16 +11,38 @@
  * Type:     function<br>
  * Name:     counter<br>
  * Purpose:  print out a counter value
+
  *
- * @author  Monte Ohrt <monte at ohrt dot com>
+*@author  Monte Ohrt <monte at ohrt dot com>
  * @link    http://www.smarty.net/docs/en/language.custom.functions.tpl#language.function.counter {counter}
  *          (Smarty online manual)
+
  *
- * @param array  $params  parameters
+*@param array  $params  parameters
  * @param Smarty $tpl_obj template object
+
  *
- * @return string|null
+*@return string|null
+ *
+ *
  * @package Plugins\Function
+ *
+ *
+    /*!*
+    <pegparser PluginCounter>
+
+
+           <node PluginCounter>
+                <attribute>attributes=(optional=(name,start,skip,direction,count,print,assign)),options=(nocache)</attribute>
+                <rule>Ldel 'counter' SmartyTagAttributes SmartyTagOptions Rdel</rule>
+                <action _start>
+                {
+                    $result['node'] = $previous['node'];
+                }
+                </action>
+            </node>
+    </pegparser>
+
  */
 function smarty_function_counter($params, $tpl_obj)
 {

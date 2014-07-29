@@ -238,6 +238,14 @@ class Context //extends Smarty_Exception_Magic
     {
         return $this->_key;
     }
+    /**
+     * @return array
+     */
+    public function compile()
+    {
+        $compiler = $this->smarty->instanceCompiler($this);
+        return $this->compilerClass = isset($this->compilerClass) ? $this->compilerClass : (string) $this->smarty->smartyConfig->compiler->class;
+    }
 
     /**
      * @return array
@@ -331,6 +339,6 @@ class Context //extends Smarty_Exception_Magic
      */
     public function getSourceLanguageDir()
     {
-        return __DIR__ . "/../Smarty/Compiler/Source/Language/{$this->getSourceLanguage()}/";
+        return __DIR__ . "/../Smarty/Parser/Source/Language/{$this->getSourceLanguage()}/";
     }
 }

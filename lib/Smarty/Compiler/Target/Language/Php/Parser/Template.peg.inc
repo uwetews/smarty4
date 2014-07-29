@@ -29,7 +29,7 @@ class TemplateParser extends PegParser
                 </action>
              </node>
              <node Bom>
-                 <rule>/\xEF\xBB\xBF|\xFE\xFF|\xFF\xFE/</rule>
+                 <rule>/^(\xEF\xBB\xBF)|(\xFE\xFF)|(\xFF\xFE)/</rule>
              </node>
         </pegparser>
 

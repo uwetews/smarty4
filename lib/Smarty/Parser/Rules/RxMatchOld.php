@@ -4,6 +4,8 @@ Namespace Smarty\Parser\Rules;
 
 Use Smarty\Parser\Rule;
 Use Smarty\Parser\Token;
+Use Smarty\Parser\RuleArrayParser;
+Use Smarty\Parser;
 
 /**
  * Class Rx
@@ -18,16 +20,37 @@ Use Smarty\Parser\Token;
  */
 class RxMatchOld
 {
+    /**
+     * @var string
+     */
     static $init_rx = '/ { (\w+) } /x';
+    /**
+     * @var string
+     */
     static $expression_rx = '/ \$(\w+) /x';
     /**
      * @var null
      */
     public $_regexp = null;
+    /**
+     * @var bool
+     */
     public $_hasExpression = false;
+    /**
+     * @var array
+     */
     public $regexpCache = array();
+    /**
+     * @var null
+     */
     public $_result = null;
+    /**
+     * @var null|Parser
+     */
     public $parser = null;
+    /**
+     * @var null|RuleArrayParser
+     */
     public $ruleArrayParser = null;
 
     /**
@@ -35,7 +58,7 @@ class RxMatchOld
      * @param      $parser
      *
      */
-    public function __construct($rule, $parser, $ruleArrayParser)
+    public function __construct($rule, Parser $parser, RuleArrayParser $ruleArrayParser)
     {
         $this->ruleArrayParser = $ruleArrayParser;
         $this->parser = $parser;
@@ -127,10 +150,12 @@ class RxMatchOld
         } else {
             $this->parser->pos = $res['_endpos'];
             $this->parser->line += substr_count($res['_text'], "\n");
-            $res['_tag'] = $params['_tag'];
-            $res['_name'] = $result['_name'];
             if ($result['_silent'] < 2) {
-                $this->ruleArrayParser->ruleMatchArray($result, $res);
+                $res['_tag'] = $params['_tag'];
+                if (isset($result['_name'])) {
+                    $res['_name'] = $result['_name'];
+                }
+                $this->ruleArrayParser->ruleArrayAction($result, $res);
             }
             return true;
         }

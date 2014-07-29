@@ -34,7 +34,7 @@ class InternalText
         } else {
             $codeTargetObj->code('echo ');
         }
-        $codeTargetObj->string($node->value)
+        $codeTargetObj->string($node->value, false)
             ->raw(";\n");
         if ($delete) {
             $node->value = '';

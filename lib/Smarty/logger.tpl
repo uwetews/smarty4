@@ -181,9 +181,9 @@
             {/foreach}
 
         </table>
+    </div>
     </body>
     </html>
-    </div>
 {/capture}
 <script type="text/javascript">
     {$id = $template_name|default:''|md5}

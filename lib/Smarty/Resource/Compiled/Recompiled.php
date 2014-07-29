@@ -1,17 +1,14 @@
 <?php
+namespace Smarty\Resource\Compiled;
+
+use Smarty\Template\Context;
 
 /**
- * Smarty Resource Compiled Recompiled Plugin
+ * Class Recompiled
  *
- * @package Smarty\Resource\Compiled * @author Uwe Tews
+ * @package Smarty\Resource\Compiled
  */
-
-/**
- * Smarty Resource Compiled File Plugin
- * Meta Data Container for Compiled Template Files
-
- */
-class Smarty_Resource_Compiled_Recompiled //extends Smarty_Exception_Magic
+class Recompiled //extends Smarty_Exception_Magic
 {
 
     /**

@@ -237,7 +237,7 @@ class Format extends Code
             if ($double_quote) {
                 $this->compiled .= sprintf('"%s"', addcslashes($value, "\0\n\r\t\"\$\\"));
             } else {
-                $this->compiled .= "'" . $value . "'";
+                $this->compiled .= "'" . addcslashes($value, "'") . "'";
             }
         } else {
             $i = 0;

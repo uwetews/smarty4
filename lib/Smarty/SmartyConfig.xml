@@ -6,6 +6,7 @@
         <leftDelimiter>{</leftDelimiter>
         <rightDelimiter>}</rightDelimiter>
         <autoLiteral>false</autoLiteral>
+        <mergeCompiledIncludes>true</mergeCompiledIncludes>
         <filePerms></filePerms>
     </properties>
     <core>

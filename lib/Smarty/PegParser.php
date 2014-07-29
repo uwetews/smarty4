@@ -8,7 +8,7 @@ use Smarty\Exception\Magic;
  *
  * @package Smarty
  */
-class PegParser extends Magic
+class PegParser// extends Magic
 {
     /**
      * Parser object

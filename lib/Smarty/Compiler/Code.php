@@ -159,13 +159,18 @@ class Code extends Magic
      *
      * @return $this   current node
      */
-    public function code($value)
+    public function code($value, $indent = 0)
     {
+        if ($indent < 0) {
+            $this->outdent(- $indent);
+        }
         $this->precompiled[] = array('addIndentation', $value);
+        if ($indent > 0) {
+            $this->indent($indent);
+        }
         $this->ind_last_raw = - 1;
         return $this;
     }
-
     /**
      * Add an indentation to the current buffer.
      *

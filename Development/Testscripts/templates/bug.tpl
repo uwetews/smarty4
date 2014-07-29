@@ -1,2 +1,6 @@
-{if $bar}c {4 + $bar / 8} {/if}
+<br>kk
+{assign var='i' value=9}
+{$i}
+{counter}
+<br>
 

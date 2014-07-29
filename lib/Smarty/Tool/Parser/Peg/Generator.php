@@ -1,6 +1,8 @@
 <?php
 namespace Smarty\Tool\Parser\Peg;
 
+use Smarty\Tool\Parser\Peg\Nodes\ParserCompiler;
+use Smarty\Tool\Parser\Peg\Nodes\Text;
 Use Smarty\Tool\Parser\Peg\Root;
 Use Smarty\Template\Context;
 Use Smarty\Compiler;
@@ -852,7 +854,7 @@ class Generator extends Parser
     }
 
     public function Text___START (&$result, $previous) {
-        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Text ($this, null);
+        $result['_node'] = new Text ($this, null);
     }
 
 
@@ -867,7 +869,7 @@ class Generator extends Parser
      *
      *  Rule:
      <node Parser> <rule>  ..Header .._? '<pegparser' _ Name '>' attr:Attribute* node:Node* .._? '</pegparser>' .._? End? </rule>  <action _start> {
-                        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Pegparser ($this, null);
+                        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\ParserCompiler ($this, null);
                     } </action>  <action attr> {
                         if (!isset($result['_attr'])) {
                             $result['_attr'] = array();
@@ -1104,7 +1106,7 @@ class Generator extends Parser
     }
 
     public function Parser___START (&$result, $previous) {
-        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Pegparser ($this, null);
+        $result['_node'] = new ParserCompiler ($this, null);
     }
 
 
@@ -3186,6 +3188,17 @@ class Generator extends Parser
     {
         $string = $this->compile($string);
         file_put_contents($outfile, $string);
+    }
+
+    public function compileDynamic($string) {
+        $this->setSource($string);
+        if (preg_match("/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/", $this->parser->source, $match)) {
+            $this->parser->pos += strlen($match[1]);
+            $this->parser->line += substr_count($match[1], "\n");
+            $result = $this->parser->parse('Parser');
+            return $result['_node']->nodes;
+                   }
+        return '';
     }
 }
 

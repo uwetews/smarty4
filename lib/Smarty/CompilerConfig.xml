@@ -3,15 +3,31 @@
     <baseDir></baseDir>
     <compiler>
         <source>
-            <rootDir>./Source/</rootDir>
-            <language>Smarty</language>
-            <language>Config</language>
+            <rootDir>/Parser/Source</rootDir>
+            <configFile>/sourceConfig.xml</configFile>
         </source>
         <target>
-            <rootDir>./Target/</rootDir>
-            <language>Php</language>
+            <rootDir>/Target</rootDir>
         </target>
-    </compiler>
+  </compiler>
+    <parser name="default" mainClass="Parser" subtype="PegParser">
+        <pegParser>
+            <trace>on</trace>
+            <compileCheck>on</compileCheck>
+            <forceCompile>on</forceCompile>
+            <parserBackup>on</parserBackup>
+            <compileMode>code</compileMode>
+            <generator>pegParserGenerator</generator>
+        </pegParser>
+        <pegParserGenerator>
+            <trace>on</trace>
+            <compileCheck>on</compileCheck>
+            <forceCompile>on</forceCompile>
+            <parserBackup>on</parserBackup>
+            <compileMode>code</compileMode>
+            <generator>pegParserGenerator</generator>
+        </pegParserGenerator>
+    </parser>
     <parserPeg>
         <trace>on</trace>
         <checkGenerator></checkGenerator>

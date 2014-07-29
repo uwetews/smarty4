@@ -1,12 +1,7 @@
 <?php
+namespace Smarty\Resource\Cache;
 
-/**
- * Smarty Internal Plugin
- *
- * @package Smarty\Resource\Cache
- * @author  Rodney Rehm
- * @author  Uwe Tews
- */
+use Smarty\Template\Context;
 
 /**
  * Smarty Cache Handler Base for Key/Value Storage Implementations
@@ -28,7 +23,7 @@
  *
  * @package Smarty\Resource\Cache
  */
-abstract class Smarty_Resource_Cache_Keyvaluestore extends Smarty_Resource_Cache_File
+abstract class Keyvaluestore extends File
 {
 
     /**
@@ -369,7 +364,7 @@ abstract class Smarty_Resource_Cache_Keyvaluestore extends Smarty_Resource_Cache
      *
      * @param  Smarty_template_Cached $cached cached object
      *
-     * @return void
+     * @return boolean  true if file exits
      */
     public function populateTimestamp(Smarty_template_Cached $cached)
     {
@@ -379,6 +374,7 @@ abstract class Smarty_Resource_Cache_Keyvaluestore extends Smarty_Resource_Cache
         $cached->content = $content;
         $cached->timestamp = (int) $timestamp;
         $cached->exists = !!$cached->timestamp;
+        return true;
     }
 
     /**

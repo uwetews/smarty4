@@ -88,7 +88,7 @@ class Tag extends Node
     /**
      * Array of selected tag options
      *
-     * @var array
+     * @var array bool
      */
     public $tagOptions = array();
 
@@ -132,7 +132,7 @@ class Tag extends Node
      *
      * @param \Smarty\Parser       $parser parser context object
      */
-    public function __construct(Parser $parser, $name)
+    public function __construct(Parser $parser, $name = null)
     {
         parent::__construct($parser, $name);
         if (isset($this->nodeAttributes['required'])) {
@@ -165,5 +165,20 @@ class Tag extends Node
      */
     public function setTagOption($tagOption) {
         $this->tagOptions[$tagOption] = true;
+    }
+
+    /**
+     * Get tag option
+     *
+     * @param string $tagOption
+     *
+     * @return bool
+     */
+    public function getTagOption($tagOption) {
+        if (isset($this->tagOptions[$tagOption])) {
+            return $this->tagOptions[$tagOption];
+        } else {
+            return false;
+        }
     }
 }

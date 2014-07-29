@@ -131,7 +131,7 @@ class Generator extends Parser
                 <rule>..Header .._? '<pegparser' _ Name '>' attr:Attribute* node:Node* .._? '</pegparser>' .._? End?</rule>
                 <action _start>
                     {
-                        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Pegparser ($this, null);
+                        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\ParserCompiler ($this, null);
                     }
                 </action>
                 <action attr>

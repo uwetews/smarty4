@@ -1,18 +1,12 @@
 <?php
+namespace Smarty\Resource\Compiled\Extension;
 
 /**
- * Smarty Resource Compiled File Plugin
+ * Class File
  *
- * @package Smarty\Resource\Compiled * @author Uwe Tews
+ * @package Smarty\Resource\Compiled\Extension
  */
-
-/**
- * Smarty Resource Compiled File Extension
-
-
-
- */
-class Smarty_Resource_Compiled_Extension_File
+class File
 {
 
     /**

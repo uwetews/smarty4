@@ -218,7 +218,6 @@
                     {if $option.need_value !== null}
                         <dt>Expected</dt>
                         <dd>{prettyprint value=$option.need_value}</dd>
-                        </dl>
                     {/if}
                     </dl>
                 {/foreach}

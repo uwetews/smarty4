@@ -15,7 +15,7 @@ class ResourceParser extends PegParser
    
     /**
      *
-     * Parser generated on 2014-06-29 20:34:38
+     * Parser generated on 2014-07-10 23:09:48
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Target/Language/Php/Parser/Resource.peg.inc' dated 2014-06-28 02:53:31
      *
     */
@@ -68,17 +68,18 @@ class ResourceParser extends PegParser
 
      *
     */
-    public function matchNodeResource($previous){
+    public function matchNodeResource($previous, &$errorResult){
         $result = $this->parser->resultDefault;
+        $error = array();
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
         $this->Resource___START($result, $previous);
         // Start 'main:Template' tag 'main' min '1' max '1'
-        $this->parser->addBacktrace(array('Template', $result));
-        $subres = $this->parser->matchRule($result, 'Template');
+        $this->parser->addBacktrace(array('Template', ''));
+        $subres = $this->parser->matchRule($result, 'Template', $error);
         $remove = array_pop($this->parser->backtrace);
         if ($subres) {
-            $this->parser->successNode(array('Template',  $subres));
+            $this->parser->successNode(array('Template',  $subres['_text']));
             $result['_text'] .= $subres['_text'];
             $this->Resource_main($result, $subres);
             $valid = true;
@@ -93,6 +94,7 @@ class ResourceParser extends PegParser
         }
         if (!$valid) {
             $result = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Resource');
         }
         return $result;
     }
