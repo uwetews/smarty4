@@ -12,17 +12,14 @@ use Smarty\PegParser;
 class ResourceParser extends PegParser
 {
 
-   
     /**
-     *
-     * Parser generated on 2014-07-10 23:09:48
+     * Parser generated on 2014-08-10 18:55:25
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Compiler/Target/Language/Php/Parser/Resource.peg.inc' dated 2014-06-28 02:53:31
-     *
-    */
+
+     */
 
     /**
-     Flag that compiled Peg Parser class is valid
-     *
+     * Flag that compiled Peg Parser class is valid
      * @var bool
      */
     public $valid = true;
@@ -33,8 +30,8 @@ class ResourceParser extends PegParser
      * @var array
      */
     public $matchMethods = array(
-            "Resource" => "matchNodeResource"
-        );
+        "Resource" => "matchNodeResource"
+    );
 
     /**
      * Array of node attributes
@@ -42,33 +39,32 @@ class ResourceParser extends PegParser
      * @var array
      */
     public $nodeAttributes = array(
-            "Resource" => array(
-                    "_nodetype" => "node"
-                )
-        );
-    /**
-     *
-     * Parser rules and action for node 'Resource'
-     *
-     *  Rule:
-    
-            <node Resource>
-                <rule>main:Template</rule>
-                <action _start>
-                {
-                    $result['node'] = $previous['node'];
-                }
-                </action>
-                <action main>
-                {
-                    $result['node']->templateNode = $subres['node'];
-                }
-                </action>
-            </node>
+        "Resource" => array(
+            "_nodetype" => "node"
+        )
+    );
 
-     *
-    */
-    public function matchNodeResource($previous, &$errorResult){
+    /**
+     * Parser rules and action for node 'Resource'
+     *  Rule:
+     * <node Resource>
+     * <rule>main:Template</rule>
+     * <action _start>
+     * {
+     * $result['node'] = $previous['node'];
+     * }
+     * </action>
+     * <action main>
+     * {
+     * $result['node']->templateNode = $subres['node'];
+     * }
+     * </action>
+     * </node>
+
+
+     */
+    public function matchNodeResource($previous, &$errorResult)
+    {
         $result = $this->parser->resultDefault;
         $error = array();
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
@@ -79,7 +75,7 @@ class ResourceParser extends PegParser
         $subres = $this->parser->matchRule($result, 'Template', $error);
         $remove = array_pop($this->parser->backtrace);
         if ($subres) {
-            $this->parser->successNode(array('Template',  $subres['_text']));
+            $this->parser->successNode(array('Template', $subres['_text']));
             $result['_text'] .= $subres['_text'];
             $this->Resource_main($result, $subres);
             $valid = true;
@@ -99,17 +95,14 @@ class ResourceParser extends PegParser
         return $result;
     }
 
-    public function Resource___START (&$result, $previous) {
+    public function Resource___START(&$result, $previous)
+    {
         $result['node'] = $previous['node'];
     }
 
-
-    public function Resource_main (&$result, $subres) {
+    public function Resource_main(&$result, $subres)
+    {
         $result['node']->templateNode = $subres['node'];
     }
-
-
-
-
 }
 

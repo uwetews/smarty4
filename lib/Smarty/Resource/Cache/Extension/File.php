@@ -1,11 +1,11 @@
 <?php
 namespace Smarty\Resource\Cache\Extension;
-/**
- * Smarty Resource Cache File Plugin
- *
- * @package Smarty\Resource\Cache
- * @author  Uwe Tews
- */
+    /**
+     * Smarty Resource Cache File Plugin
+     *
+     * @package Smarty\Resource\Cache
+     * @author  Uwe Tews
+     */
 
 /**
  * Smarty Resource Cache File Extension

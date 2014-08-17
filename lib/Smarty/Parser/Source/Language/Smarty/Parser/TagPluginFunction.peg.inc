@@ -1,5 +1,6 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
+
 use Smarty\PegParser;
 
 /**
@@ -9,20 +10,20 @@ use Smarty\PegParser;
  */
 class TagPluginFunctionParser extends PegParser
 {
-     /*!*
-        <pegparser TagPluginFunction>
+    /*!*
+       <pegparser TagPluginFunction>
 
-            <node TagPluginFunction>
-                <attribute>options=(nocache)</attribute>
-                <rule>Ldel Id SmartyTagAttributes SmartyTagOptions Rdel</rule>
-                <action _start>
-                {
-                    $result['node'] = $previous['node'];
-                }
-                </action>
-            </node>
+           <node TagPluginFunction>
+               <attribute>attributes=(optional=(_any)),options=(nocache)</attribute>
+               <rule>Ldel Id SmartyTagAttributes SmartyTagOptions Rdel</rule>
+               <action _start>
+               {
+                   $result['node'] = $previous['node'];
+               }
+               </action>
+           </node>
 
-       </pegparser>
-    */
+      </pegparser>
+   */
 }
 

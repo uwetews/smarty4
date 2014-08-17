@@ -100,7 +100,7 @@ class Node extends Format
      * Constructor
      *
      * @param Parser $parser   parser context object
-     * @param string         $nodeType node type
+     * @param string $nodeType node type
      */
     function __construct(Parser $parser)
     {

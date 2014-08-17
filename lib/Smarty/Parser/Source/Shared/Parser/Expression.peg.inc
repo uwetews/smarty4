@@ -5,6 +5,7 @@ use Smarty\Parser\Source\Language\Smarty\Node\Value\Number;
 use Smarty\Parser\Source\Language\Smarty\Node\Value\String;
 use Smarty\Parser\Source\Language\Smarty\Node\Value\Boolean;
 use Smarty\Parser\Source\Language\Smarty\Node\Value\Subexpression;
+use Smarty\Parser\Source\Language\Smarty\Node\Value\FunctionCall;
 use Smarty\Parser\Source\Language\Smarty\Node\Operator\Math;
 use Smarty\Parser\Source\Language\Smarty\Node\Operator\Unimath;
 use Smarty\Parser\Source\Language\Smarty\Node\Operator\Unilog;
@@ -113,7 +114,7 @@ class ExpressionParser extends PegParser
 
 
 
-        <node Functioncall>
+        <node FunctionCall>
             <rule>(name:Id | namevar:Variable) param:Parameter</rule>
             <action name>
             {
@@ -127,15 +128,15 @@ class ExpressionParser extends PegParser
             </action>
             <action param>
             {
-                $result['node'] = new Node($this->parser, 'Functioncall');
+                $result['node'] = new FunctionCall($this->parser);
                 if (isset($result['name'])) {
                     $string = new String($this->parser);
                     $string->setValue($result['name'], true);
-                    $result['node']->addSubTree($string, 'name');
+                    $result['node']->setNameNode($string);
                 } else {
-                    $result['node']->addSubTree($result['namevar'], 'name');
+                    $result['node']->setNameNode($result['namevar']);
                 }
-                $result['node']->addSubTree(isset($subres['funcpar']) ? $subres['funcpar'] : false, 'param');
+                $result['node']->setParameterNodes(isset($subres['param']) ? $subres['param'] : null);
             }
             </action>
         </node>
@@ -144,7 +145,7 @@ class ExpressionParser extends PegParser
             <rule> '(' ( param:Expr ( ',' param:Expr)*)? ')' </rule>
             <action param>
             {
-                $result['funcpar'][] = $subres['node'];
+                $result['param'][] = $subres['node'];
             }
             </action>
         </token>
@@ -152,7 +153,7 @@ class ExpressionParser extends PegParser
 
         <token Value>
             <attribute>hash</attribute>
-            <rule>  (value:Variable !'(') | value:AnyLiteral | ( '(' subexpr:Expr ')' ) | value:Functioncall  | value:Array </rule>
+            <rule> value:AnyLiteral | (value:Variable !'(') | ( '(' subexpr:Expr ')' ) | value:FunctionCall  | value:Array </rule>
             <action value>
             {
                 $result['node'] = $subres['node'];

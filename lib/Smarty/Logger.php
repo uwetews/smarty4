@@ -286,7 +286,7 @@ if (!function_exists('smarty_modifier_logger_print_var')) {
                 foreach ($var as $curr_key => $curr_val) {
                     $results .= '<br>' . str_repeat('&nbsp;', $depth * 2)
                         . '<b>' . strtr($curr_key, $_replace) . '</b> =&gt; '
-                        . smarty_modifier_logger_print_var($curr_val, ++$depth, $length, false);
+                        . smarty_modifier_logger_print_var($curr_val, ++ $depth, $length, false);
                     $depth --;
                 }
                 break;
@@ -300,7 +300,7 @@ if (!function_exists('smarty_modifier_logger_print_var')) {
                 foreach ($object_vars as $curr_key => $curr_val) {
                     $results .= str_repeat('&nbsp;', $depth * 2)
                         . '<b> -&gt;' . strtr($curr_key, $_replace) . '</b> = '
-                        . smarty_modifier_logger_print_var($curr_val, ++$depth, $length, false) . '<br>';
+                        . smarty_modifier_logger_print_var($curr_val, ++ $depth, $length, false) . '<br>';
                     $depth --;
                 }
                 break;

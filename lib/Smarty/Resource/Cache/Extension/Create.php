@@ -184,8 +184,8 @@ class Create extends Magic
         foreach ($cache_split as $curr_idx => $curr_split) {
             if (!empty($curr_split)) {
                 $this->template_code->code("echo ")
-                    ->string($curr_split)
-                    ->raw(";\n");
+                                    ->string($curr_split)
+                                    ->raw(";\n");
             }
             if (isset($cache_parts[0][$curr_idx])) {
                 $this->has_nocache_code = true;
@@ -236,98 +236,98 @@ class Create extends Magic
     {
         $template_code = new Smarty_Compiler_Code();
         $template_code->code("<?php /* Smarty version " . Smarty::SMARTY_VERSION . ", created on " . strftime("%Y-%m-%d %H:%M:%S") . " */")
-            ->newline();
+                      ->newline();
         // content class name
         $class = $parser->compiler->getUniqueTemplateClassName();
         $template_code->code("if (!class_exists('{$class}',false)) {")
-            ->newline()
-            ->indent();
+                      ->newline()
+                      ->indent();
         $template_code->code("class {$class} extends Smarty_Template" . (!empty($this->inheritance_blocks_code) ? "_Inheritance" : '') . " {")
-            ->newline()
-            ->indent();
+                      ->newline()
+                      ->indent();
         $template_code->code("public \$version = '" . Smarty::SMARTY_VERSION . "';")
-            ->newline();
+                      ->newline();
         $template_code->code("public \$has_nocache_code = " . ($this->has_nocache_code ? 'true' : 'false') . ";")
-            ->newline();
+                      ->newline();
         $template_code->code("public \$filepath = '{$this->filepath}';")
-            ->newline();
+                      ->newline();
         $template_code->code("public \$timestamp = " . time() . ";")
-            ->newline();
+                      ->newline();
         if (!empty($tpl_obj->_cachedSubtemplates)) {
             $template_code->code("public \$_cachedSubtemplates = ")
-                ->repr($tpl_obj->_cachedSubtemplates, false)
-                ->raw(";")
-                ->newline();
+                          ->repr($tpl_obj->_cachedSubtemplates, false)
+                          ->raw(";")
+                          ->newline();
         }
         $template_code->code("public \$is_cache = true;")
-            ->newline();
+                      ->newline();
         $template_code->code("public \$cacheLifetime = {$tpl_obj->cacheLifetime};")
-            ->newline();
+                      ->newline();
         $template_code->code("public \$file_dependency = ")
-            ->repr($this->file_dependency, false)
-            ->raw(";")
-            ->newline();
+                      ->repr($this->file_dependency, false)
+                      ->raw(";")
+                      ->newline();
         if (!empty($this->required_plugins)) {
             $template_code->code("public \$required_plugins = ")
-                ->repr($this->required_plugins, false)
-                ->raw(";")
-                ->newline();
+                          ->repr($this->required_plugins, false)
+                          ->raw(";")
+                          ->newline();
         }
         if (!empty($this->template_functions)) {
             $template_code->code("public \$template_functions = ")
-                ->repr($this->template_functions, false)
-                ->raw(";")
-                ->newline();
+                          ->repr($this->template_functions, false)
+                          ->raw(";")
+                          ->newline();
         }
         $this->template_functions = array();
         if (!empty($this->inheritance_blocks)) {
             $template_code->code("public \$inheritance_blocks = ")
-                ->repr($this->inheritance_blocks, false)
-                ->raw(';')
-                ->newline();
+                          ->repr($this->inheritance_blocks, false)
+                          ->raw(';')
+                          ->newline();
         }
         $template_code->newline()
-            ->code("function _renderTemplate (\$_scope) {")
-            ->newline()
-            ->indent();
+                      ->code("function _renderTemplate (\$_scope) {")
+                      ->newline()
+                      ->indent();
         $template_code->code("ob_start();")
-            ->newline();
+                      ->newline();
         $template_code->mergeCode($this->template_code);
         $template_code->code('return ob_get_clean();')
-            ->newline();
+                      ->newline();
         $template_code->outdent()
-            ->code('}')
-            ->newline()
-            ->newline();
+                      ->code('}')
+                      ->newline()
+                      ->newline();
         foreach ($this->template_functions_code as $code) {
             $template_code->newline()
-                ->raw($code);
+                          ->raw($code);
         }
         $this->template_functions_code = array();
         foreach ($this->inheritance_blocks_code as $code) {
             $template_code->newline()
-                ->raw($code);
+                          ->raw($code);
         }
 
         $template_code->code("function _getSourceInfo () {")
-            ->newline()
-            ->indent();
+                      ->newline()
+                      ->indent();
         $template_code->code("return ")
-            ->repr($template_code->traceback)
-            ->raw(";")
-            ->newline();
+                      ->repr($template_code->traceback)
+                      ->raw(";")
+                      ->newline();
         $template_code->outdent()
-            ->code('}')
-            ->newline();
+                      ->code('}')
+                      ->newline();
 
         $template_code->outdent()
-            ->code('}')
-            ->newline();
+                      ->code('}')
+                      ->newline();
         $template_code->outdent()
-            ->code('}')
-            ->newline();
+                      ->code('}')
+                      ->newline();
         $template_code->code("\$template_class_name = '{$class}';")
-            ->newline();
+                      ->newline();
 
         return $template_code;
     }

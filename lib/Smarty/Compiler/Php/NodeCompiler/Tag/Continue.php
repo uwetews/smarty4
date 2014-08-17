@@ -75,7 +75,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Continue extends Smarty_Compiler_Code
         $this->iniTagCode($compiler);
 
         $this->code("continue {$_levels};")
-            ->newline();
+             ->newline();
 
         return $this->returnTagCode($compiler);
     }

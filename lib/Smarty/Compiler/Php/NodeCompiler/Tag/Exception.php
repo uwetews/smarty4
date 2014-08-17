@@ -58,7 +58,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Exception extends Smarty_Compiler_Cod
 
         $this->iniTagCode($compiler);
         $this->code("throw new Smarty_Exception_Runtime($message);")
-            ->newline();
+             ->newline();
 
         $compiler->has_code = true;
 

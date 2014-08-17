@@ -5,7 +5,6 @@ use Smarty\Template\Context;
 
 /**
  * Class File
- *
  * This class does contain all necessary methods for the HTML cache on file system
  * Implements the file system as resource for the HTML cache Version using nocache inserts.
  *

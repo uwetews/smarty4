@@ -209,16 +209,16 @@
                 {foreach $module.options as $option}
                     <h2><a href="{$option.href|escape}">{$option.name|escape}</a></h2>
                     <dl>
-                    <dt>Value</dt>
-                    <dd>{prettyprint value=$option.is_value}</dd>
-                    {if $option.best_value !== null}
-                        <dt>Preferred</dt>
-                        <dd>{prettyprint value=$option.best_value}</dd>
-                    {/if}
-                    {if $option.need_value !== null}
-                        <dt>Expected</dt>
-                        <dd>{prettyprint value=$option.need_value}</dd>
-                    {/if}
+                        <dt>Value</dt>
+                        <dd>{prettyprint value=$option.is_value}</dd>
+                        {if $option.best_value !== null}
+                            <dt>Preferred</dt>
+                            <dd>{prettyprint value=$option.best_value}</dd>
+                        {/if}
+                        {if $option.need_value !== null}
+                            <dt>Expected</dt>
+                            <dd>{prettyprint value=$option.need_value}</dd>
+                        {/if}
                     </dl>
                 {/foreach}
             </section>

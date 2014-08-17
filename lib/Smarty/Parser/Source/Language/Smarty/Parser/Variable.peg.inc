@@ -4,12 +4,13 @@ namespace Smarty\Parser\Source\Language\Smarty\Parser;
 use Smarty\Parser\Source\Language\Smarty\Node\Value\String;
 use Smarty\PegParser;
 use Smarty\Node;
+
 /**
  * Class VariableParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class VariableParser  extends PegParser
+class VariableParser extends PegParser
 {
     /*!*
     <pegparser Variable>

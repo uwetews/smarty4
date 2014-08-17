@@ -55,9 +55,8 @@ class Magic
      * @throws Smarty_Exception
      */
 
-   public function __destruct()
+    public function __destruct()
     {
         echo "\n<br>" . get_class($this) . " destructed <br>\n";
     }
-
 }

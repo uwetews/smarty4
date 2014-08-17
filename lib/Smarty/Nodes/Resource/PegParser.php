@@ -12,10 +12,10 @@ class PegParser
 
     public $rules = array(
         "Resource" => array(
-            "_name"    => "Resource",
+            "_name"  => "Resource",
             "_param" => "Template",
-            "_tag"     => "main",
-            "_type"    => "recurse"
+            "_tag"   => "main",
+            "_type"  => "recurse"
         )
     );
     /**

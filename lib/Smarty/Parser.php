@@ -7,13 +7,12 @@ use Smarty\Template\Context;
 use Smarty\Parser\Exception\NoRule;
 use Smarty\Parser\RuleArrayParser;
 
-
 /**
- * Class Peg
+ * Class Parser
  *
- * @package Smarty\Parser
+ * @package Smarty
  */
-class Parser// extends Magic
+class Parser // extends Magic
 {
 
     /**
@@ -45,18 +44,24 @@ class Parser// extends Magic
     public $rxCache = array();
 
     /**
-     * Cache of parsed rules with have <attribute>hash</attribute> set
+     * Cache of parsed rule results with have <attribute>hash</attribute> set
      *
      * @var array
      */
     public $packCache = array();
+
+    /**
+     * Cache of error information of rule results in $packCache
+     *
+     * @var array
+     */
     public $errorCache = array();
 
     /**
      * Cache of peg parser rule info by rule group  ALL|TARGET|SOURCE|SHARED
      *   The peg parser rule info is an array of filepath and parser class prefix
      *
-     *@var array
+     * @var array
      */
     public $ruleGroupsCache = array();
 
@@ -65,34 +70,25 @@ class Parser// extends Magic
      *
      * @var array
      */
-    public $regexpCache  = array();
+    public $regexpCache = array();
 
-    /*
-    * Rule definition array of loaded rules defined in array format
-    *
-    * @var array
-    */
     /**
+     * Rule definition array of loaded rules defined in array format
+     *
      * @var array
      */
     public $rules = array();
 
-    /*
-    * PegParser object of loaded rules
-    *
-    * @var array PegParser
-    */
     /**
-     * @var array
+     * PegParser object of loaded rules
+     *
+     * @var array PegParser
      */
     public $rulePegParserArray = array();
 
-    /*
-    * Match method names of loaded rules
-    *
-    * @var array
-    */
     /**
+     * Match method names of loaded rules
+     *
      * @var array
      */
     public $matchMethods = array();
@@ -188,7 +184,6 @@ class Parser// extends Magic
      */
     public $targetLanguageDir = null;
 
-
     /**
      * Flag if trace of parsing process shall be output
      *
@@ -216,13 +211,6 @@ class Parser// extends Magic
      * @var array
      */
     public $currentSubtags = array();
-
-    /**
-     * Name of current Rx node for replace call backs
-     *
-     * @var string
-     */
-    private $nameRx = '';
 
     /**
      * Stack of subtags while processing nested tags
@@ -273,14 +261,23 @@ class Parser// extends Magic
      */
     public $baseDir = '';
 
+    /**
+     * @var array
+     */
     public $knownNodes = array();
+
+    /**
+     * Name of current Rx node for replace call backs
+     *
+     * @var string
+     */
+    private $nameRx = '';
 
     /**
      * Constructor
      *
      * @param Compiler $compiler compiler object
-     * @param Context                    $context
-     *
+     * @param Context  $context
      */
     function __construct(Compiler $compiler, Context $context)
     {
@@ -307,7 +304,7 @@ class Parser// extends Magic
             $this->traceFile = fopen('php://output', 'w');
         }
 
-        $this->knownNodes = $this->compiler->sourceConfig['language'][$this->getSourceLanguage()]['Node'];
+        $this->knownNodes = $this->compiler->sourceConfig['Node'];
 
         $smarty = $this->context->smarty;
         $this->Ldel = preg_quote($smarty->leftDelimiter);
@@ -323,38 +320,6 @@ class Parser// extends Magic
     }
 
     /**
-     * @param $sxi
-     *
-     * @return array
-     */
-    function sxiToArray($sxi)
-    {
-        $a = array();
-        for ($sxi->rewind(); $sxi->valid(); $sxi->next()) {
-            if ($sxi->hasChildren()) {
-                if (!isset($a[$sxi->key()])) {
-                    $a[$sxi->key()] = $this->sxiToArray($sxi->current());
-                } else {
-                    if (!is_array($a[$sxi->key()])) {
-                        $a[$sxi->key()] = array($a[$sxi->key()]);
-                    }
-                    $a[$sxi->key()][] = $this->sxiToArray($sxi->current());
-                }
-            } else {
-                if (!isset($a[$sxi->key()])) {
-                    $a[$sxi->key()] = strval($sxi->current());
-                } else {
-                    if (!is_array($a[$sxi->key()])) {
-                        $a[$sxi->key()] = array($a[$sxi->key()]);
-                    }
-                    $a[$sxi->key()][] = strval($sxi->current());
-                }
-            }
-        }
-        return $a;
-    }
-
-    /**
      * Check if given Peg Parser for given name and node path is valid or must be recompiled
      *
      * @param  string     $name
@@ -364,6 +329,7 @@ class Parser// extends Magic
      * @param null|string $parserFilePostfix
      * @param bool        $force force compilation of rule parser
      *
+     * @throws Exception\NoGeneratorClass
      * @return mixed
      */
     public function checkRule($name, $ruleFilePrefix, $parserFilePrefix = null, $ruleFilePostfix = null, $parserFilePostfix = null, $force = null)
@@ -426,18 +392,18 @@ class Parser// extends Magic
             if ($groups | Compiler::TARGET == Compiler::TARGET) {
                 if ($groups | Compiler::SHARED == Compiler::SHARED) {
                     $ruleInfoArray[] = array(__DIR__ . "/Compiler/Target/Shared/Parser/",
-                                         'Smarty\Compiler\Target\Shared\Parser\\');
+                                             'Smarty\Compiler\Target\Shared\Parser\\');
                 }
                 $ruleInfoArray[] = array(__DIR__ . "/Compiler/Target/Language/{$this->getTargetLanguage()}/Parser/",
-                                     'Smarty\Compiler\Target\Language\\' . $this->getTargetLanguage() . '\Parser\\');
+                                         'Smarty\Compiler\Target\Language\\' . $this->getTargetLanguage() . '\Parser\\');
             }
             if ($groups | Compiler::SOURCE == Compiler::SOURCE) {
                 if ($groups | Compiler::SHARED == Compiler::SHARED) {
                     $ruleInfoArray[] = array(__DIR__ . "/Parser/Source/Shared/Parser/",
-                                         'Smarty\Parser\Source\Shared\Parser\\');
+                                             'Smarty\Parser\Source\Shared\Parser\\');
                 }
                 $ruleInfoArray[] = array(__DIR__ . "/Parser/Source/Language/{$this->getSourceLanguage()}/Parser/",
-                                     'Smarty\Parser\Source\Language\\' . $this->getSourceLanguage() . '\Parser\\');
+                                         'Smarty\Parser\Source\Language\\' . $this->getSourceLanguage() . '\Parser\\');
             }
             $this->ruleGroupsCache[$groups] = $ruleInfoArray;
         }
@@ -486,7 +452,7 @@ class Parser// extends Magic
     public function addRules(PegParser $nodeParser)
     {
         if ($this->trace) {
-            fprintf($this->traceFile, "%sLoad Parser Rules '%s' group '%d' path '%s' \n", $this->tracePrompt, get_class($nodeParser), '$nodeParser->group', '$nodeParser->nodePath');
+            fprintf($this->traceFile, "%sLoad Parser Rules '%s'  \n", $this->tracePrompt, get_class($nodeParser));
         }
         if (isset($nodeParser->rules)) {
             foreach ($nodeParser->rules as $name => $rule) {
@@ -505,7 +471,9 @@ class Parser// extends Magic
     /**
      * Add all rule matcher functions of rule object to cache
      *
-     * @param PegParser $nodeParser
+     * @param $rules
+     *
+     * @internal param PegParser $nodeParser
      */
     public function addDynamicRules($rules)
     {
@@ -531,8 +499,8 @@ class Parser// extends Magic
     /**
      * Call parser for node
      *
-     * @param null|string        $nodeName node name, if undefined default node is used
-     * @param Node|null  $node
+     * @param null|string $nodeName node name, if undefined default node is used
+     * @param Node|null   $node
      *
      * @throws Parser\Exception\NoRule
      * @return array node tree array
@@ -543,25 +511,26 @@ class Parser// extends Magic
             $this->traceFile = fopen('php://output', 'w');
         }
         $error = array();
-        $previous = array();
+        $previous = $this->resultDefault;
         if (isset($node)) {
             $previous['node'] = $node;
         }
         $nodeName = isset($nodeName) ? $nodeName : (string) $this->context->smarty->smartyConfig->parser->defaultNode;
-            $result = $this->matchRule($previous, $nodeName, $error);
-            return $result;
+        $result = $this->matchRule($previous, $nodeName, $error);
+        return $result;
     }
 
     /**
      * Get Peg Parser object for rule
      *
-     * @param  string    $ruleName rule name
-     * @param bool $quiet if true do not throw exception
+     * @param  string $ruleName rule name
+     * @param bool    $quiet    if true do not throw exception
      *
      * @return false|PegParser        Peg parser object or false if not found
      * @throws Parser\Exception\NoRule
      */
-    public function getPegParser($ruleName, $quiet = false) {
+    public function getPegParser($ruleName, $quiet = false)
+    {
         if (isset($this->rulePegParserArray[$ruleName])) {
             return $this->rulePegParserArray[$ruleName];
         } else {
@@ -579,14 +548,14 @@ class Parser// extends Magic
 
     /**
      * Get match method name for rule
-     * 
-     * @param string $ruleName rule name
-     * @param bool $quiet if true do not throw exception
      *
+     * @param string $ruleName rule name
+     * @param bool   $quiet    if true do not throw exception
      *
      * @throws Parser\Exception\NoRule
      */
-    public function getMatchMethod($ruleName, $quiet = false) {
+    public function getMatchMethod($ruleName, $quiet = false)
+    {
         $peg = $this->getPegParser($ruleName);
         if (isset($peg->matchMethods[$ruleName])) {
             return $peg->matchMethods[$ruleName];
@@ -601,15 +570,18 @@ class Parser// extends Magic
     /**
      * Get node attributes by rule name
      *
-     * @param string $ruleName  rule name
+     * @param string $ruleName rule name
      *
      * @return bool|array
      * @throws Parser\Exception\NoRule
      */
-    public function getNodeAttributes($ruleName) {
+    public function getNodeAttributes($ruleName)
+    {
         $peg = $this->getPegParser($ruleName);
         if (isset($peg->nodeAttributes[$ruleName])) {
             return $peg->nodeAttributes[$ruleName];
+        } elseif (isset($peg->rules[$ruleName]['_attr'])) {
+            return $peg->rules[$ruleName]['_attr'];
         } else {
             return false;
         }
@@ -619,12 +591,15 @@ class Parser// extends Magic
      * Call match method for rule
      *
      * @param array $result
-     * @param $ruleName
+     * @param       $ruleName
+     * @param null  $error
+     * @param bool  $quiet
      *
-     * @return false|array   return false if match failed or result array
      * @throws Parser\Exception\NoRule
+     * @return false|array   return false if match failed or result array
      */
-    public function matchRule(&$result, $ruleName, &$error = null, $quiet = false){
+    public function matchRule(&$result, $ruleName, &$error = null, $quiet = false)
+    {
         if (!isset($error)) {
             $error = array();
         }
@@ -635,20 +610,18 @@ class Parser// extends Magic
                 $ruleArrayParser = $this->instanceRuleArrayParser();
                 // match node rule
                 return $ruleArrayParser->matchArrayRule($result, $ruleName, $error);
-             }
+            }
         }
-     }
-
-
+        return false;
+    }
 
     /**
      * @param $backTrace
-     *
      */
     public function successNode($backTrace)
     {
         if ($this->trace) {
-                $last = $this->backtrace();
+            $last = $this->backtrace();
             if (isset($last)) {
                 fprintf($this->traceFile, " = %s('%s')]\n", $backTrace[0], $t = $this->truncateText($backTrace[1]));
                 $this->backtrace[$last][1] .= $t;
@@ -665,6 +638,7 @@ class Parser// extends Magic
             $this->backtrace[] = $backTrace;
         }
     }
+
     /**
      *
      */
@@ -672,9 +646,9 @@ class Parser// extends Magic
     {
         fprintf($this->traceFile, "%s [", $this->tracePrompt);
         if (!empty($this->backtrace)) {
-            $last = count($this->backtrace) -1;
+            $last = count($this->backtrace) - 1;
             $display = $last - 4;
-            for ($i = 0; $i < $last; $i++)  {
+            for ($i = 0; $i < $last; $i ++) {
                 fprintf($this->traceFile, " %s", $this->backtrace[$i][0]);
                 if ($i > $display) {
                     fprintf($this->traceFile, "('%s')", $this->truncateText($this->backtrace[$i][1]));
@@ -700,10 +674,8 @@ class Parser// extends Magic
         return $text;
     }
 
-
     /**
      * @param $backTrace
-     *
      */
     public function failNode($backTrace)
     {
@@ -723,7 +695,6 @@ class Parser// extends Magic
         }
         return '';
     }
-
 
     /**
      * @param $literal
@@ -747,16 +718,39 @@ class Parser// extends Magic
         }
     }
 
-    public function matchError(&$error, $type, $value = null, $name = null) {
+    /**
+     * @param      $error
+     * @param      $type
+     * @param null $value
+     * @param null $name
+     */
+    public function matchError(&$error, $type, $value = null, $name = null)
+    {
         $error['matcherror'][$this->pos]['expected'][] = array($type, $value, $name);
     }
-    public function shouldNotMatchError(&$error, $type, $value = null, $name = null) {
+
+    /**
+     * @param      $error
+     * @param      $type
+     * @param null $value
+     * @param null $name
+     */
+    public function shouldNotMatchError(&$error, $type, $value = null, $name = null)
+    {
         $error['shouldnotmatcherror'][$this->pos]['expected'][] = array($type, $value, $name);
     }
 
-    public function logOption(&$error, $type, $value = null, $name = null) {
+    /**
+     * @param      $error
+     * @param      $type
+     * @param null $value
+     * @param null $name
+     */
+    public function logOption(&$error, $type, $value = null, $name = null)
+    {
         $error['optionlog'][$this->pos] ['expected'][] = array($type, $value, $name);
-}
+    }
+
     /**
      * Get source language directory
      *
@@ -782,7 +776,8 @@ class Parser// extends Magic
      *
      * @return RuleArrayParser
      */
-    public function instanceRuleArrayParser() {
+    public function instanceRuleArrayParser()
+    {
         return isset($this->ruleArrayParser) ? $this->ruleArrayParser : $this->ruleArrayParser = new RuleArrayParser($this);
     }
 
@@ -804,75 +799,68 @@ class Parser// extends Magic
         $this->line = $result['_lineno'];
 
         $tag = $result['tagname'];
-        if (isset($this->knownNodes['Tag'][ucfirst($tag)])) {
-            // build match rule
-            $ruleName = 'Tag' . ucfirst($tag);
-            if (!$tagNode = $this->compiler->instanceNode('Tag\\' . $ruleName, $this->compiler->context, $this, $ruleName, true)) {
-                $tagNode = $this->compiler->instanceNode('Tag', $this->compiler->context, $this, $ruleName);
+        if (!isset($this->context->smarty->securityPolicy) || $this->context->smarty->securityPolicy->isTrustedTag($tag, $this)) {
+            if (isset($this->knownNodes['Tag'][ucfirst($tag)])) {
+                // instance build in tag node
+                $ruleName = 'Tag' . ucfirst($tag);
+                if (!$tagNode = $this->compiler->instanceNode('Tag\\' . $ruleName, $this->compiler->context, $this, $ruleName, true)) {
+                    $tagNode = $this->compiler->instanceNode('Tag', $this->compiler->context, $this, $ruleName);
+                }
+            } else {
+                if (preg_match("/{$this->Ldel}\/{$tag}{$this->Rdel}/", $this->source, $matches)) {
+                    //  block processing
+                    return false;
+                } else {
+                    //  function
+                    $plugin_type = 'function';
+                    $ruleName = 'TagPluginFunction';
+                }
+                // load plugin
+                if ($function = $this->compiler->getPlugin($tag, $plugin_type)) {
+                    // instance plugin tag node
+                    if (!$tagNode = $this->compiler->instanceNode('Tag\\' . $ruleName, $this->compiler->context, $this, $ruleName, true)) {
+                        $tagNode = $this->compiler->instanceNode('Tag', $this->compiler->context, $this, $ruleName);
+                    }
+                    $tagNode->pluginName = $tag;
+                    $tagNode->pluginFunction = $function;
+                    $tagNode->generatePluginParserRules();
+                } else {
+                    // plugin not found
+                    return false;
+                }
             }
+            // remember subtags in case of block tags
             $subtags = $tagNode->getNodeAttribute('subtags');
             if ($subtags !== false) {
                 $this->subtagsStack[] = $this->currentSubtags;
                 $this->currentSubtags = $subtags;
             }
-        } else {
-            if (preg_match("/{$this->Ldel}\/{$tag}{$this->Rdel}/", $this->source, $matches)) {
-                //  block processing
-                return false;
-            } else {
-                //  function
-                $plugin_type = 'function';
-                if ($function = $this->compiler->getPlugin($tag, $plugin_type)) {
-                    $reflection = new \ReflectionFunction ($function);
-                    $doc = $reflection->getDocComment();
-                    if ($doc && preg_match('/\s*\/\*!\* /Sxs', $doc, $matches)) {
-                        $class = $this->generatorClass;
-                        if (class_exists($class)) {
-                            $compiler = new $class($this->compiler, $this->context);
-                            $rules = $compiler->compileDynamic($doc);
-                            unset($compiler);
-                            $this->addDynamicRules($rules);
-                        }
-                    }
-                    if (!isset($this->context->smarty->securityPolicy) || $this->context->smarty->securityPolicy->isTrustedTag($tag, $this)) {
-                        $ruleName = 'TagPluginFunction';
-                        if (!$tagNode = $this->compiler->instanceNode('Tag\\' . $ruleName, $this->compiler->context, $this, $ruleName, true)) {
-                            $tagNode = $this->compiler->instanceNode('Tag', $this->compiler->context, $this, $ruleName);
-                        }
-                        $tagNode->pluginName = $tag;
-                        $tagNode->parserNode = 'Plugin' . ucfirst($tag);
-                        $subtags = $tagNode->getNodeAttribute('subtags');
-                        if ($subtags !== false) {
-                            $this->subtagsStack[] = $this->currentSubtags;
-                            $this->currentSubtags = $subtags;
-                        }
-                        $result = $tagNode->parse();
-                    }
-                } else {
-                    return false;
-                }
-            }
-        }
-        $error = array();
-        $previous = array('node' => $tagNode);
+            // parse tag rule
+            $error = array();
+            $previous = $this->resultDefault;
+            $previous['node'] = $tagNode;
             $result = $this->matchRule($previous, $ruleName, $error);
             if (!empty($error)) {
                 var_dump($error);
             }
-            if ( $result) {
+            if ($result) {
                 $result['node']->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
                 $valid = true;
             } else {
-            $valid = false;
+                $valid = false;
             }
-         if ($subtags !== false) {
-            $this->currentSubtags = array_pop($this->subtagsStack);
+            // restore subtags
+            if ($subtags !== false) {
+                $this->currentSubtags = array_pop($this->subtagsStack);
+            }
+            return $valid;
+        } else {
+            // tag not allowed by security
+            return false;
         }
-        return $valid;
     }
 
     /**
-     *
      * Insert expression in regular expression at initialization
      *
      * @param string $nameRx node name
@@ -880,7 +868,8 @@ class Parser// extends Magic
      *
      * @return string regular expression
      */
-    function initRxReplace($nameRx, $regexp) {
+    function initRxReplace($nameRx, $regexp)
+    {
         $this->nameRx = $nameRx;
         return preg_replace_callback('/{(\w+)}/', array($this, 'initRxReplaceCb'), $regexp);
     }
@@ -891,7 +880,6 @@ class Parser// extends Magic
      * @param array $matches
      *
      * @return string replacement
-     *
      * @throws Parser\Exception\NoRule
      */
     function initRxReplaceCb($matches)
@@ -902,7 +890,6 @@ class Parser// extends Magic
     }
 
     /**
-     *
      * Insert expression in regular expression dynamically
      *
      * @param string $nameRx node name
@@ -910,7 +897,8 @@ class Parser// extends Magic
      *
      * @return string regular expression
      */
-    function dynamicRxReplace($nameRx, $regexp) {
+    function dynamicRxReplace($nameRx, $regexp)
+    {
         $this->nameRx = $nameRx;
         return preg_replace_callback('/\$(\w+)/', array($this, 'dynamicRxReplaceCb'), $regexp);
     }
@@ -921,7 +909,6 @@ class Parser// extends Magic
      * @param array $matches
      *
      * @return string replacement
-     *
      * @throws Parser\Exception\NoRule
      */
     function dynamicRxReplaceCb($matches)

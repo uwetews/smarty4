@@ -2,6 +2,7 @@
 namespace Smarty\Resource\Cache;
 
 use Smarty\Template\Context;
+
 /**
  * Cache Handler API
  *

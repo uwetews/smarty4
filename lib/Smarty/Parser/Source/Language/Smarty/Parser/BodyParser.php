@@ -11,17 +11,15 @@ use Smarty\PegParser;
  */
 class BodyParser extends PegParser
 {
-    
-    /**
-     *
-     * Parser generated on 2014-07-13 07:20:23
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/Body.peg.inc' dated 2014-07-13 07:20:15
-     *
-    */
 
     /**
-     Flag that compiled Peg Parser class is valid
-     *
+     * Parser generated on 2014-08-16 19:50:02
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/Body.peg.inc' dated 2014-08-16 19:49:57
+
+     */
+
+    /**
+     * Flag that compiled Peg Parser class is valid
      * @var bool
      */
     public $valid = true;
@@ -32,8 +30,8 @@ class BodyParser extends PegParser
      * @var array
      */
     public $matchMethods = array(
-            "Body" => "matchNodeBody"
-        );
+        "Body" => "matchNodeBody"
+    );
 
     /**
      * Array of node attributes
@@ -41,41 +39,41 @@ class BodyParser extends PegParser
      * @var array
      */
     public $nodeAttributes = array(
-            "Body" => array(
-                    "_nodetype" => "node"
-                )
-        );
+        "Body" => array(
+            "_nodetype" => "node",
+            "node"      => "Body"
+        )
+    );
+
     /**
-     *
      * Parser rules and action for node 'Body'
-     *
      *  Rule:
-    
+     * <node  Body>
+     * <attribute>node='Body'</attribute>
+     * <rule> ((!LdelSlash &Ldel .nodes:CoreTag) | nodes:Text )*</rule>
+     * <action nodes>
+     * {
+     * $result['nodes'][] = $subres['node'];
+     * }
+     * </action>
+     * <action _finish>
+     * {
+     * if (isset($result['nodes'])) {
+     * $result['node'] = new Node\Body($this->parser);
+     * $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
+     * $result['node']->addSubTree($result['nodes']);
+     * unset($result['nodes']);
+     * } else {
+     * $result = false;
+     * }
+     * }
+     * </action>
+     * </node>
 
-        <node  Body>
-            <rule> ((!LdelSlash &Ldel .nodes:CoreTag) | nodes:Text )*</rule>
-            <action nodes>
-               {
-                 $result['nodes'][] = $subres['node'];
-               }
-            </action>
-            <action _finish>
-            {
-                if (isset($result['nodes'])) {
-                    $result['node'] = new Node\Body($this->parser);
-                    $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
-                    $result['node']->addSubTree($result['nodes']);
-                    unset($result['nodes']);
-                } else {
-                    $result = false;
-                }
-            }
-            </action>
-        </node>
 
-     *
-    */
-    public function matchNodeBody($previous, &$errorResult){
+     */
+    public function matchNodeBody($previous, &$errorResult)
+    {
         $result = $this->parser->resultDefault;
         $error = array();
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
@@ -85,7 +83,7 @@ class BodyParser extends PegParser
         do {
             // start option
             $error1 = $error;
-            $errorOption1 =array();
+            $errorOption1 = array();
             $this->parser->addBacktrace(array('_o1_', ''));
             do {
                 $error = array();
@@ -108,7 +106,7 @@ class BodyParser extends PegParser
                     $subres = $this->parser->matchRule($result, 'LdelSlash', $error);
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('LdelSlash',  $subres['_text']));
+                        $this->parser->successNode(array('LdelSlash', $subres['_text']));
                         $result['_text'] .= $subres['_text'];
                         $valid = false;
                     } else {
@@ -156,7 +154,7 @@ class BodyParser extends PegParser
                     $subres = $this->parser->matchRule($result, 'CoreTag', $error);
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('CoreTag',  $subres['_text']));
+                        $this->parser->successNode(array('CoreTag', $subres['_text']));
                         $this->Body_nodes($result, $subres);
                         $valid = true;
                     } else {
@@ -179,84 +177,83 @@ class BodyParser extends PegParser
                     $result = $backup3;
                 } else {
                     $this->parser->successNode($remove);
-                    }
-                    $error = $error3;
-                    unset($backup3);
-                    // end sequence
-                    // End '( !LdelSlash &Ldel .nodes:CoreTag)'
-                    if ($valid) {
-                        $this->parser->successNode(array_pop($this->parser->backtrace));
-                        $error = $error1;
-                        break;
-                    } else {
-                        $this->parser->logOption($errorOption1, 'Body', $error);
-                    }
-                    $error = array();
-                    array_pop($this->parser->backtrace);
-                    $this->parser->addBacktrace(array('_o1:2_', ''));
-                    // Start 'nodes:Text' tag 'nodes' min '1' max '1'
-                    $this->parser->addBacktrace(array('Text', ''));
-                    $subres = $this->parser->matchRule($result, 'Text', $error);
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('Text',  $subres['_text']));
-                        $result['_text'] .= $subres['_text'];
-                        $this->Body_nodes($result, $subres);
-                        $valid = true;
-                    } else {
-                        $valid = false;
-                        $this->parser->failNode($remove);
-                    }
-                    // End 'nodes:Text'
-                    if ($valid) {
-                        $this->parser->successNode(array_pop($this->parser->backtrace));
-                        $error = $error1;
-                        break;
-                    } else {
-                        $this->parser->logOption($errorOption1, 'Body', $error);
-                    }
-                    $error = $error1;
-                    array_pop($this->parser->backtrace);
-                    break;
-                } while (true);
-                // end option
-                $iteration0 = $valid ? ($iteration0 + 1) : $iteration0;
-                if (!$valid && $iteration0 >= 0) {
-                    $valid = true;
-                    break;
                 }
-                if (!$valid) break;
+                $error = $error3;
+                unset($backup3);
+                // end sequence
+                // End '( !LdelSlash &Ldel .nodes:CoreTag)'
+                if ($valid) {
+                    $this->parser->successNode(array_pop($this->parser->backtrace));
+                    $error = $error1;
+                    break;
+                } else {
+                    $this->parser->logOption($errorOption1, 'Body', $error);
+                }
+                $error = array();
+                array_pop($this->parser->backtrace);
+                $this->parser->addBacktrace(array('_o1:2_', ''));
+                // Start 'nodes:Text' tag 'nodes' min '1' max '1'
+                $this->parser->addBacktrace(array('Text', ''));
+                $subres = $this->parser->matchRule($result, 'Text', $error);
+                $remove = array_pop($this->parser->backtrace);
+                if ($subres) {
+                    $this->parser->successNode(array('Text', $subres['_text']));
+                    $result['_text'] .= $subres['_text'];
+                    $this->Body_nodes($result, $subres);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    $this->parser->failNode($remove);
+                }
+                // End 'nodes:Text'
+                if ($valid) {
+                    $this->parser->successNode(array_pop($this->parser->backtrace));
+                    $error = $error1;
+                    break;
+                } else {
+                    $this->parser->logOption($errorOption1, 'Body', $error);
+                }
+                $error = $error1;
+                array_pop($this->parser->backtrace);
+                break;
             } while (true);
-            // End '( ( !LdelSlash &Ldel .nodes:CoreTag) | nodes:Text)*'
-            if ($valid) {
-                $result['_endpos'] = $this->parser->pos;
-                $result['_endline'] = $this->parser->line;
-                $this->Body___FINISH($result);
+            // end option
+            $iteration0 = $valid ? ($iteration0 + 1) : $iteration0;
+            if (!$valid && $iteration0 >= 0) {
+                $valid = true;
+                break;
             }
             if (!$valid) {
-                $result = false;
-                $this->parser->matchError($errorResult, 'token', $error, 'Body');
+                break;
             }
-            return $result;
+        } while (true);
+        // End '( ( !LdelSlash &Ldel .nodes:CoreTag) | nodes:Text)*'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
+            $this->Body___FINISH($result);
         }
-
-        public function Body_nodes (&$result, $subres) {
-            $result['nodes'][] = $subres['node'];
+        if (!$valid) {
+            $result = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Body');
         }
+        return $result;
+    }
 
+    public function Body_nodes(&$result, $subres)
+    {
+        $result['nodes'][] = $subres['node'];
+    }
 
-        public function Body___FINISH (&$result) {
-            if (isset($result['nodes'])) {
-                $result['node'] = new Node\Body($this->parser);
-                $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
-                $result['node']->addSubTree($result['nodes']);
-                unset($result['nodes']);
-            }
-            else {
-                $result = false;
-            }
+    public function Body___FINISH(&$result)
+    {
+        if (isset($result['nodes'])) {
+            $result['node'] = new Node\Body($this->parser);
+            $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
+            $result['node']->addSubTree($result['nodes']);
+            unset($result['nodes']);
+        } else {
+            $result = false;
         }
-
-
-
+    }
 }

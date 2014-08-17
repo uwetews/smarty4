@@ -29,13 +29,13 @@ class Modifier
     public static function compile(Node $node, Code $codeTargetObj, $delete = true)
     {
         $codeTargetObj->compileNode($node->getSubTree('name'), $delete)
-            ->raw('(')
-            ->compileNode($node->getSubTree('value'), $delete);
+                      ->raw('(')
+                      ->compileNode($node->getSubTree('value'), $delete);
         $params = $node->getSubTree('param');
         if ($params !== false) {
             foreach ($params as $param) {
                 $codeTargetObj->raw(', ')
-                    ->compileNode($param, $delete);
+                              ->compileNode($param, $delete);
             }
         }
         $codeTargetObj->raw(')');

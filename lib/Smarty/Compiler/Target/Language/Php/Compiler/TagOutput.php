@@ -37,7 +37,7 @@ class TagOutput extends Magic
             $codeTargetObj->code('echo ');
         }
         $codeTargetObj->compileNode($node->getSubTree('value'), $delete)
-            ->raw(";\n");
+                      ->raw(";\n");
     }
 
     /**
@@ -68,7 +68,7 @@ class TagOutput extends Magic
         if (isset($_attr['assign'])) {
             // assign output to variable
             $this->code("\$this->assign({$_attr['assign']},{$parameter['value']});")
-                ->newline();
+                 ->newline();
         } else {
             $this->code("echo ");
             // display value
@@ -137,7 +137,7 @@ class TagOutput extends Magic
 
             $compiler->has_output = true;
             $this->raw(" {$output};")
-                ->newline();
+                 ->newline();
         }
 
         return $this->returnTagCode($compiler);

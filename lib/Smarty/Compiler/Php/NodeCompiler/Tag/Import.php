@@ -80,10 +80,10 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Import extends Smarty_Compiler_Code_P
         $comp->isInheritanceChild = $compiler->isInheritanceChild;
         // compile imported template
         $comp->template_code->code("/*  Imported template \"{$tpl_name}\" */")
-            ->newline();
+                            ->newline();
         $comp->compileTemplate();
         $comp->template_code->code("/*  End of imported template \"{$tpl_name}\" */")
-            ->newline();
+                            ->newline();
         // merge compiled code for {function} tags
         if (!empty($comp->_templateFunctions)) {
             $compiler->_templateFunctions = array_merge($compiler->_templateFunctions, $comp->_templateFunctions);

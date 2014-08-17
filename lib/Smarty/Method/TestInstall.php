@@ -466,7 +466,7 @@ class Smarty_Method_TestInstall
                 "function.fetch.php"                    => true,
                 "function.html_checkboxes.php"          => true,
                 "function.html_image.php"               => true,
-                "function.html_params.php"             => true,
+                "function.html_params.php"              => true,
                 "function.html_radios.php"              => true,
                 "function.html_select_date.php"         => true,
                 "function.html_select_time.php"         => true,

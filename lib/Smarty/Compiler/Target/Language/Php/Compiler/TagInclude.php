@@ -68,31 +68,28 @@ class TagInclude extends Magic
             }
         }
         $codeTargetObj->raw("\$this->_getSubTemplate (")
-            ->compileNode($node->tagAttributes['file'])
-            ->raw(", ");
+                      ->compileNode($node->tagAttributes['file'])
+                      ->raw(", ");
         if (isset($node->tagAttributes['cache_id'])) {
             $codeTargetObj->compileNode($node->tagAttributes['cache_id']);
-
         } else {
             $codeTargetObj->raw("null");
         }
         $codeTargetObj->raw(", ");
         if (isset($node->tagAttributes['compile_id'])) {
             $codeTargetObj->compileNode($node->tagAttributes['compile_id']);
-
         } else {
             $codeTargetObj->raw("null");
         }
         $codeTargetObj->raw(", {$_caching}, ");
         if (isset($node->tagAttributes['cache_lifetime'])) {
             $codeTargetObj->compileNode($node->tagAttributes['cache_lifetime']);
-
         } else {
             $codeTargetObj->raw("0");
         }
         $codeTargetObj->raw(", ")
-            ->repr($_vars, false)
-            ->raw(", {$scope_type}, \$_scope, {$_class})");
+                      ->repr($_vars, false)
+                      ->raw(", {$scope_type}, \$_scope, {$_class})");
         if ($_assign) {
             $codeTargetObj->raw("));\n");
         } else {
@@ -147,32 +144,32 @@ class TagInclude extends Magic
             $file_string = false;
         }
         $_file = $compiling_node->compileNode($node->attributeNodes['file'])
-            ->getFormated();
+                                ->getFormated();
         unset($node->attributeNodes['file']);
         $_assign = null;
         if (isset($node->attributeNodes['assign'])) {
             $_assign = $compiling_node->compileNode($node->attributeNodes['assign'])
-                ->getFormated();
+                                      ->getFormated();
             unset($node->attributeNodes['assign']);
         }
         $_cacheLifetime = 0;
         if (isset($node->attributeNodes['cacheLifetime'])) {
             $_cacheLifetime = $compiling_node->compileNode($node->attributeNodes['cacheLifetime'])
-                ->getFormated();
+                                             ->getFormated();
             unset($node->attributeNodes['cacheLifetime']);
             $_caching = Smarty::CACHING_LIFETIME_CURRENT;
         }
         $_cacheId = 'null';
         if (isset($node->attributeNodes['cacheId'])) {
             $_cacheId = $compiling_node->compileNode($node->attributeNodes['cacheId'])
-                ->getFormated();
+                                       ->getFormated();
             unset($node->attributeNodes['cacheId']);
             $_caching = Smarty::CACHING_LIFETIME_CURRENT;
         }
         $_compileId = 'null';
         if (isset($node->attributeNodes['compileId'])) {
             $_compileId = $compiling_node->compileNode($node->attributeNodes['compileId'])
-                ->getFormated();
+                                         ->getFormated();
             unset($node->attributeNodes['compileId']);
         }
         $_vars = array();
@@ -215,8 +212,8 @@ class TagInclude extends Magic
                 $target->code('echo ');
             }
             $target->raw("\$this->_getSubTemplate ($_file, $_cacheId, $_compileId, $_caching, $_cacheLifetime, ")
-                ->repr($_vars, false)
-                ->raw(", $_parent_scope, \$_scope, $_class)");
+                   ->repr($_vars, false)
+                   ->raw(", $_parent_scope, \$_scope, $_class)");
         }
         if (isset($_assign)) {
             $target->raw("));\n");

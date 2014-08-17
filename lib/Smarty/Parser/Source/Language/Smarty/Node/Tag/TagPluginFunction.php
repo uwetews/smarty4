@@ -36,7 +36,19 @@ class TagPluginFunction extends Tag
      */
     public $compilerClass = 'TagPluginFunction';
 
+    /**
+     * plugin name
+     *
+     * @var string
+     */
     public $pluginName = '';
+
+    /**
+     * plugin function name
+     *
+     * @var string
+     */
+    public $pluginFunction = '';
 
     /**
      * Variable scope default local
@@ -47,6 +59,7 @@ class TagPluginFunction extends Tag
 
     /**
      * Get Variable scope
+     *
      * @return string
      */
     public function getScope()
@@ -64,4 +77,46 @@ class TagPluginFunction extends Tag
         $this->scope = $scope;
     }
 
+    /**
+     * Check if parser rules for plugin exists, try to build dynamic or fall back to default
+
+     */
+    public function generatePluginParserRules()
+    {
+        $parserNode = 'Plugin' . ucfirst($this->pluginName);
+        if (isset($this->parser->rules[$parserNode]) && false === $this->parser->rules[$parserNode]) {
+            // no plugin specific rule, use default
+            return;
+        }
+        if (isset($this->parser->rules[$parserNode]) || isset($this->parser->rulePegParserArray[$parserNode])) {
+            // set up parsing attributes of plugin
+            $this->parserNode = $parserNode;
+            $this->setNodeAttributes($this->parser->getNodeAttributes($this->parserNode));
+            $this->decodeTagAttributes();
+            return;
+        }
+        // get comment block of plugin
+        $reflection = new \ReflectionFunction ($this->pluginFunction);
+        $doc = $reflection->getDocComment();
+        // does it contain the peg parser mark?
+        if ($doc && preg_match('/\s*\/\*!\* /Sxs', $doc, $matches)) {
+            // generate parser rules in the fly
+            $class = $this->parser->generatorClass;
+            if (class_exists($class)) {
+                $compiler = new $class($this->parser->compiler, $this->parser->context);
+                $rules = $compiler->compileDynamic($doc);
+                unset($compiler);
+                $this->parser->addDynamicRules($rules);
+            }
+            // set up parsing attributes of plugin
+            $this->parserNode = $parserNode;
+            $this->setNodeAttributes($this->parser->getNodeAttributes($this->parserNode));
+            $this->decodeTagAttributes();
+            return;
+        } else {
+            //fall back to default parser
+            $this->parser->rules[$parserNode] = false;
+            return;
+        }
+    }
 }

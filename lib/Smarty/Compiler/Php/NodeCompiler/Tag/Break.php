@@ -75,7 +75,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Break extends Smarty_Compiler_Code_Ph
         $this->iniTagCode($compiler);
 
         $this->code("break {$_levels};")
-            ->newline();
+             ->newline();
 
         return $this->returnTagCode($compiler);
     }

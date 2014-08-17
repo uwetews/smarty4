@@ -88,7 +88,6 @@ class Node// extends Magic
 
     /**
      * node value
-     *
      * var mixed
      */
     public $value;
@@ -121,7 +120,7 @@ class Node// extends Magic
      * Constructor
      *
      * @param \Smarty\Parser $parser parser context object
-     * @param string|null           $name
+     * @param string|null    $name
      */
     function __construct(Parser $parser, $name = null)
     {
@@ -175,10 +174,10 @@ class Node// extends Magic
     /**
      * Set trace info
      *
-     * @param int|null $line
+     * @param int|null    $line
      * @param string|null $text
-     * @param int|null $startPos
-     * @param int|null $endPos
+     * @param int|null    $startPos
+     * @param int|null    $endPos
      *
      * @return Node  $this
      */
@@ -194,9 +193,9 @@ class Node// extends Magic
     /**
      * Add subtree node
      *
-     * @param Node $node  Node object or array of objects
+     * @param Node        $node Node object or array of objects
      * @param string|null $name if set name of subtree
-     * @param bool $multiple
+     * @param bool        $multiple
      *
      * @return Node  $this
      */
@@ -220,7 +219,8 @@ class Node// extends Magic
      * @param $name
      *
      * @return bool|mixed
-     */public function getSubTree($name)
+     */
+    public function getSubTree($name)
     {
         return isset($this->internalNodeTrees[$name]) ? $this->internalNodeTrees[$name] : false;
     }
@@ -238,9 +238,11 @@ class Node// extends Magic
         return $this;
     }
 
-    public function addError($error) {
+    public function addError($error)
+    {
         $this->errors = array_merge($this->errors, $error);
     }
+
     /**
      * Call parser
      *
@@ -274,8 +276,6 @@ class Node// extends Magic
         $this->parser->compiler->compileNode($this, $codeTargetObj, $delete);
         return $codeTargetObj;
     }
-
-
 
     /**
      * Remove all sub nodes from current node

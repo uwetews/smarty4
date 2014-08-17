@@ -1,19 +1,10 @@
 <?php
-
-/**
- * Smarty Context Object
- *
- * @package Smarty\Core
- * @author  Uwe Tews
- */
-
 namespace Smarty\Template;
 
 /**
- * Smarty Context Object
- * Storage for Source and Context properties
+ * Class Context
  *
- * @package Smarty\Core
+ * @package Smarty\Template
  */
 class Context //extends Smarty_Exception_Magic
 {
@@ -238,6 +229,7 @@ class Context //extends Smarty_Exception_Magic
     {
         return $this->_key;
     }
+
     /**
      * @return array
      */

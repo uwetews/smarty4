@@ -11,30 +11,31 @@ use Smarty\PegParser;
  */
 class BodyParser extends PegParser
 {
-     /*!*
-    <pegparser Body>
+    /*!*
+   <pegparser Body>
 
-        <node  Body>
-            <rule> ((!LdelSlash &Ldel .nodes:CoreTag) | nodes:Text )*</rule>
-            <action nodes>
-               {
-                 $result['nodes'][] = $subres['node'];
+       <node  Body>
+           <attribute>node='Body'</attribute>
+           <rule> ((!LdelSlash &Ldel .nodes:CoreTag) | nodes:Text )*</rule>
+           <action nodes>
+              {
+                $result['nodes'][] = $subres['node'];
+              }
+           </action>
+           <action _finish>
+           {
+               if (isset($result['nodes'])) {
+                   $result['node'] = new Node\Body($this->parser);
+                   $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
+                   $result['node']->addSubTree($result['nodes']);
+                   unset($result['nodes']);
+               } else {
+                   $result = false;
                }
-            </action>
-            <action _finish>
-            {
-                if (isset($result['nodes'])) {
-                    $result['node'] = new Node\Body($this->parser);
-                    $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
-                    $result['node']->addSubTree($result['nodes']);
-                    unset($result['nodes']);
-                } else {
-                    $result = false;
-                }
-            }
-            </action>
-        </node>
-    </pegparser>
+           }
+           </action>
+       </node>
+   </pegparser>
 
-    */
+   */
 }

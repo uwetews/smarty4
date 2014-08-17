@@ -4,7 +4,7 @@ namespace Smarty\Parser\Source\Language\Smarty\Node\Operator;
 use Smarty\Node;
 
 /**
- * Class Unimath
+ * Class Unilog
  *
  * @package Smarty\Parser\Source\Language\Smarty\Node\Operator
  */
@@ -40,7 +40,7 @@ class Unilog extends Node
      *
      * @var array
      */
-    private $translation = array('!' => ' !',
+    private $translation = array('!'   => ' !',
                                  'not' => ' !',
     );
 

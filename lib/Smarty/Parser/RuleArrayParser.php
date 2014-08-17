@@ -66,11 +66,12 @@ class RuleArrayParser
     /**
      * Match token rule
      *
-     * @param array  $previous    previous result array
+     * @param        $result
      * @param string $ruleName    rule name
      * @param array  $errorResult error array
      *
      * @throws Exception\NoRule
+     * @internal param array $previous previous result array
      * @return bool|array  result array or false if match failed
      */
     public function matchArrayRule(&$result, $ruleName, &$errorResult)
@@ -100,6 +101,9 @@ class RuleArrayParser
         }
         if (!$wasHashed) {
             $subres = $this->parser->resultDefault;
+            if (isset($result['node'])) {
+                $subres['node'] = $result['node'];
+            }
             $pos0 = $subres['_startpos'] = $subres['_endpos'] = $this->parser->pos;
             $subres['_lineno'] = $this->parser->line;
             if (isset($rule['_actions']['_start'])) {
@@ -152,7 +156,6 @@ class RuleArrayParser
             $this->parser->matchError($errorResult, 'token', $error, $ruleName);
         }
         return ($valid) ? $result : false;
-
     }
 
     /**
@@ -180,9 +183,12 @@ class RuleArrayParser
         do {
             switch ($rule['_type']) {
                 case 'recurse':
-                    $subres = $this->parser->matchRule($result, $rule['_param'], $error);
-                    $result = $subres;
-                    $valid = !!$subres;
+                    if ($subres = $this->parser->matchRule($result, $rule['_param'], $error)) {
+                        $result = array_merge($result, $subres);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                    }
                     //                    $valid =  $this->matchArrayRecurse($result, $rule, $error);
                     break;
                 case 'rx':
@@ -465,6 +471,7 @@ class RuleArrayParser
      *
      * @param array $result result array
      * @param array $rule   rule parameter array
+     * @param       $resultError
      *
      * @return bool result of match
      */

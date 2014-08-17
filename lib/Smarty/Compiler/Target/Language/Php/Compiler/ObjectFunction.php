@@ -77,10 +77,10 @@ class Smarty_Compiler_Php_ompiler_Internal_ObjectFunction extends \Smarty_Compil
             // This tag does create output
             $compiler->has_output = true;
             $this->code("echo {$return};")
-                ->newline();
+                 ->newline();
         } else {
             $this->code("\$this->assign({$_assign},{$return});")
-                ->newline();
+                 ->newline();
         }
 
         return $this->returnTagCode($compiler);

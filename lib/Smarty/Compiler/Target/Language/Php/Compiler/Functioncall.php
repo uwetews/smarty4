@@ -16,7 +16,7 @@ use Smarty\Compiler\Code;
  *
  * @package Compiler
  */
-class Functioncall
+class FunctionCall
 {
 
     /**
@@ -36,7 +36,7 @@ class Functioncall
             foreach ($params as $key => $param) {
                 if ($key > 0) {
                     $codeTargetObj->raw(', ');
-                    }
+                }
                 $codeTargetObj->compileNode($param, $delete);
             }
         }

@@ -1,12 +1,4 @@
 <?php
-
-/**
- * Smarty Template
- * This file contains the basic shared methods for precessing content of compiled and cached templates
- *
- * @package Smarty\Template
- * @author  Uwe Tews
- */
 namespace Smarty\Template;
 
 use Smarty;
@@ -22,7 +14,7 @@ class Smarty_Internal_Template extends Methods
 }
 
 /**
- * Class Smarty Template
+ * Class Core
  *
  * @package Smarty\Template
  */
@@ -158,7 +150,7 @@ class  Core extends Smarty_Internal_Template
      *
      * @var integer
      */
-    public $timestamp = null;
+    public $timestamp = 0;
     /**
      * resource filepath
      *

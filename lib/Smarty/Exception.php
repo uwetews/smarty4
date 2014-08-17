@@ -40,7 +40,7 @@ class Exception extends \Exception
      * @internal param null $lex
      * @internal param \Smarty_Resource_Source_File $source The template source object
      */
-    public function __construct($message, $lineno = -1, $context = null, $parser = null, \Exception $previous = null)
+    public function __construct($message, $lineno = - 1, $context = null, $parser = null, \Exception $previous = null)
     {
         if (version_compare(PHP_VERSION, '5.3.0', '<')) {
             $this->previous = $previous;

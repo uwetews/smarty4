@@ -6,6 +6,7 @@ Use Smarty\Template\Context;
 Use Smarty\Compiler;
 Use Smarty\Parser;
 use Smarty\Parser\Exception\NoRule;
+
 /**
  * Class PegParser
  *
@@ -415,7 +416,6 @@ class Generator extends Parser
         }
     }
 
-
     /**
      * @param string $ruleName
      *
@@ -432,7 +432,6 @@ class Generator extends Parser
         }
         return $rule;
     }
-
 
     /**
      * @param $infile

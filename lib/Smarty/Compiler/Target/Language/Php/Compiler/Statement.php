@@ -25,11 +25,11 @@ class Smarty_Compiler_Php_NodeCompiler_Internal_Statement
     public static function compile(\Smarty_Compiler_Node $target, \Smarty_Source_Node_Tag $node, $delete = true)
     {
         $target->lineNo($node->sourceLineNo)
-            ->code('')
-            ->compileNode($node->value, $delete)
-            ->raw(' = ')
-            ->compileNodeArray($node->subtreeNodes, $delete)
-            ->raw(";\n");
+               ->code('')
+               ->compileNode($node->value, $delete)
+               ->raw(' = ')
+               ->compileNodeArray($node->subtreeNodes, $delete)
+               ->raw(";\n");
     }
 
     /**
@@ -90,12 +90,12 @@ class Smarty_Compiler_Php_NodeCompiler_Internal_Statement
 
         if (isset($parameter['smarty_internal_index'])) {
             $this->code("\$this->_createLocalArrayVariable('{$var}', {$_nocache}, {$scope_type});")
-                ->newline();
+                 ->newline();
             $this->code("{$scopeString}->{$var}->value{$parameter['smarty_internal_index']} = {$_attr['value']};")
-                ->newline();
+                 ->newline();
         } else {
             $this->code("\$this->_assignInScope('{$var}', new \Entry($_attr[value], $_nocache), {$scope_type});")
-                ->newline();
+                 ->newline();
         }
 
         if ($_attr['cachevalue'] === true && $compiler->context->caching) {
@@ -104,7 +104,7 @@ class Smarty_Compiler_Php_NodeCompiler_Internal_Statement
             } else {
                 if (!$compiler->tag_nocache && !$compiler->nocache) {
                     $this->code("echo '/*%%SmartyNocache%%*/\$_scope->_tpl_vars->{$var} = new \Entry (' . \$this->_exportCacheValue({$_attr['value']}) . ');/*/%%SmartyNocache%%*/';")
-                        ->newline();
+                         ->newline();
                 } else {
                     $compiler->error('cannot assign with "cachevalue" option inside nocache section', $compiler->lex->taglineno);
                 }

@@ -69,6 +69,14 @@ class Code extends Magic
     public $node = null;
     public $formatter = null;
 
+    const INDENTATION = 0;
+    const INDENT = 1;
+    const OUTDENT = 2;
+    const RAW = 3;
+    const STRING = 4;
+    const REPR = 5;
+    const LINE = 6;
+
     /**
      * Constructor
      *
@@ -89,12 +97,12 @@ class Code extends Magic
             $node->raw($this->code);
             return;
         }
-                             }
+    }
 
     /**
      * Compile an array of nodes and move compiled code into target node if specified
      *
-     * @param array Node     $nodes
+     * @param      array   Node     $nodes
      * @param bool $delete flag if compiled nodes shall be deleted
      *
      * @return $this   current node
@@ -117,7 +125,6 @@ class Code extends Magic
         return $this;
     }
 
-
     /**
      * Apends a raw string to the compiled code.
      *
@@ -127,10 +134,10 @@ class Code extends Magic
      */
     public function raw($string)
     {
-        if ($this->ind_last_raw >= 0 && $this->precompiled[$this->ind_last_raw][0] == 'raw') {
+        if ($this->ind_last_raw >= 0 && $this->precompiled[$this->ind_last_raw][0] == self::RAW) {
             $this->precompiled[$this->ind_last_raw][1] .= $string;
         } else {
-            $this->precompiled[] = array('raw', $string);
+            $this->precompiled[] = array(self::RAW, $string);
             $this->ind_last_raw = count($this->precompiled) - 1;
         }
         return $this;
@@ -164,13 +171,14 @@ class Code extends Magic
         if ($indent < 0) {
             $this->outdent(- $indent);
         }
-        $this->precompiled[] = array('addIndentation', $value);
+        $this->precompiled[] = array(self::INDENTATION, $value);
         if ($indent > 0) {
             $this->indent($indent);
         }
         $this->ind_last_raw = - 1;
         return $this;
     }
+
     /**
      * Add an indentation to the current buffer.
      *
@@ -178,7 +186,7 @@ class Code extends Magic
      */
     public function addIndentation()
     {
-        $this->precompiled[] = array('addIndentation', null);
+        $this->precompiled[] = array(self::INDENTATION, null);
         $this->ind_last_raw = - 1;
         return $this;
     }
@@ -194,7 +202,7 @@ class Code extends Magic
      */
     public function string($value, $double_quote = true, $string_length = null)
     {
-        $this->precompiled[] = array('string', $value, $double_quote, $string_length);
+        $this->precompiled[] = array(self::STRING, $value, $double_quote, $string_length);
         $this->ind_last_raw = - 1;
         return $this;
     }
@@ -210,7 +218,7 @@ class Code extends Magic
      */
     public function repr($value, $double_quote = true, $string_length = null)
     {
-        $this->precompiled[] = array('repr', $value, $double_quote, $string_length);
+        $this->precompiled[] = array(self::REPR, $value, $double_quote, $string_length);
         $this->ind_last_raw = - 1;
         return $this;
     }
@@ -225,7 +233,7 @@ class Code extends Magic
     public function lineNo($line)
     {
         if ($this->lastLineNo != $line) {
-            $this->precompiled[] = array('line', $line);
+            $this->precompiled[] = array(self::LINE, $line);
             $this->lastLineNo = $line;
         }
         return $this;
@@ -240,7 +248,7 @@ class Code extends Magic
      */
     public function outdent($step = 1)
     {
-        $this->precompiled[] = array('outdent', $step);
+        $this->precompiled[] = array(self::OUTDENT, $step);
         $this->ind_last_raw = - 1;
         return $this;
     }
@@ -254,7 +262,7 @@ class Code extends Magic
      */
     public function indent($step = 1)
     {
-        $this->precompiled[] = array('indent', $step);
+        $this->precompiled[] = array(self::INDENT, $step);
         $this->ind_last_raw = - 1;
         return $this;
     }
@@ -266,8 +274,8 @@ class Code extends Magic
      */
     public function openCurly()
     {
-        $this->precompiled[] = array('raw', "{\n");
-        $this->precompiled[] = array('indent', 1);
+        $this->precompiled[] = array(self::RAW, "{\n");
+        $this->precompiled[] = array(self::INDENT, 1);
         $this->ind_last_raw = - 1;
         return $this;
     }
@@ -279,9 +287,9 @@ class Code extends Magic
      */
     public function closeCurly()
     {
-        $this->precompiled[] = array('raw', "\n");
-        $this->precompiled[] = array('outdent', 1);
-        $this->precompiled[] = array('addIndentation', "\n}\n");
+        $this->precompiled[] = array(self::RAW, "\n");
+        $this->precompiled[] = array(self::OUTDENT, 1);
+        $this->precompiled[] = array(self::INDENTATION, "\n}\n");
         $this->ind_last_raw = - 1;
         return $this;
     }
@@ -301,6 +309,7 @@ class Code extends Magic
             return $this->formatter->getFormatted($this);
         }
     }
+
     /**
      * Compile an array of nodes and move compiled code into target node if specified
      *
@@ -332,6 +341,7 @@ class Code extends Magic
         }
         return $this;
     }
+
     /**
      * Compile an array of nodes and move compiled code into target node if specified
      *
@@ -374,5 +384,4 @@ class Code extends Magic
         $this->parser = null;
         return $this;
     }
-
 }

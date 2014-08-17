@@ -1,19 +1,11 @@
 <?php
-
-/**
- * Smarty Variable Methods
- * This file contains the basic methods for variable handling
- *
- * @package Smarty\Variable
- * @author  Uwe Tews
- */
 namespace Smarty\Variable;
 
 use Smarty;
 use Smarty\Exception\Magic;
 
 /**
- * Base class with variable methods
+ * Class Methods
  *
  * @package Smarty\Variable
  */
@@ -121,6 +113,7 @@ class Methods extends Magic
             }
             $node = $node->parent;
         }
+        return true;
     }
 
     /**

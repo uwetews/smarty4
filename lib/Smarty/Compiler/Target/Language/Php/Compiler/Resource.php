@@ -22,22 +22,22 @@ class Resource
     /**
      * Compile root node
      *
-     * @param bool                  $delete
+     * @param bool $delete
      */
     public static function compile(Node $node, Code $codeTargetObj, $delete = true)
     {
         // compile and format header
         $codeTargetObj->code("<?php ")
-            ->code("/* Smarty version " . \Smarty::SMARTY_VERSION . ", created on " . strftime("%Y-%m-%d %H:%M:%S") . " */")
-            ->newline()
-            ->code("use Smarty\Template\Core;")
-            ->newline()
-            ->code("use Smarty\Variable\Entry;")
-            ->newline()
-            ->code("if (!class_exists('{$node->templateNode->templateClass}',false)) {")
-            ->newline()
-            ->indent()
-            ->formatCode();
+                      ->code("/* Smarty version " . \Smarty::SMARTY_VERSION . ", created on " . strftime("%Y-%m-%d %H:%M:%S") . " */")
+                      ->newline()
+                      ->code("use Smarty\Template\Core;")
+                      ->newline()
+                      ->code("use Smarty\Variable\Entry;")
+                      ->newline()
+                      ->code("if (!class_exists('{$node->templateNode->templateClass}',false)) {")
+                      ->newline()
+                      ->indent()
+                      ->formatCode();
 
         //compile main template
         if (!empty($node->templateNode)) {
@@ -46,44 +46,44 @@ class Resource
         }
 
         /**
-        // compile inline templates
-        // this is a loop because each template which gets compiled can create a new ones
-        while (!empty($node->inlineTemplateContext)) {
-            foreach ($node->inlineTemplateContext as $key => $context) {
-                unset ($node->inlineTemplateContext[$key]);
-                $n = $node->compiler->instanceBodyNode($context);
-                $n->templateClass = $node->inlineTemplateClass[$context->uid];
-                $source = $context->getContent();
-                $context->smarty->_current_file = $context->filepath;
-                if (isset($context->smarty->_autoloadFilters['pre']) || isset($context->smarty->_registered['filter']['pre'])) {
-                    $source = $context->smarty->runFilter('pre', $source, $node);
-                }
-                $n->parser->setSource($source);
-                unset($source);
-                $n->indentation = $node->indentation;
-                $n->compiledLineNumber = $node->compiledLineNumber;
-                $n->parserInit($n->parser);
-                // call compiler
-                $n->parser->parse();
-                self::compileTemplate($codeTargetObj, $n, $delete);
-                $n->parser->cleanup();
-                $node->subtreeNodes[] = $n;
-            }
-        }
+         * // compile inline templates
+         * // this is a loop because each template which gets compiled can create a new ones
+         * while (!empty($node->inlineTemplateContext)) {
+         * foreach ($node->inlineTemplateContext as $key => $context) {
+         * unset ($node->inlineTemplateContext[$key]);
+         * $n = $node->compiler->instanceBodyNode($context);
+         * $n->templateClass = $node->inlineTemplateClass[$context->uid];
+         * $source = $context->getContent();
+         * $context->smarty->_current_file = $context->filepath;
+         * if (isset($context->smarty->_autoloadFilters['pre']) || isset($context->smarty->_registered['filter']['pre'])) {
+         * $source = $context->smarty->runFilter('pre', $source, $node);
+         * }
+         * $n->parser->setSource($source);
+         * unset($source);
+         * $n->indentation = $node->indentation;
+         * $n->compiledLineNumber = $node->compiledLineNumber;
+         * $n->parserInit($n->parser);
+         * // call compiler
+         * $n->parser->parse();
+         * self::compileTemplate($codeTargetObj, $n, $delete);
+         * $n->parser->cleanup();
+         * $node->subtreeNodes[] = $n;
+         * }
+         * }
          * */
 
         /**
-        //format main template
-        if (!empty($node->templateNode)) {
-            $node->templateNode->indentation = $node->indentation;
-            $node->templateNode->compiledLineNumber = $node->compiledLineNumber;
-            //            $node->templateNode->compile($node->templateNode, $delete);
-            $node->formatCode($node->templateNode, $delete);
-            if ($delete) {
-                $node->templateNode->cleanup();
-                $node->templateNode = null;
-            }
-        }
+         * //format main template
+         * if (!empty($node->templateNode)) {
+         * $node->templateNode->indentation = $node->indentation;
+         * $node->templateNode->compiledLineNumber = $node->compiledLineNumber;
+         * //            $node->templateNode->compile($node->templateNode, $delete);
+         * $node->formatCode($node->templateNode, $delete);
+         * if ($delete) {
+         * $node->templateNode->cleanup();
+         * $node->templateNode = null;
+         * }
+         * }
          * */
 
         // if we have compiled inline templates format now the output code
@@ -100,10 +100,10 @@ class Resource
         }
 
         $codeTargetObj->outdent()
-            ->code('}')
-            ->newline()
-            ->code("\$template_class_name = '{$templateClass}';")
-            ->newline();
+                      ->code('}')
+                      ->newline()
+                      ->code("\$template_class_name = '{$templateClass}';")
+                      ->newline();
 
         $codeTargetObj->formatCode();
     }

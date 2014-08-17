@@ -59,16 +59,16 @@ class Smarty_Compiler_Php_ompiler_Internal_RegisteredFunction extends \Smarty_Co
 
         if ($function instanceof Closure) {
             $this->code("echo \$this->smarty->_registered['plugin'][Smarty::PLUGIN_FUNCTION]['{$tag}'][0]({$result});")
-                ->newline();
+                 ->newline();
         } elseif (!is_array($function)) {
             $this->code("echo {$function}({$result});")
-                ->newline();
+                 ->newline();
         } elseif (is_object($function[0])) {
             $this->code("echo \$this->smarty->_registered['plugin'][Smarty::PLUGIN_FUNCTION]['{$tag}'][0][0]->{$function[1]}({$result});")
-                ->newline();
+                 ->newline();
         } else {
             $this->code("echo {$function[0]}::{$function[1]}({$result});")
-                ->newline();
+                 ->newline();
         }
 
         return $this->returnTagCode($compiler);

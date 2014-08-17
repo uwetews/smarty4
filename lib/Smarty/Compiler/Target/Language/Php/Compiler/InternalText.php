@@ -11,6 +11,7 @@ namespace Smarty\Compiler\Target\Language\Php\Compiler;
 
 use Smarty\Node;
 use Smarty\Compiler\Code;
+
 /**
  * Smarty Internal Plugin Compile For Class
  *
@@ -26,7 +27,7 @@ class InternalText
      * @param \Smarty_Compiler_Node $node   if tag node
      * @param bool                  $delete
      */
-    public static function compile(Node $node, Code $codeTargetObj,  $delete = true)
+    public static function compile(Node $node, Code $codeTargetObj, $delete = true)
     {
         $codeTargetObj->lineNo($node->sourceLineNo);
         if (isset($node->parser->compiler->output_var)) {
@@ -35,7 +36,7 @@ class InternalText
             $codeTargetObj->code('echo ');
         }
         $codeTargetObj->string($node->value, false)
-            ->raw(";\n");
+                      ->raw(";\n");
         if ($delete) {
             $node->value = '';
         }

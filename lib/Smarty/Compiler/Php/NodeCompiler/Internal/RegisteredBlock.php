@@ -61,49 +61,49 @@ class Smarty_Compiler_Php_ompiler_Internal_RegisteredBlock extends \Smarty_Compi
 
             if (is_array($par_string)) {
                 $this->code("\$this->smarty->_tag_stack[] = array('{$tag}', {$par_string['par']});")
-                    ->newline();
+                     ->newline();
                 $this->code("\$_block_repeat=true;")
-                    ->newline();
+                     ->newline();
                 // old style with params array
                 if ($function instanceof Closure) {
                     $this->code("echo \$this->smarty->_registered['plugin']['block']['{$tag}'][0]({$par_string['par']}, null, {$par_string['obj']}, \$_block_repeat);")
-                        ->newline();
+                         ->newline();
                 } elseif (!is_array($function)) {
                     $this->code("echo {$function}({$par_string['par']}, null, {$par_string['obj']}, \$_block_repeat);")
-                        ->newline();
+                         ->newline();
                 } elseif (is_object($function[0])) {
                     $this->code("echo \$this->smarty->_registered['plugin']['block']['{$tag}'][0][0]->{$function[1]}({$par_string['par']}, null, {$par_string['obj']}, \$_block_repeat);")
-                        ->newline();
+                         ->newline();
                 } else {
                     $this->code("echo {$function[0]}::{$function[1]}({$par_string['par']}, null, {$par_string['obj']}, \$_block_repeat);")
-                        ->newline();
+                         ->newline();
                 }
             } else {
                 // new style with real parameter
                 $par_string = str_replace('__content__', 'null', $par_string);
                 $this->code("\$_block_repeat=true;")
-                    ->newline();
+                     ->newline();
                 $this->code("\$this->smarty->_tag_stack[] = array('{$tag}', {$par_string});")
-                    ->newline();
+                     ->newline();
                 if ($function instanceof Closure) {
                     $this->code("echo \$this->smarty->_registered['plugin']['block']['{$tag}'][0]({$par_string});")
-                        ->newline();
+                         ->newline();
                 } elseif (!is_array($function)) {
                     $this->code("echo {$function}({$par_string});")
-                        ->newline();
+                         ->newline();
                 } elseif (is_object($function[0])) {
                     $this->code("echo \$this->smarty->_registered['plugin']['block']['{$tag}'][0][0]->{$function[1]}({$par_string});")
-                        ->newline();
+                         ->newline();
                 } else {
                     $this->code("echo {$function[0]}::{$function[1]}({$par_string});")
-                        ->newline();
+                         ->newline();
                 }
             }
             $this->code("while (\$_block_repeat) {")
-                ->newline()
-                ->indent();
+                 ->newline()
+                 ->indent();
             $this->code("ob_start();")
-                ->newline();
+                 ->newline();
         } else {
             // must endblock be nocache?
             if ($compiler->nocache) {
@@ -123,54 +123,54 @@ class Smarty_Compiler_Php_ompiler_Internal_RegisteredBlock extends \Smarty_Compi
             $this->iniTagCode($compiler);
 
             $this->code("\$_block_content = ob_get_clean();")
-                ->newline();
+                 ->newline();
             $this->code("\$_block_repeat=false;")
-                ->newline();
+                 ->newline();
             if (isset($parameter['modifier_list'])) {
                 $this->code("ob_start();")
-                    ->newline();
+                     ->newline();
             }
             if (is_array($par_string)) {
                 // old style with params array
                 if ($function instanceof Closure) {
                     $this->code("echo \$this->smarty->_registered['plugin']['block']['{$base_tag}'][0]({$par_string['par']}, \$_block_content, {$par_string['obj']}, \$_block_repeat);")
-                        ->newline();
+                         ->newline();
                 } elseif (!is_array($function)) {
                     $this->code("echo {$function}({$par_string['par']}, \$_block_content, {$par_string['obj']}, \$_block_repeat);")
-                        ->newline();
+                         ->newline();
                 } elseif (is_object($function[0])) {
                     $this->code("echo \$this->smarty->_registered['plugin']['block']['{$base_tag}'][0][0]->{$function[1]}({$par_string['par']}, \$_block_content, {$par_string['obj']}, \$_block_repeat);")
-                        ->newline();
+                         ->newline();
                 } else {
                     $this->code("echo {$function[0]}::{$function[1]}({$par_string['par']}, \$_block_content, {$par_string['obj']}, \$_block_repeat);")
-                        ->newline();
+                         ->newline();
                 }
             } else {
                 // new style witn real parameter
                 $par_string = str_replace('__content__', '$_block_content', $par_string);
                 if ($function instanceof Closure) {
                     $this->code("echo \$this->smarty->_registered['plugin']['block']['{$base_tag}'][0]({$par_string});")
-                        ->newline();
+                         ->newline();
                 } elseif (!is_array($function)) {
                     $this->code("echo {$function}({$par_string});")
-                        ->newline();
+                         ->newline();
                 } elseif (is_object($function[0])) {
                     $this->code("echo \$this->smarty->_registered['plugin']['block']['{$base_tag}'][0][0]->{$function[1]}({$par_string});")
-                        ->newline();
+                         ->newline();
                 } else {
                     $this->code("echo {$function[0]}::{$function[1]}({$par_string});")
-                        ->newline();
+                         ->newline();
                 }
             }
             if (isset($parameter['modifier_list'])) {
                 $this->code('echo ' . $compiler->compileTag('Internal_Modifier', array(), array('modifier_list' => $parameter['modifier_list'], 'value' => 'ob_get_clean()')) . ';')
-                    ->newline();
+                     ->newline();
             }
             $this->outdent()
-                ->code("}")
-                ->newline();
+                 ->code("}")
+                 ->newline();
             $this->code("array_pop(\$this->smarty->_tag_stack);")
-                ->newline();
+                 ->newline();
         }
 
         return $this->returnTagCode($compiler);

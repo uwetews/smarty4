@@ -2,6 +2,7 @@
 namespace Smarty\Parser\Source\Language\Smarty\Node\Value;
 
 use Smarty\Node;
+use Smarty\Compiler\Code;
 
 /**
  * Class String
@@ -51,17 +52,17 @@ class String extends Node
     /**
      * Compile string and move compiled code into target node if specified
      *
-     * @param Node $target optional target node for compiled code
+     * @param Code $codeTargetObj
      * @param bool $delete
      *
      * @return Node  current node
      */
-    public function compile($target, $delete = true)
+    public function compile(Code $codeTargetObj = null, $delete = true)
     {
         if ($this->compileAsValue) {
-            $target->raw($this->value);
+            $codeTargetObj->raw($this->value);
         } else {
-            $target->raw("'" . $this->value . "'");
+            $codeTargetObj->raw("'" . $this->value . "'");
         }
         return $this;
     }

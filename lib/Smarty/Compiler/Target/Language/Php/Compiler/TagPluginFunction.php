@@ -17,13 +17,26 @@ class TagPluginFunction extends Magic
      * Compile function plugin tag
      *
      * @param Node $node if tag node
-     * @param Code                        $codeTargetObj
-     * @param bool                        $delete
-     *
+     * @param Code $codeTargetObj
+     * @param bool $delete
      */
     public static function compile(Node $node, Code $codeTargetObj, $delete)
     {
-        $i = 1;
+        $codeTargetObj->lineNo($node->sourceLineNo);
+        $parameter = array();
+        if (isset($node->parser->compiler->output_var)) {
+            $codeTargetObj->code("\${$node->parser->compiler->output_var} .= ");
+        } else {
+            $codeTargetObj->code('echo ');
+        }
+        $function = 'smarty_function_' . $node->pluginName;
+        $codeTargetObj->raw("{$function}(array(");
+        foreach ($node->tagAttributes as $attribute => $anode) {
+            $codeTargetObj->raw("'{$attribute}' => ")
+                          ->compileNode($anode, $delete)
+                          ->raw(", ");
+        }
+        $codeTargetObj->raw("), \$this);\n");
     }
 
     /**

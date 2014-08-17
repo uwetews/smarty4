@@ -1,19 +1,12 @@
 <?php
-/**
- * Smarty Template Scope
- * This file contains the Class for a template scope
- *
- * @package Smarty\Template
- * @author  Uwe Tews
- */
 namespace Smarty\Template;
 
 use Smarty\Variable;
 
 /**
- * class for a template scope
- * This class holds scope variables while rendering template
-
+ * Class Scope
+ *
+ * @package Smarty\Template
  */
 class Scope //extends Smarty_Exception_Magic
 {

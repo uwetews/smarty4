@@ -9,7 +9,7 @@
         <target>
             <rootDir>/Target</rootDir>
         </target>
-  </compiler>
+    </compiler>
     <parser name="default" mainClass="Parser" subtype="PegParser">
         <pegParser>
             <trace>on</trace>
@@ -29,7 +29,7 @@
         </pegParserGenerator>
     </parser>
     <parserPeg>
-        <trace>on</trace>
+        <trace></trace>
         <checkGenerator></checkGenerator>
         <compile_check>on</compile_check>
         <force_compile></force_compile>

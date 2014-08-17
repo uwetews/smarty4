@@ -1,7 +1,9 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
+
 use Smarty\PegParser;
 use Smarty\Node;
+
 /**
  * Class CoreTagParser
  *
@@ -23,7 +25,7 @@ class CoreTagParser extends PegParser
     #
     #
         <token CoreTag>
-            <rule> ( tagname:SmartyTagPrefix tag:$SmartyTag) | tag:TagStatement | tag:TagOutput </rule>
+            <rule> ( tagname:SmartyTagPrefix tag:$SmartyTag) | ( !SmartyTagPrefix ( tag:TagOutput | tag:TagStatement )) </rule>
             <action _start>
             {
                 $i = 1;
@@ -52,7 +54,6 @@ class CoreTagParser extends PegParser
     #
     # Tag attribute
     #
-    #           -> named                           ->shorttag
         <token SmartyTagAttributes>
             <rule>  ( _  (&'scope' scope:SmartyTagScopes) | (( name:Id _? '=' _?)? value:Expr))* </rule>
              <action _start>
@@ -124,13 +125,6 @@ class CoreTagParser extends PegParser
         </token>
 
     #
-    # Block Close Tag
-    #
-        <token Smarty_Tag_Block_Closex>
-            <rule> LdelSlash tag:Id Rdel</rule>
-        </token>
-
-    #
     # Default tag syntax
     #
         <node Smarty_Tag_Default>
@@ -164,6 +158,59 @@ class CoreTagParser extends PegParser
             <rule> Smarty_Tag_Default body:Body Smarty_Tag_Block_Close</rule>
         </node>
 
+            <token SmartyBlockCloseTag>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/{getLdel}\/(?<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ){getRdel}/</rule>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+            <action _init(getRdel)>
+                {
+                    return $this->parser->Rdel;
+                }
+            </action>
+        </token>
+
+        <token SmartyTagPrefix>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/({getLdel})(?<tagname>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ))(?!(\s*\())/</rule>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+        </token>
+
+        <token SmartyBlockCloseTag>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/{getLdel}\/(?<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ){getRdel}/</rule>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+            <action _init(getRdel)>
+                {
+                    return $this->parser->Rdel;
+                }
+            </action>
+        </token>
+
+        <token SmartyTagPrefix>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/({getLdel})(?<tagname>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ))(?!(\s*\())/</rule>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+        </token>
 
 
     </pegparser>

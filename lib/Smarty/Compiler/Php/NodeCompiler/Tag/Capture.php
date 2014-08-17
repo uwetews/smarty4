@@ -61,9 +61,9 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Capture extends SmartSmarty_Compiler_
         $this->iniTagCode($compiler);
 
         $this->code("\$this->_capture_stack[0][] = array($precompiled, $assign, $append);")
-            ->newline();
+             ->newline();
         $this->code("ob_start();")
-            ->newline();
+             ->newline();
 
         return $this->returnTagCode($compiler);
     }
@@ -99,37 +99,37 @@ class Smarty_ComSmarty_Compiler_Php_er_Tag_CaptureClose extends Smarty_CompilerS
         $this->iniTagCode($compiler);
 
         $this->code("list(\$_capture_buffer, \$_capture_assign, \$_capture_append) = array_pop(\$this->_capture_stack[0]);")
-            ->newline();
+             ->newline();
         $this->code("if (!empty(\$_capture_buffer)) {")
-            ->newline()
-            ->indent();
+             ->newline()
+             ->indent();
         $this->code("if (isset(\$_capture_assign)) {")
-            ->newline()
-            ->indent();
+             ->newline()
+             ->indent();
         $this->code("\$this->assign(\$_capture_assign, ob_get_contents());")
-            ->newline();
+             ->newline();
         $this->outdent()
-            ->code("}")
-            ->newline();
+             ->code("}")
+             ->newline();
         $this->code("if (isset( \$_capture_append)) {")
-            ->newline()
-            ->indent();
+             ->newline()
+             ->indent();
         $this->code("\$this->append(\$_capture_append, ob_get_contents());")
-            ->newline();
+             ->newline();
         $this->outdent()
-            ->code("}")
-            ->newline();
+             ->code("}")
+             ->newline();
         $this->code("Smarty::\$_smartyVars['capture'][\$_capture_buffer]=ob_get_clean();")
-            ->newline();
+             ->newline();
         $this->outdent()
-            ->code("} else {")
-            ->newline()
-            ->indent();
+             ->code("} else {")
+             ->newline()
+             ->indent();
         $this->code("throw new Smarty_Exception_CaptureError();")
-            ->newline();
+             ->newline();
         $this->outdent()
-            ->code("}")
-            ->newline();
+             ->code("}")
+             ->newline();
 
         return $this->returnTagCode($compiler);
     }

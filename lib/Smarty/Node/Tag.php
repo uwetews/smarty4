@@ -14,7 +14,6 @@
 namespace Smarty\Node;
 
 use Smarty\Parser;
-use Smarty\Parser\Token;
 use Smarty\Node;
 
 /**
@@ -111,7 +110,7 @@ class Tag extends Node
      *
      * @var boolean
      */
-    private  $acceptShortTags = false;
+    private $acceptShortTags = false;
 
     /**
      * Number of shorttag attributes
@@ -130,21 +129,32 @@ class Tag extends Node
     /**
      * Constructor
      *
-     * @param \Smarty\Parser       $parser parser context object
+     * @param \Smarty\Parser $parser parser context object
      */
     public function __construct(Parser $parser, $name = null)
     {
         parent::__construct($parser, $name);
-        if (isset($this->nodeAttributes['required'])) {
-            $this->requiredAttributes = $this->nodeAttributes['required'];
+        $this->decodeTagAttributes();
+    }
+
+    /**
+     * Decode tag allowed attributes and options from node attributes
+     */
+    public function decodeTagAttributes()
+    {
+        if (isset($this->nodeAttributes['attributes']['required'])) {
+            $this->requiredAttributes = $this->nodeAttributes['attributes']['required'];
         }
-        if (isset($this->nodeAttributes['optional'])) {
-            $this->optionalAttributes = $this->nodeAttributes['optional'];
+        if (isset($this->nodeAttributes['attributes']['optional'])) {
+            $this->optionalAttributes = $this->nodeAttributes['attributes']['optional'];
         }
-        if (isset($this->nodeAttributes['shorttag'])) {
-            $this->shorttagAttributes = $this->nodeAttributes['shorttag'];
+        if (isset($this->nodeAttributes['attributes']['shorttag'])) {
+            $this->shorttagAttributes = $this->nodeAttributes['attributes']['shorttag'];
             $this->acceptShortTags = true;
             $this->numberShortTags = count($this->shorttagAttributes);
+        }
+        if (isset($this->nodeAttributes['options'])) {
+            $this->allowedOptions = $this->nodeAttributes['options'];
         }
     }
 
@@ -153,7 +163,8 @@ class Tag extends Node
      *
      * @param array $tagAttribute
      */
-    public function setTagAttribute($tagAttribute) {
+    public function setTagAttribute($tagAttribute)
+    {
         $this->tagAttributes[$tagAttribute[0]] = $tagAttribute[1];
         $this->acceptShortTags = false;
     }
@@ -163,7 +174,8 @@ class Tag extends Node
      *
      * @param string $tagOption
      */
-    public function setTagOption($tagOption) {
+    public function setTagOption($tagOption)
+    {
         $this->tagOptions[$tagOption] = true;
     }
 
@@ -174,7 +186,8 @@ class Tag extends Node
      *
      * @return bool
      */
-    public function getTagOption($tagOption) {
+    public function getTagOption($tagOption)
+    {
         if (isset($this->tagOptions[$tagOption])) {
             return $this->tagOptions[$tagOption];
         } else {

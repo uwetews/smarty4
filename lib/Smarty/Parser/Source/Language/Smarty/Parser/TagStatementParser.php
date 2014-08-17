@@ -10,17 +10,15 @@ use Smarty\PegParser;
  */
 class TagStatementParser extends PegParser
 {
-   
-    /**
-     *
-     * Parser generated on 2014-07-10 23:06:53
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagStatement.peg.inc' dated 2014-07-08 04:35:17
-     *
-    */
 
     /**
-     Flag that compiled Peg Parser class is valid
-     *
+     * Parser generated on 2014-08-15 04:06:53
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagStatement.peg.inc' dated 2014-07-08 02:35:17
+
+     */
+
+    /**
+     * Flag that compiled Peg Parser class is valid
      * @var bool
      */
     public $valid = true;
@@ -31,8 +29,8 @@ class TagStatementParser extends PegParser
      * @var array
      */
     public $matchMethods = array(
-            "TagStatement" => "matchNodeTagStatement"
-        );
+        "TagStatement" => "matchNodeTagStatement"
+    );
 
     /**
      * Array of node attributes
@@ -40,44 +38,43 @@ class TagStatementParser extends PegParser
      * @var array
      */
     public $nodeAttributes = array(
-            "TagStatement" => array(
-                    "_nodetype" => "node",
-                    "attributes" => array(
-                            "required" => array(
-                                    "variable" => true,
-                                    "value" => true
-                                ),
-                            "optional" => array(
-                                    "append" => true,
-                                    "istag" => true
-                                )
-                        ),
-                    "options" => array(
-                            "nocache" => true,
-                            "cachevalue" => true
-                        )
+        "TagStatement" => array(
+            "_nodetype"  => "node",
+            "attributes" => array(
+                "required" => array(
+                    "variable" => true,
+                    "value"    => true
+                ),
+                "optional" => array(
+                    "append" => true,
+                    "istag"  => true
                 )
-        );
-    /**
-     *
-     * Parser rules and action for node 'TagStatement'
-     *
-     *  Rule:
-    
-             <node TagStatement>
-                <attribute>attributes=(required=(variable,value),optional=(append,istag)),options=(nocache,cachevalue)</attribute>
-                 <rule>Ldel statement:Statement SmartyTagAttributes SmartyTagOptions Rdel</rule>
-                 <action statement>
-                 {
-                     $result['node'] = $subres['node'];
-                     $result['node']->setTagAttribute(array('istag', true));
-                 }
-                 </action>
-             </node>
+            ),
+            "options"    => array(
+                "nocache"    => true,
+                "cachevalue" => true
+            )
+        )
+    );
 
-     *
-    */
-    public function matchNodeTagStatement($previous, &$errorResult){
+    /**
+     * Parser rules and action for node 'TagStatement'
+     *  Rule:
+     * <node TagStatement>
+     * <attribute>attributes=(required=(variable,value),optional=(append,istag)),options=(nocache,cachevalue)</attribute>
+     * <rule>Ldel statement:Statement SmartyTagAttributes SmartyTagOptions Rdel</rule>
+     * <action statement>
+     * {
+     * $result['node'] = $subres['node'];
+     * $result['node']->setTagAttribute(array('istag', true));
+     * }
+     * </action>
+     * </node>
+
+
+     */
+    public function matchNodeTagStatement($previous, &$errorResult)
+    {
         $result = $this->parser->resultDefault;
         $error = array();
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
@@ -88,6 +85,7 @@ class TagStatementParser extends PegParser
         $pos1 = $this->parser->pos;
         $line1 = $this->parser->line;
         $error1 = $error;
+        $this->parser->addBacktrace(array('_s1_', ''));
         do {
             $error = array();
             // Start 'Ldel' min '1' max '1'
@@ -95,7 +93,7 @@ class TagStatementParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Ldel', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Ldel',  $subres['_text']));
+                $this->parser->successNode(array('Ldel', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -114,7 +112,7 @@ class TagStatementParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Statement', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Statement',  $subres['_text']));
+                $this->parser->successNode(array('Statement', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $this->TagStatement_statement($result, $subres);
                 $valid = true;
@@ -134,7 +132,7 @@ class TagStatementParser extends PegParser
             $subres = $this->parser->matchRule($result, 'SmartyTagAttributes', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('SmartyTagAttributes',  $subres['_text']));
+                $this->parser->successNode(array('SmartyTagAttributes', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -153,7 +151,7 @@ class TagStatementParser extends PegParser
             $subres = $this->parser->matchRule($result, 'SmartyTagOptions', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('SmartyTagOptions',  $subres['_text']));
+                $this->parser->successNode(array('SmartyTagOptions', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -172,7 +170,7 @@ class TagStatementParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Rdel', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Rdel',  $subres['_text']));
+                $this->parser->successNode(array('Rdel', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -187,10 +185,14 @@ class TagStatementParser extends PegParser
             }
             break;
         } while (true);
+        $remove = array_pop($this->parser->backtrace);
         if (!$valid) {
+            $this->parser->failNode($remove);
             $this->parser->pos = $pos1;
             $this->parser->line = $line1;
             $result = $backup1;
+        } else {
+            $this->parser->successNode($remove);
         }
         $error = $error1;
         unset($backup1);
@@ -207,12 +209,10 @@ class TagStatementParser extends PegParser
         return $result;
     }
 
-    public function TagStatement_statement (&$result, $subres) {
+    public function TagStatement_statement(&$result, $subres)
+    {
         $result['node'] = $subres['node'];
         $result['node']->setTagAttribute(array('istag', true));
     }
-
-
-
 }
 

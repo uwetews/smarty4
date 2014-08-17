@@ -96,7 +96,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Insert extends Smarty_Compiler_Code_P
             }
             // code for script file loading
             $this->code("require_once '{$_filepath}';")
-                ->newline();
+                 ->newline();
             require_once $_filepath;
             if (!is_callable($_function)) {
                 $compiler->error(" {insert} function '{$_function}' is not callable in script file '{$_script}'", $compiler->lex->taglineno);
@@ -125,27 +125,27 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Insert extends Smarty_Compiler_Code_P
                 $this->precompiled .= str_repeat(' ', $this->indentation * 4);
 
                 $this->raw(str_repeat(' ', $this->indentation * 4))
-                    ->raw("\$tmp_p = var_export({$_params}, true);")
-                    ->raw("\n");
+                     ->raw("\$tmp_p = var_export({$_params}, true);")
+                     ->raw("\n");
                 $this->raw(str_repeat(' ', $this->indentation * 4))
-                    ->raw("echo \"/*%%SmartyNocache%%*/\\\$this->assign({$_assign} , {$_function}(\$tmp_p, \\\$this->smarty), true);/*/%%SmartyNocache%%*/\";")
-                    ->raw("\n");
+                     ->raw("echo \"/*%%SmartyNocache%%*/\\\$this->assign({$_assign} , {$_function}(\$tmp_p, \\\$this->smarty), true);/*/%%SmartyNocache%%*/\";")
+                     ->raw("\n");
             } else {
                 $this->code("\$this->assign({$_assign} , {$_function} ({$_params},\$this->smarty), true);")
-                    ->newline();
+                     ->newline();
             }
         } else {
             $compiler->has_output = true;
             if ($compiler->context->smarty->caching) {
                 $this->raw(str_repeat(' ', $this->indentation * 4))
-                    ->raw("\$tmp_p = var_export({$_params}, true);")
-                    ->raw("\n");
+                     ->raw("\$tmp_p = var_export({$_params}, true);")
+                     ->raw("\n");
                 $this->raw(str_repeat(' ', $this->indentation * 4))
-                    ->raw("echo \"/*%%SmartyNocache%%*/echo {$_function}(\$tmp_p, \\\$this->smarty);/*/%%SmartyNocache%%*/\";")
-                    ->raw("\n");
+                     ->raw("echo \"/*%%SmartyNocache%%*/echo {$_function}(\$tmp_p, \\\$this->smarty);/*/%%SmartyNocache%%*/\";")
+                     ->raw("\n");
             } else {
                 $this->code("echo {$_function}({$_params},\$this->smarty);")
-                    ->newline();
+                     ->newline();
             }
         }
 

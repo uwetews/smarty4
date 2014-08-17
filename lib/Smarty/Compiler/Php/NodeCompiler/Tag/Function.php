@@ -32,29 +32,29 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Function extends Smarty_Exception_Mag
         }
         unset($node->attributeNodes['name']);
         $target->code("function _renderTemplateFunction_{$_name}(\$_scope, \$params) {\n")
-            ->indent()
-            ->code("\$output = '';\n");
+               ->indent()
+               ->code("\$output = '';\n");
         if (!empty($node->attributeNodes)) {
             foreach ($node->attributeNodes as $var => $n) {
                 $target->lineNo($node->sourceLineNo)
-                    ->code("\$_scope->_tpl_vars->{$var}")
-                    ->raw(' = new Entry(');
+                       ->code("\$_scope->_tpl_vars->{$var}")
+                       ->raw(' = new Entry(');
                 $target->compileNode($n);
                 $target->raw(");\n");
                 unset($n, $node->attributeNodes[$var]);
             }
         }
         $target->lineNo($node->sourceLineNo)
-            ->code("foreach (\$params as \$key => \$value) {\n")
-            ->indent()
-            ->code("\$_scope->_tpl_vars->\$key = new Entry (\$value);\n")
-            ->outdent()
-            ->code("}\n");
+               ->code("foreach (\$params as \$key => \$value) {\n")
+               ->indent()
+               ->code("\$_scope->_tpl_vars->\$key = new Entry (\$value);\n")
+               ->outdent()
+               ->code("}\n");
         // Body
         $target->compileNodeArray($node->subtreeNodes, $delete);
         $target->code("return \$output;\n")
-            ->outdent()
-            ->code("}\n\n");
+               ->outdent()
+               ->code("}\n\n");
     }
 
     /**
@@ -113,21 +113,21 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Function extends Smarty_Exception_Mag
 
         $code = new Smarty_Compiler_Code(1);
         $code->code("function _renderTemplateFunction_{$_name}(\$_scope, \$params) {")
-            ->newline()
-            ->indent();
+             ->newline()
+             ->indent();
         $code->addSourceLineNo($saved_data[3]);
         $code->code("foreach (\$params as \$key => \$value) {")
-            ->newline()
-            ->indent();
+             ->newline()
+             ->indent();
         $code->code("\$_scope->_tpl_vars->\$key = new Entry (\$value);")
-            ->newline();
+             ->newline();
         $code->outdent()
-            ->code("}")
-            ->newline();
+             ->code("}")
+             ->newline();
         $code->mergeCode($compiler->template_code);
         $code->outdent()
-            ->code("}")
-            ->newline();
+             ->code("}")
+             ->newline();
 
         $compiler->_templateFunctions_code[$_name] = $code;
 

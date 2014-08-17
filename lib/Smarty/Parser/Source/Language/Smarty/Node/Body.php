@@ -52,7 +52,7 @@ class Body extends Node
      *
      * @return Node  current node
      */
-    public function addSubTree($nodes)
+    public function addSubTree($nodes, $name = null, $multiple = false)
     {
         if (is_array($nodes)) {
             $this->subtreeNodes = array_merge($this->subtreeNodes, $nodes);

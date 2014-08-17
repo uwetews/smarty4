@@ -40,43 +40,43 @@ class ParserGenerator extends Parser
 
     public $rules = array(
         "attrvalue" => array(
-            "_name"     => "attrvalue",
-            "_param" => array(
+            "_name"    => "attrvalue",
+            "_param"   => array(
                 0 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 1 => array(
                     "_param" => array(
                         0 => array(
                             "_param" => "/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|(\"[^\"]*\")|\\d+|\\w+))/",
-                            "_type"   => "rx"
+                            "_type"  => "rx"
                         ),
                         1 => array(
                             "_param" => array(
                                 0 => array(
                                     "_param" => "(",
-                                    "_type"    => "literal"
+                                    "_type"  => "literal"
                                 ),
                                 1 => array(
                                     "_param" => "attr",
-                                    "_tag"     => "sub",
-                                    "_type"    => "recurse"
+                                    "_tag"   => "sub",
+                                    "_type"  => "recurse"
                                 ),
                                 2 => array(
                                     "_param" => ")",
-                                    "_type"    => "literal"
+                                    "_type"  => "literal"
                                 )
                             ),
-                            "_type"     => "sequence"
+                            "_type"  => "sequence"
                         )
                     ),
-                    "_type"   => "option"
+                    "_type"  => "option"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_match"  => array(
                     "sub" => array(
                         "attrvalue_sub" => true
@@ -88,46 +88,46 @@ class ParserGenerator extends Parser
             )
         ),
         "attrentry" => array(
-            "_name"     => "attrentry",
-            "_param" => array(
+            "_name"    => "attrentry",
+            "_param"   => array(
                 0 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 1 => array(
                     "_param" => "Name",
-                    "_tag"     => "key",
-                    "_type"    => "recurse"
+                    "_tag"   => "key",
+                    "_type"  => "recurse"
                 ),
                 2 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 3 => array(
-                    "_min"      => 0,
+                    "_min"   => 0,
                     "_param" => array(
                         0 => array(
                             "_param" => "=",
-                            "_type"    => "literal"
+                            "_type"  => "literal"
                         ),
                         1 => array(
-                            "_param" => true,
-                            "_silent"   => 2,
-                            "_type"     => "whitespace"
+                            "_param"  => true,
+                            "_silent" => 2,
+                            "_type"   => "whitespace"
                         ),
                         2 => array(
                             "_param" => "attrvalue",
-                            "_tag"     => "val",
-                            "_type"    => "recurse"
+                            "_tag"   => "val",
+                            "_type"  => "recurse"
                         )
                     ),
-                    "_type"     => "sequence"
+                    "_type"  => "sequence"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_match" => array(
                     "key" => array(
                         "attrentry_key" => true
@@ -139,59 +139,59 @@ class ParserGenerator extends Parser
             )
         ),
         "attr"      => array(
-            "_name"     => "attr",
-            "_param" => array(
+            "_name"    => "attr",
+            "_param"   => array(
                 0 => array(
                     "_param" => "attrentry",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 ),
                 1 => array(
-                    "_max"      => null,
-                    "_min"      => 0,
+                    "_max"   => null,
+                    "_min"   => 0,
                     "_param" => array(
                         0 => array(
                             "_param" => ",",
-                            "_type"    => "literal"
+                            "_type"  => "literal"
                         ),
                         1 => array(
                             "_param" => "attrentry",
-                            "_type"    => "recurse"
+                            "_type"  => "recurse"
                         )
                     ),
-                    "_type"     => "sequence"
+                    "_type"  => "sequence"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_all" => array(
                     "attr___ALL" => true
                 )
             )
         ),
         "Name"      => array(
-            "_name"   => "Name",
+            "_name"  => "Name",
             "_param" => "/\\w+/",
-            "_type"   => "rx"
+            "_type"  => "rx"
         ),
         "Header"    => array(
-            "_name"   => "Header",
+            "_name"  => "Header",
             "_param" => "/\\s*\\/\\*!\\* /",
-            "_type"   => "rx"
+            "_type"  => "rx"
         ),
         "End"       => array(
             "_name"   => "End",
-            "_param" => "/\\s*\\*\\//",
+            "_param"  => "/\\s*\\*\\//",
             "_silent" => 1,
             "_type"   => "rx"
         ),
         "Comment"   => array(
-            "_name"   => "Comment",
+            "_name"  => "Comment",
             "_param" => "/[\\s\\t]*(([#][^\\r\\n]*)?([\\r\\n]+[\\s\\t]*))* /",
-            "_type"   => "rx"
+            "_type"  => "rx"
         ),
         "Text"      => array(
             "_name"    => "Text",
-            "_param"  => "/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/",
+            "_param"   => "/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/",
             "_type"    => "rx",
             "_actions" => array(
                 "_start" => array(
@@ -203,68 +203,68 @@ class ParserGenerator extends Parser
             )
         ),
         "Parser"    => array(
-            "_name"     => "Parser",
-            "_param" => array(
+            "_name"    => "Parser",
+            "_param"   => array(
                 0  => array(
-                    "_silent"  => 2,
-                    "_param" => "Header",
-                    "_type"    => "recurse"
+                    "_silent" => 2,
+                    "_param"  => "Header",
+                    "_type"   => "recurse"
                 ),
                 1  => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 2  => array(
                     "_param" => "<pegparser",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 3  => array(
                     "_param" => false,
-                    "_type"     => "whitespace"
+                    "_type"  => "whitespace"
                 ),
                 4  => array(
                     "_param" => "Name",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 ),
                 5  => array(
                     "_param" => ">",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 6  => array(
-                    "_max"     => null,
-                    "_min"     => 0,
+                    "_max"   => null,
+                    "_min"   => 0,
                     "_param" => "Attribute",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 ),
                 7  => array(
-                    "_max"     => null,
-                    "_min"     => 0,
+                    "_max"   => null,
+                    "_min"   => 0,
                     "_param" => "Node",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 ),
                 8  => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 9  => array(
                     "_param" => "</pegparser>",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 10 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 11 => array(
-                    "_min"     => 0,
+                    "_min"   => 0,
                     "_param" => "End",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_start"  => array(
                     "Parser___START" => true
                 ),
@@ -282,33 +282,33 @@ class ParserGenerator extends Parser
             )
         ),
         "Attribute" => array(
-            "_name"     => "Attribute",
-            "_param" => array(
+            "_name"    => "Attribute",
+            "_param"   => array(
                 0 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 1 => array(
                     "_param" => "<attribute>",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 2 => array(
                     "_param" => "attr",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 ),
                 3 => array(
                     "_param" => "</attribute>",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 4 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_match"  => array(
                     "attr" => array(
                         "Attribute_attr" => true
@@ -320,46 +320,46 @@ class ParserGenerator extends Parser
             )
         ),
         "Node"      => array(
-            "_name"     => "Node",
-            "_param" => array(
+            "_name"    => "Node",
+            "_param"   => array(
                 0 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 1 => array(
                     "_param" => "/\\s*\\<node\\s+(?<nodename>\\w+)\\>/",
-                    "_type"   => "rx"
+                    "_type"  => "rx"
                 ),
                 2 => array(
-                    "_max"     => null,
-                    "_min"     => 0,
+                    "_max"   => null,
+                    "_min"   => 0,
                     "_param" => "Attribute",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 ),
                 3 => array(
                     "_param" => "Rule",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 ),
                 4 => array(
-                    "_max"     => null,
-                    "_min"     => 0,
-                    "_silent"  => 1,
-                    "_param" => "Action",
-                    "_type"    => "recurse"
+                    "_max"    => null,
+                    "_min"    => 0,
+                    "_silent" => 1,
+                    "_param"  => "Action",
+                    "_type"   => "recurse"
                 ),
                 5 => array(
                     "_param" => "</node>",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 6 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_start"  => array(
                     "Node___START" => true
                 ),
@@ -383,43 +383,43 @@ class ParserGenerator extends Parser
             )
         ),
         "Rule"      => array(
-            "_name"     => "Rule",
-            "_param" => array(
+            "_name"    => "Rule",
+            "_param"   => array(
                 0 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 1 => array(
                     "_param" => "<rule>",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 2 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 3 => array(
                     "_param" => "Sequence",
-                    "_type"    => "recurse"
+                    "_type"  => "recurse"
                 ),
                 4 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 5 => array(
                     "_param" => "</rule>",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 6 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_match"  => array(
                     "Sequence" => array(
                         "Rule_Sequence" => true
@@ -431,44 +431,44 @@ class ParserGenerator extends Parser
             )
         ),
         "Action"    => array(
-            "_name"     => "Action",
-            "_param" => array(
+            "_name"    => "Action",
+            "_param"   => array(
                 0 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 1 => array(
                     "_param" => "/\\<action\\s+(?<funcname>\\w+)(\\((?<argument>\\w+)\\))?\\>/",
-                    "_type"   => "rx"
+                    "_type"  => "rx"
                 ),
                 2 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 3 => array(
                     "_param" => "/(\\{(?:(?>[^{}]+|(?R))*)?\\})/",
-                    "_tag"    => "code",
-                    "_type"   => "rx"
+                    "_tag"   => "code",
+                    "_type"  => "rx"
                 ),
                 4 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 ),
                 5 => array(
                     "_param" => "</action>",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 6 => array(
-                    "_param" => true,
-                    "_silent"   => 2,
-                    "_type"     => "whitespace"
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_match"  => array(
                     "code" => array(
                         "Action_code" => true
@@ -480,21 +480,21 @@ class ParserGenerator extends Parser
             )
         ),
         "PHP"       => array(
-            "_name"     => "PHP",
-            "_param" => array(
+            "_name"    => "PHP",
+            "_param"   => array(
                 0 => array(
                     "_param" => "/.[\\n\\t ]* /",
-                    "_type"   => "rx"
+                    "_type"  => "rx"
                 ),
                 1 => array(
-                    "_param" => "/(\\{|\\}|[^\\n\\}\\{]+)* /",
+                    "_param"  => "/(\\{|\\}|[^\\n\\}\\{]+)* /",
                     "_silent" => 1,
                     "_tag"    => "b",
                     "_type"   => "rx"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_match" => array(
                     "b" => array(
                         "PHP_b" => true
@@ -503,140 +503,140 @@ class ParserGenerator extends Parser
             )
         ),
         "Arguments" => array(
-            "_name"     => "Arguments",
-            "_param" => array(
+            "_name"    => "Arguments",
+            "_param"   => array(
                 0 => array(
                     "_param" => "(",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 ),
                 1 => array(
                     "_param" => "Name",
-                    "_tag"     => "attr",
-                    "_type"    => "recurse"
+                    "_tag"   => "attr",
+                    "_type"  => "recurse"
                 ),
                 2 => array(
-                    "_min"      => 0,
+                    "_min"   => 0,
                     "_param" => array(
                         0 => array(
                             "_param" => "=",
-                            "_type"    => "literal"
+                            "_type"  => "literal"
                         ),
                         1 => array(
                             "_param" => array(
                                 0 => array(
                                     "_param" => "Name",
-                                    "_tag"     => "value",
-                                    "_type"    => "recurse"
+                                    "_tag"   => "value",
+                                    "_type"  => "recurse"
                                 ),
                                 1 => array(
                                     "_param" => "Arguments",
-                                    "_tag"     => "value",
-                                    "_type"    => "recurse"
+                                    "_tag"   => "value",
+                                    "_type"  => "recurse"
                                 )
                             ),
-                            "_type"   => "option"
+                            "_type"  => "option"
                         )
                     ),
-                    "_type"     => "sequence"
+                    "_type"  => "sequence"
                 ),
                 3 => array(
-                    "_max"      => null,
-                    "_min"      => 0,
+                    "_max"   => null,
+                    "_min"   => 0,
                     "_param" => array(
                         0 => array(
                             "_param" => ",",
-                            "_type"    => "literal"
+                            "_type"  => "literal"
                         ),
                         1 => array(
                             "_param" => "Name",
-                            "_tag"     => "attr",
-                            "_type"    => "recurse"
+                            "_tag"   => "attr",
+                            "_type"  => "recurse"
                         ),
                         2 => array(
-                            "_min"      => 0,
+                            "_min"   => 0,
                             "_param" => array(
                                 0 => array(
                                     "_param" => "=",
-                                    "_type"    => "literal"
+                                    "_type"  => "literal"
                                 ),
                                 1 => array(
                                     "_param" => array(
                                         0 => array(
                                             "_param" => "Name",
-                                            "_tag"     => "value",
-                                            "_type"    => "recurse"
+                                            "_tag"   => "value",
+                                            "_type"  => "recurse"
                                         ),
                                         1 => array(
                                             "_param" => "Arguments",
-                                            "_tag"     => "value",
-                                            "_type"    => "recurse"
+                                            "_tag"   => "value",
+                                            "_type"  => "recurse"
                                         )
                                     ),
-                                    "_type"   => "option"
+                                    "_type"  => "option"
                                 )
                             ),
-                            "_type"     => "sequence"
+                            "_type"  => "sequence"
                         )
                     ),
-                    "_type"     => "sequence"
+                    "_type"  => "sequence"
                 ),
                 4 => array(
                     "_param" => ")",
-                    "_type"    => "literal"
+                    "_type"  => "literal"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_finish" => array(
                     "Arguments___FINISH" => true
                 )
             )
         ),
         "Option"    => array(
-            "_name"     => "Option",
-            "_param" => array(
+            "_name"    => "Option",
+            "_param"   => array(
                 0 => array(
                     "_param" => true,
-                    "_type"     => "whitespace"
+                    "_type"  => "whitespace"
                 ),
                 1 => array(
                     "_param" => "Token",
-                    "_tag"     => "result",
-                    "_type"    => "recurse"
+                    "_tag"   => "result",
+                    "_type"  => "recurse"
                 ),
                 2 => array(
-                    "_max"      => null,
-                    "_min"      => 0,
+                    "_max"   => null,
+                    "_min"   => 0,
                     "_param" => array(
                         0 => array(
                             "_param" => true,
-                            "_type"     => "whitespace"
+                            "_type"  => "whitespace"
                         ),
                         1 => array(
                             "_param" => "|",
-                            "_type"    => "literal"
+                            "_type"  => "literal"
                         ),
                         2 => array(
                             "_param" => true,
-                            "_type"     => "whitespace"
+                            "_type"  => "whitespace"
                         ),
                         3 => array(
                             "_param" => "Token",
-                            "_tag"     => "option",
-                            "_type"    => "recurse"
+                            "_tag"   => "option",
+                            "_type"  => "recurse"
                         )
                     ),
-                    "_type"     => "sequence"
+                    "_type"  => "sequence"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_match"  => array(
                     "result" => array(
                         "Option_result" => true
                     ),
                     "option" => array(
-                                            "Option_option" => true
+                        "Option_option" => true
                     )
                 ),
                 "_finish" => array(
@@ -645,23 +645,23 @@ class ParserGenerator extends Parser
             )
         ),
         "Sequence"  => array(
-            "_name"     => "Sequence",
-            "_param" => array(
+            "_name"    => "Sequence",
+            "_param"   => array(
                 0 => array(
                     "_param" => "Option",
-                    "_tag"     => "result",
-                    "_type"    => "recurse"
+                    "_tag"   => "result",
+                    "_type"  => "recurse"
                 ),
                 1 => array(
-                    "_max"     => null,
-                    "_min"     => 0,
+                    "_max"   => null,
+                    "_min"   => 0,
                     "_param" => "Option",
-                    "_tag"     => "sequence",
-                    "_type"    => "recurse"
+                    "_tag"   => "sequence",
+                    "_type"  => "recurse"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_match"  => array(
                     "result"   => array(
                         "Sequence_result" => true
@@ -676,57 +676,57 @@ class ParserGenerator extends Parser
             )
         ),
         "Token"     => array(
-            "_name"     => "Token",
-            "_param" => array(
+            "_name"    => "Token",
+            "_param"   => array(
                 0 => array(
                     "_param" => "/((?<silent>\\.+)|(?<pla>&)|(?<nla>\\!))?((?<tag>\\w+):)?/",
-                    "_type"   => "rx",
+                    "_type"  => "rx",
                     "_min"   => 0
                 ),
                 1 => array(
                     "_param" => array(
                         0 => array(
                             "_param" => "/(?<rx>\\G(\\/|~|@|%|§)(((\\\\\\\\)*\\\\\\2)|.*?(?=(\\\\|\\2)))*\\2)|((?<osp>_\\?)|(?<wsp>_))|(?<node>\\w+)|(?<literal>(\"[^\"]*\")|('[^']*'))|(\\\$(?<expression>\\w+))/",
-                            "_type"   => "rx"
+                            "_type"  => "rx"
                         ),
                         1 => array(
                             "_param" => array(
                                 0 => array(
                                     "_param" => "(",
-                                    "_type"    => "literal"
+                                    "_type"  => "literal"
                                 ),
                                 1 => array(
-                                    "_param" => true,
-                                    "_silent"   => 2,
-                                    "_type"     => "whitespace"
+                                    "_param"  => true,
+                                    "_silent" => 2,
+                                    "_type"   => "whitespace"
                                 ),
                                 2 => array(
                                     "_param" => "Sequence",
-                                    "_type"    => "recurse"
+                                    "_type"  => "recurse"
                                 ),
                                 3 => array(
-                                    "_param" => true,
-                                    "_silent"   => 2,
-                                    "_type"     => "whitespace"
+                                    "_param"  => true,
+                                    "_silent" => 2,
+                                    "_type"   => "whitespace"
                                 ),
                                 4 => array(
                                     "_param" => ")",
-                                    "_type"    => "literal"
+                                    "_type"  => "literal"
                                 )
                             ),
-                            "_type"     => "sequence"
+                            "_type"  => "sequence"
                         )
                     ),
-                    "_type"   => "option"
+                    "_type"  => "option"
                 ),
                 2 => array(
                     "_param" => "/((?<quest>\\?)|(?<any>\\*)|(?<must>\\+?)|(\\{(?<min>\\d+)?,(?<max>\\d+)?\\}))?/",
-                    "_type"   => "rx",
+                    "_type"  => "rx",
                     "_min"   => 0
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_start"  => array(
                     "Token___START" => true
                 ),
@@ -741,25 +741,25 @@ class ParserGenerator extends Parser
             )
         ),
         "File"      => array(
-            "_max"      => null,
-            "_min"      => 0,
-            "_name"     => "File",
-            "_param" => array(
+            "_max"     => null,
+            "_min"     => 0,
+            "_name"    => "File",
+            "_param"   => array(
                 0 => array(
-                    "_silent"  => 1,
-                    "_param" => "Text",
-                    "_type"    => "recurse"
+                    "_silent" => 1,
+                    "_param"  => "Text",
+                    "_type"   => "recurse"
                 ),
                 1 => array(
-                    "_max"     => null,
-                    "_min"     => 0,
-                    "_silent"  => 1,
-                    "_param" => "Parser",
-                    "_type"    => "recurse"
+                    "_max"    => null,
+                    "_min"    => 0,
+                    "_silent" => 1,
+                    "_param"  => "Parser",
+                    "_type"   => "recurse"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_start" => array(
                     "File___START" => true
                 ),
@@ -769,7 +769,6 @@ class ParserGenerator extends Parser
             )
         )
     );
-
 
     /**
      * Parser rules and action for node 'attrvalue'
@@ -1100,6 +1099,7 @@ class ParserGenerator extends Parser
     {
         $i = 1;
     }
+
     public function Action___START(&$result)
     {
         $i = 1;
@@ -1387,10 +1387,10 @@ class ParserGenerator extends Parser
         return $rule;
     }
 
-    public function getMatchMethod($ruleName, $quiet = false) {
-      return false;
+    public function getMatchMethod($ruleName, $quiet = false)
+    {
+        return false;
     }
-
 
     /**
      * Constructor

@@ -56,7 +56,6 @@ class RxMatchOld
     /**
      * @param      $rule
      * @param      $parser
-     *
      */
     public function __construct($rule, Parser $parser, RuleArrayParser $ruleArrayParser)
     {
@@ -83,7 +82,6 @@ class RxMatchOld
 
     /**
      * match regular expression
-     *
      *
      * @return bool
      */

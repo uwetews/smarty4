@@ -24,9 +24,8 @@ class Variable
      * Compiles code for variable access
      *
      * @param Node $node   source node
-     * @param Code                                   $codeTargetObj
-     * @param bool                                   $delete flag if compiled nodes shall be deleted
-     *
+     * @param Code $codeTargetObj
+     * @param bool $delete flag if compiled nodes shall be deleted
      */
     public static function compile(Node $node, Code $codeTargetObj, $delete = true)
     {
@@ -62,11 +61,11 @@ class Variable
             foreach ($suffixChain as $suffix) {
                 if ($suffix['type'] == 'arrayelement') {
                     $codeTargetObj->raw('[')
-                        ->compileNode($suffix['node'], $delete)
-                        ->raw(']');
+                                  ->compileNode($suffix['node'], $delete)
+                                  ->raw(']');
                 } else {
                     $codeTargetObj->raw('->')
-                        ->compileNodeArray($suffix['name'], $codeTargetObj, $delete);
+                                  ->compileNodeArray($suffix['name'], $codeTargetObj, $delete);
                     if (isset($suffix['method'])) {
                         $codeTargetObj->compileNode($suffix['method'], $delete);
                     }

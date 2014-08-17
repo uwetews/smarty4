@@ -100,14 +100,14 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_IncludePhp extends Smarty_Compiler_Co
 
         if (isset($_assign)) {
             $this->code('ob_start();')
-                ->newline();
+                 ->newline();
             $this->code("include{$_once} ('{$_filepath}');")
-                ->newline();
+                 ->newline();
             $this->code("\$this->assign({$_assign},ob_get_clean());")
-                ->newline();
+                 ->newline();
         } else {
             $this->code("include{$_once} ('{$_filepath}');")
-                ->newline();
+                 ->newline();
         }
 
         return $this->returnTagCode($compiler);

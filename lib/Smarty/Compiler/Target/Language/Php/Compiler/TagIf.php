@@ -52,13 +52,13 @@ class TagIf extends Magic
     {
         $ifTag = $node->getSubTree('if');
         $codeTargetObj->lineNo($node->sourceLineNo)
-            ->code("if (")
-            ->compileNodeArray($ifTag['condition'], $codeTargetObj, $delete)
-            ->raw(") {\n");
+                      ->code("if (")
+                      ->compileNodeArray($ifTag['condition'], $codeTargetObj, $delete)
+                      ->raw(") {\n");
         if ($ifTag['body'] !== false) {
             $codeTargetObj->indent()
-                ->compileNodeArray($ifTag['body'], $codeTargetObj, $delete)
-                ->outdent();
+                          ->compileNodeArray($ifTag['body'], $codeTargetObj, $delete)
+                          ->outdent();
         }
         $codeTargetObj->code("}\n");
     }
@@ -75,13 +75,13 @@ class TagIf extends Magic
     {
         foreach ($elseifTags as $elseifTag) {
             $codeTargetObj->lineNo($node->sourceLineNo)
-                ->code("elseif (")
-                ->compileNodeArray($elseifTag['condition'], $codeTargetObj, $delete)
-                ->raw(") {\n");
+                          ->code("elseif (")
+                          ->compileNodeArray($elseifTag['condition'], $codeTargetObj, $delete)
+                          ->raw(") {\n");
             if ($elseifTag['body'] !== false) {
                 $codeTargetObj->indent()
-                    ->compileNodeArray($elseifTag['body'], $codeTargetObj, $delete)
-                    ->outdent();
+                              ->compileNodeArray($elseifTag['body'], $codeTargetObj, $delete)
+                              ->outdent();
             }
             $codeTargetObj->code("}\n");
         }
@@ -98,11 +98,11 @@ class TagIf extends Magic
     public static function compile_else($elseTag, Tag $node, Code $codeTargetObj, $delete)
     {
         $codeTargetObj->lineNo($node->sourceLineNo)
-            ->code("else {\n");
+                      ->code("else {\n");
         if ($elseTag['body'] !== false) {
             $codeTargetObj->indent()
-                ->compileNodeArray($elseTag['body'], $codeTargetObj, $delete)
-                ->outdent();
+                          ->compileNodeArray($elseTag['body'], $codeTargetObj, $delete)
+                          ->outdent();
         }
         $codeTargetObj->code("}\n");
     }

@@ -34,7 +34,7 @@ class Smarty_Compiler_Php_NodeCompiler_Value_Modifier
         if (!empty($node->parameterNodes)) {
             foreach ($node->parameterNodes as $key => $n) {
                 $target->raw(', ')
-                    ->compileNode($n, false);
+                       ->compileNode($n, false);
                 unset($n);
                 $node->parameterNodes[$key]->cleanup();
                 unset($node->parameterNodes[$key]);

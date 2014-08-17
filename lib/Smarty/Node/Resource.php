@@ -1,14 +1,14 @@
 <?php
 namespace Smarty\Node;
 
-use Smarty\Compiler\Target\Language\Php\Format;
+use Smarty\Node;
 
 /**
  * Class Node
  *
  * @package Smarty\Nodes\Resource
  */
-class Resource extends Format
+class Resource extends Node
 {
     /**
      * Node name

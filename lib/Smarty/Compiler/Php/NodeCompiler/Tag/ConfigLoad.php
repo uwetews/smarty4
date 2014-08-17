@@ -84,7 +84,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_ConfigLoad extends Smarty_Compiler_Co
         $this->iniTagCode($compiler);
 
         $this->code("\$this->configLoad($conf_file, $section, {$scope_type});")
-            ->newline();
+             ->newline();
 
         return $this->returnTagCode($compiler);
     }

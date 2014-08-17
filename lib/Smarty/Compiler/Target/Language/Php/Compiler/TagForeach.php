@@ -66,23 +66,23 @@ class TagForeach extends Magic
         // compile tag
         $item = self::getCompiledVariable($node, $node->tagAttributes['item']->nameSegments);
         $codeTargetObj->lineNo($node->sourceLineNo)
-            ->code("\$_scope->_tpl_vars->{$item} = new Entry;\n")
-            ->code("\$_scope->_tpl_vars->{$item}->_loop = false;\n");
+                      ->code("\$_scope->_tpl_vars->{$item} = new Entry;\n")
+                      ->code("\$_scope->_tpl_vars->{$item}->_loop = false;\n");
         if (isset($node->tagAttributes['key'])) {
             $key = self::getCompiledVariable($node, $node->tagAttributes['key']->nameSegments);
             $codeTargetObj->code("\$_scope->_tpl_vars->{$key} = new Entry;\n")
-                ->code("\$_scope->_tpl_vars->{$key}->_loop = false;\n");
+                          ->code("\$_scope->_tpl_vars->{$key}->_loop = false;\n");
         } else {
             $key = null;
         }
         $codeTargetObj->code('$_from = ');
         $node->tagAttributes['from']->compile($codeTargetObj, true);
         $codeTargetObj->raw(";\n")
-            ->code("if (!is_array(\$_from) && !is_object(\$_from)) {\n")
-            ->indent()
-            ->code("settype(\$_from, 'array');\n")
-            ->outdent()
-            ->code("}\n");
+                      ->code("if (!is_array(\$_from) && !is_object(\$_from)) {\n")
+                      ->indent()
+                      ->code("settype(\$_from, 'array');\n")
+                      ->outdent()
+                      ->code("}\n");
         /**
          * if ($usesPropTotal) {
          * $target->code("\$_scope->_tpl_vars->{$item}->total = \$this->_count(\$_from);\n");
@@ -132,8 +132,8 @@ class TagForeach extends Magic
              * */
         }
         $codeTargetObj->code("foreach (\$_from as " . $keyterm . " \$_scope->_tpl_vars->{$item}->value) {\n")
-            ->indent()
-            ->code("\$_scope->_tpl_vars->{$item}->_loop = true;\n");
+                      ->indent()
+                      ->code("\$_scope->_tpl_vars->{$item}->_loop = true;\n");
         /**
          * if ($key != null && $usesPropKey) {
          * $target->code("\$_scope->_tpl_vars->{$item}->key = \$_scope->_tpl_vars->{$key}->value;")
@@ -178,17 +178,16 @@ class TagForeach extends Magic
             $node->parser->compiler->compileNode($body, $codeTargetObj, $delete);
         }
         $codeTargetObj->outdent()
-            ->code("}\n");
+                      ->code("}\n");
 
         // compile {foreachelse} if present
         if (false !== $body = $node->getSubTree('foreachelse')) {
             $codeTargetObj->lineNo($node->sourceLineNo)
-                ->code("if (!\$_scope->_tpl_vars->{$item}->_loop) {\n")
-                ->indent();
+                          ->code("if (!\$_scope->_tpl_vars->{$item}->_loop) {\n")
+                          ->indent();
             $node->parser->compiler->compileNode($body, $codeTargetObj, $delete);
             $codeTargetObj->outdent()
-                ->code("}\n");
-
+                          ->code("}\n");
         }
     }
 
@@ -217,7 +216,7 @@ class TagForeach extends Magic
     public static function compile_foreachelse(Node $node, Code $codeTargetObj, $delete)
     {
         $codeTargetObj->lineNo($node->sourceLineNo)
-            ->code("if (!\$_scope->_tpl_vars->{$node->parentNode->item}->_loop) {\n")
-            ->indent();
+                      ->code("if (!\$_scope->_tpl_vars->{$node->parentNode->item}->_loop) {\n")
+                      ->indent();
     }
 }

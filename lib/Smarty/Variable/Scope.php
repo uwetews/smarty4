@@ -1,17 +1,10 @@
 <?php
-/**
- * Smarty Variable Scope
- * This file contains the Class for a variable scope
- *
- * @package Smarty\Variable
- * @author  Uwe Tews
- */
 namespace Smarty\Variable;
 
 use Smarty\Template\Core;
+
 /**
- * class for a variable scope
- * This class holds all assigned variables
+ * Class Scope
  *
  * @package Smarty\Variable
  */

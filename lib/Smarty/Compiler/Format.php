@@ -122,25 +122,25 @@ class Format extends Code
         if (isset($code->precompiled) && !empty($code->precompiled)) {
             foreach ($code->precompiled as $key => $entry) {
                 switch ($entry[0]) {
-                    case 'raw':
+                    case Code::RAW:
                         $this->compiled .= $entry[1];
                         $this->compiledLineNumber += substr_count($entry[1], "\n");
                         break;
-                    case 'addIndentation':
+                    case Code::INDENTATION:
                         $this->compiled .= str_repeat(' ', $this->indentation * 4) . $entry[1];
                         $this->compiledLineNumber += substr_count($entry[1], "\n");
                         break;
-                    case 'indent':
+                    case Code::INDENT:
                         $this->indentation += $entry[1];
                         break;
-                    case 'outdent':
+                    case Code::OUTDENT:
                         // can't outdent by more steps that the current indentation level
                         if ($this->indentation < $entry[1]) {
                             throw new \Smarty_Exception('Unable to call outdent() as the indentation would become negative');
                         }
                         $this->indentation -= $entry[1];
                         break;
-                    case 'line':
+                    case Code::LINE:
                         $line = $entry[1];
                         if ($this->lastLineNo != $line) {
                             $this->compiled .= sprintf("\n//line %04d:\n", $line);
@@ -150,14 +150,10 @@ class Format extends Code
                             $this->traceback[$this->compiledLineNumber] = $line;
                         }
                         break;
-                    case 'newline':
-                        $this->compiledLineNumber ++;
-                        $this->compiled .= "\n";
-                        break;
-                    case 'repr':
+                    case Code::REPR:
                         $this->formatRepr($entry[1], $entry[2], $entry[3]);
                         break;
-                    case 'string':
+                    case Code::STRING:
                         $this->formatString($entry[1], $entry[2], $entry[3]);
                         break;
                     default:

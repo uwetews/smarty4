@@ -45,6 +45,7 @@ class TagAssign extends Tag
 
     /**
      * Get Variable scope
+     *
      * @return string
      */
     public function getScope()
@@ -61,5 +62,4 @@ class TagAssign extends Tag
     {
         $this->scope = $scope;
     }
-
 }

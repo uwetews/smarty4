@@ -155,7 +155,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         return true;
     }
 
-/**
+    /**
      * @return bool
      * @throws Exception
      */
@@ -267,7 +267,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->yypushstate(self::VALUE);
     }
 
-        /**
+    /**
      * @param $yy_subpatterns
      *
      * @return bool
@@ -308,7 +308,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->token = $parser_class::CONFIG_OTHER;
     }
 
-/**
+    /**
      * @return bool
      * @throws Exception
      */
@@ -444,7 +444,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->yypopstate();
     }
 
-        /**
+    /**
      * @param $yy_subpatterns
      */
     function yy_r3_6($yy_subpatterns)
@@ -485,7 +485,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->yypopstate();
     }
 
-        /**
+    /**
      * @param $yy_subpatterns
      */
     function yy_r3_9($yy_subpatterns)
@@ -497,7 +497,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->yypopstate();
     } // end function
 
-/**
+    /**
      * @return bool
      * @throws Exception
      */
@@ -570,7 +570,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->yypopstate();
     }
 
-/**
+    /**
      * @return bool
      * @throws Exception
      */
@@ -645,7 +645,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         return false;
     }
 
-        /**
+    /**
      * @param $yy_subpatterns
      */
     function yy_r5_2($yy_subpatterns)
@@ -666,7 +666,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->yypopstate();
     }
 
-/**
+    /**
      * @return bool
      * @throws Exception
      */
@@ -739,7 +739,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->token = $parser_class::CONFIG_DOT;
     }
 
-        /**
+    /**
      * @param $yy_subpatterns
      */
     function yy_r6_2($yy_subpatterns)
@@ -750,7 +750,7 @@ class Smarty_Source_Config_Lexer extends Smarty_Compiler_Lexer
         $this->yypopstate();
     } // end function
 
-/**
+    /**
      * @return bool
      * @throws Exception
      */

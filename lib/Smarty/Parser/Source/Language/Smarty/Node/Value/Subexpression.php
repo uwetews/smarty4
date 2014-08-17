@@ -48,8 +48,8 @@ class Subexpression extends Node
     {
         if (!empty($this->internalNodeTrees)) {
             $codeTargetObj->raw('(')
-                ->compileNodeArray($this->internalNodeTrees, $codeTargetObj, $delete)
-                ->raw(')');
+                          ->compileNodeArray($this->internalNodeTrees, $codeTargetObj, $delete)
+                          ->raw(')');
         }
         return $this;
     }

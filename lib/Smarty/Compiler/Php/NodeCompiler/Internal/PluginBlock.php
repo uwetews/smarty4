@@ -68,30 +68,30 @@ class Smarty_Compiler_Php_ompiler_Internal_PluginBlock extends \Smarty_Compiler_
             if (is_array($par_string)) {
                 // old style with params array
                 $this->code("\$this->smarty->_tag_stack[] = array('{$tag}', {$par_string['par']});")
-                    ->newline();
+                     ->newline();
                 $this->code("\$_block_repeat=true;")
-                    ->newline();
+                     ->newline();
                 $this->code("echo {$function}({$par_string['par']}, null, {$par_string['obj']}, \$_block_repeat);")
-                    ->newline();
+                     ->newline();
                 $this->code("while (\$_block_repeat) {")
-                    ->newline()
-                    ->indent();
+                     ->newline()
+                     ->indent();
                 $this->code("ob_start();")
-                    ->newline();
+                     ->newline();
             } else {
                 // new style with real parameter
                 $par_string = str_replace('__content__', 'null', $par_string);
                 $this->code("\$this->smarty->_tag_stack[] = array('{$tag}', {$par_string});")
-                    ->newline();
+                     ->newline();
                 $this->code("\$_block_repeat=true;")
-                    ->newline();
+                     ->newline();
                 $this->code("echo {$function}({$par_string};")
-                    ->newline();
+                     ->newline();
                 $this->code("while (\$_block_repeat) {")
-                    ->newline()
-                    ->indent();
+                     ->newline()
+                     ->indent();
                 $this->code("ob_start();")
-                    ->newline();
+                     ->newline();
             }
         } else {
             // must end block be nocache?
@@ -106,32 +106,32 @@ class Smarty_Compiler_Php_ompiler_Internal_PluginBlock extends \Smarty_Compiler_
             $this->iniTagCode($compiler);
 
             $this->code("\$_block_content = ob_get_clean();")
-                ->newline();
+                 ->newline();
             $this->code("\$_block_repeat=false;")
-                ->newline();
+                 ->newline();
             if (isset($parameter['modifier_list'])) {
                 $this->code("ob_start();")
-                    ->newline();
+                     ->newline();
             }
             if (is_array($par_string)) {
                 // old style with params array
                 $this->code("echo {$function}({$par_string['par']}, \$_block_content, {$par_string['obj']}, \$_block_repeat);")
-                    ->newline();
+                     ->newline();
             } else {
                 // new style with real parameter
                 $par_string = str_replace('__content__', '$_block_content', $par_string);
                 $this->code("echo {$function}({$par_string});")
-                    ->newline();
+                     ->newline();
             }
             if (isset($parameter['modifier_list'])) {
                 $this->code('echo ' . $compiler->compileTag('Internal_Modifier', array(), array('modifier_list' => $parameter['modifier_list'], 'value' => 'ob_get_clean()')) . ';')
-                    ->newline();
+                     ->newline();
             }
             $this->outdent()
-                ->code("}")
-                ->newline();
+                 ->code("}")
+                 ->newline();
             $this->code("array_pop(\$this->smarty->_tag_stack);")
-                ->newline();
+                 ->newline();
         }
 
         return $this->returnTagCode($compiler);

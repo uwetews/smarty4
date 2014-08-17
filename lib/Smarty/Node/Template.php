@@ -2,17 +2,16 @@
 
 namespace Smarty\Node;
 
-use Smarty\Compiler\Target\Language\Php\Format;
 use Smarty\Template\Context;
-use Smarty\Parser\Token;
 use Smarty\Parser;
+use Smarty\Node;
 
 /**
  * Class Node
  *
  * @package Smarty\Nodes\Template
  */
-class Template extends Format
+class Template extends Node
 {
     /**
      * Node name

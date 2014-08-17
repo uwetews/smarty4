@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Smarty plugin
  *
@@ -13,31 +12,36 @@
  * Name:     wordwrap<br>
  * Purpose:  wrap a string of text at a given length
  *
- * @link   http://www.smarty.net/docs/en/language.modifier.wordwrap.tpl wordwrap (Smarty online manual)
+ * @link   http://smarty.php.net/manual/en/language.modifier.wordwrap.php wordwrap (Smarty online manual)
  * @author Uwe Tews
  *
- * @param \Smarty_Compiler_CompilerCore|\Smarty_Compiler_Php_Compiler $compiler compiler object
- * @param string                                                      $input    input string
- * @param int                                                         $columns  number of columns before wrap
- * @param string                                                      $wrap     string to use to wrap
- * @param bool|string                                                 $cut      if true wrap exact at column count
+ * @param array $params parameters
+ * @param       $compiler
  *
  * @return string with compiled code
  */
-// NOTE: The parser does pass all parameter as strings which could be directly inserted into the compiled code string
-function smarty_modifiercompiler_wordwrap(Smarty_Compiler_Php_Compiler $compiler, $input, $columns = 80, $wrap = '"\n"', $cut = 'false')
+function smarty_modifiercompiler_wordwrap($params, $compiler)
 {
+    if (!isset($params[1])) {
+        $params[1] = 80;
+    }
+    if (!isset($params[2])) {
+        $params[2] = '"\n"';
+    }
+    if (!isset($params[3])) {
+        $params[3] = 'false';
+    }
     $function = 'wordwrap';
     if (Smarty::$_MBSTRING) {
-        if ($compiler->tag_nocache | $compiler->nocache) {
-            $compiler->required_plugins['nocache']['wordwrap']['modifier']['file'] = Smarty::$_SMARTY_PLUGINS_DIR . 'shared.mb_wordwrap.php';
-            $compiler->required_plugins['nocache']['wordwrap']['modifier']['function'] = 'smarty_mb_wordwrap';
+        if ($compiler->template->caching && ($compiler->tag_nocache | $compiler->nocache)) {
+            $compiler->template->required_plugins['nocache']['wordwrap']['modifier']['file'] = SMARTY_PLUGINS_DIR . 'shared.mb_wordwrap.php';
+            $compiler->template->required_plugins['nocache']['wordwrap']['modifier']['function'] = 'smarty_mb_wordwrap';
         } else {
-            $compiler->required_plugins['compiled']['wordwrap']['modifier']['file'] = Smarty::$_SMARTY_PLUGINS_DIR . 'shared.mb_wordwrap.php';
-            $compiler->required_plugins['compiled']['wordwrap']['modifier']['function'] = 'smarty_mb_wordwrap';
+            $compiler->template->required_plugins['compiled']['wordwrap']['modifier']['file'] = SMARTY_PLUGINS_DIR . 'shared.mb_wordwrap.php';
+            $compiler->template->required_plugins['compiled']['wordwrap']['modifier']['function'] = 'smarty_mb_wordwrap';
         }
         $function = 'smarty_mb_wordwrap';
     }
 
-    return $function . "({$input}, {$columns}, {$wrap}, {$cut})";
+    return $function . '(' . $params[0] . ',' . $params[1] . ',' . $params[2] . ',' . $params[3] . ')';
 }

@@ -26,12 +26,12 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_While extends Smarty_Exception_Magic
     public static function compile(Smarty_Compiler_Node $target, Smarty_Source_Node_Tag $node, $delete)
     {
         $target->lineNo($node->sourceLineNo)
-            ->code("while (")
-            ->compileNodeArray($node->attributeNodes, $delete)
-            ->raw(") {\n")
-            ->indent()
-            ->compileNodeArray($node->subtreeNodes, $delete)
-            ->outdent()
-            ->code("}\n");
+               ->code("while (")
+               ->compileNodeArray($node->attributeNodes, $delete)
+               ->raw(") {\n")
+               ->indent()
+               ->compileNodeArray($node->subtreeNodes, $delete)
+               ->outdent()
+               ->code("}\n");
     }
 }

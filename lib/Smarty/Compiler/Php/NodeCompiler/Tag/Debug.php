@@ -36,7 +36,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Debug extends Smarty_Compiler_Code_Ph
         $this->iniTagCode($compiler);
 
         $this->code("Smarty_Debug::display_debug(\$this);")
-            ->newline();
+             ->newline();
 
         return $this->returnTagCode($compiler);
     }

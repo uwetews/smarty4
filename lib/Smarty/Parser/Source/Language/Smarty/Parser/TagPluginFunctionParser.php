@@ -1,5 +1,6 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
+
 use Smarty\PegParser;
 
 /**
@@ -9,17 +10,15 @@ use Smarty\PegParser;
  */
 class TagPluginFunctionParser extends PegParser
 {
-    
-    /**
-     *
-     * Parser generated on 2014-07-13 19:35:13
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagPluginFunction.peg.inc' dated 2014-07-13 19:35:04
-     *
-    */
 
     /**
-     Flag that compiled Peg Parser class is valid
-     *
+     * Parser generated on 2014-08-12 01:03:55
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagPluginFunction.peg.inc' dated 2014-08-12 01:03:51
+
+     */
+
+    /**
+     * Flag that compiled Peg Parser class is valid
      * @var bool
      */
     public $valid = true;
@@ -30,8 +29,8 @@ class TagPluginFunctionParser extends PegParser
      * @var array
      */
     public $matchMethods = array(
-            "TagPluginFunction" => "matchNodeTagPluginFunction"
-        );
+        "TagPluginFunction" => "matchNodeTagPluginFunction"
+    );
 
     /**
      * Array of node attributes
@@ -39,33 +38,36 @@ class TagPluginFunctionParser extends PegParser
      * @var array
      */
     public $nodeAttributes = array(
-            "TagPluginFunction" => array(
-                    "_nodetype" => "node",
-                    "options" => array(
-                            "nocache" => true
-                        )
+        "TagPluginFunction" => array(
+            "_nodetype"  => "node",
+            "attributes" => array(
+                "optional" => array(
+                    "_any" => true
                 )
-        );
+            ),
+            "options"    => array(
+                "nocache" => true
+            )
+        )
+    );
+
     /**
-     *
      * Parser rules and action for node 'TagPluginFunction'
-     *
      *  Rule:
-    
+     * <node TagPluginFunction>
+     * <attribute>attributes=(optional=(_any)),options=(nocache)</attribute>
+     * <rule>Ldel Id SmartyTagAttributes SmartyTagOptions Rdel</rule>
+     * <action _start>
+     * {
+     * $result['node'] = $previous['node'];
+     * }
+     * </action>
+     * </node>
 
-            <node TagPluginFunction>
-                <attribute>options=(nocache)</attribute>
-                <rule>Ldel Id SmartyTagAttributes SmartyTagOptions Rdel</rule>
-                <action _start>
-                {
-                    $result['node'] = $previous['node'];
-                }
-                </action>
-            </node>
 
-     *
-    */
-    public function matchNodeTagPluginFunction($previous, &$errorResult){
+     */
+    public function matchNodeTagPluginFunction($previous, &$errorResult)
+    {
         $result = $this->parser->resultDefault;
         $error = array();
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
@@ -85,7 +87,7 @@ class TagPluginFunctionParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Ldel', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Ldel',  $subres['_text']));
+                $this->parser->successNode(array('Ldel', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -104,7 +106,7 @@ class TagPluginFunctionParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Id', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Id',  $subres['_text']));
+                $this->parser->successNode(array('Id', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -123,7 +125,7 @@ class TagPluginFunctionParser extends PegParser
             $subres = $this->parser->matchRule($result, 'SmartyTagAttributes', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('SmartyTagAttributes',  $subres['_text']));
+                $this->parser->successNode(array('SmartyTagAttributes', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -142,7 +144,7 @@ class TagPluginFunctionParser extends PegParser
             $subres = $this->parser->matchRule($result, 'SmartyTagOptions', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('SmartyTagOptions',  $subres['_text']));
+                $this->parser->successNode(array('SmartyTagOptions', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -161,7 +163,7 @@ class TagPluginFunctionParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Rdel', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Rdel',  $subres['_text']));
+                $this->parser->successNode(array('Rdel', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -184,27 +186,25 @@ class TagPluginFunctionParser extends PegParser
             $result = $backup1;
         } else {
             $this->parser->successNode($remove);
-            }
-            $error = $error1;
-            unset($backup1);
-            // end sequence
-            // End 'TagPluginFunction'
-            if ($valid) {
-                $result['_endpos'] = $this->parser->pos;
-                $result['_endline'] = $this->parser->line;
-            }
-            if (!$valid) {
-                $result = false;
-                $this->parser->matchError($errorResult, 'token', $error, 'TagPluginFunction');
-            }
-            return $result;
         }
-
-        public function TagPluginFunction___START (&$result, $previous) {
-            $result['node'] = $previous['node'];
+        $error = $error1;
+        unset($backup1);
+        // end sequence
+        // End 'TagPluginFunction'
+        if ($valid) {
+            $result['_endpos'] = $this->parser->pos;
+            $result['_endline'] = $this->parser->line;
         }
+        if (!$valid) {
+            $result = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'TagPluginFunction');
+        }
+        return $result;
+    }
 
-
-
+    public function TagPluginFunction___START(&$result, $previous)
+    {
+        $result['node'] = $previous['node'];
+    }
 }
 

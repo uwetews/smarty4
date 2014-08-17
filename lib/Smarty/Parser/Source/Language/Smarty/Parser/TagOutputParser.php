@@ -11,17 +11,15 @@ use Smarty\PegParser;
  */
 class TagOutputParser extends PegParser
 {
-   
-    /**
-     *
-     * Parser generated on 2014-07-10 23:09:01
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagOutput.peg.inc' dated 2014-07-06 20:56:04
-     *
-    */
 
     /**
-     Flag that compiled Peg Parser class is valid
-     *
+     * Parser generated on 2014-08-10 18:55:25
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagOutput.peg.inc' dated 2014-07-06 20:56:04
+
+     */
+
+    /**
+     * Flag that compiled Peg Parser class is valid
      * @var bool
      */
     public $valid = true;
@@ -32,8 +30,8 @@ class TagOutputParser extends PegParser
      * @var array
      */
     public $matchMethods = array(
-            "TagOutput" => "matchNodeTagOutput"
-        );
+        "TagOutput" => "matchNodeTagOutput"
+    );
 
     /**
      * Array of node attributes
@@ -41,30 +39,29 @@ class TagOutputParser extends PegParser
      * @var array
      */
     public $nodeAttributes = array(
-            "TagOutput" => array(
-                    "_nodetype" => "node"
-                )
-        );
-    /**
-     *
-     * Parser rules and action for node 'TagOutput'
-     *
-     *  Rule:
-    
-             <node TagOutput>
-                 <rule>Ldel _? value:Expr Rdel</rule>
-                 <action value>
-                 {
-                     $result['node'] = new TagOutput($this->parser);
-                     $result['node']->addSubTree($subres['node'], 'value');
-                     $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
-                 }
-                 </action>
-             </node>
+        "TagOutput" => array(
+            "_nodetype" => "node"
+        )
+    );
 
-     *
-    */
-    public function matchNodeTagOutput($previous, &$errorResult){
+    /**
+     * Parser rules and action for node 'TagOutput'
+     *  Rule:
+     * <node TagOutput>
+     * <rule>Ldel _? value:Expr Rdel</rule>
+     * <action value>
+     * {
+     * $result['node'] = new TagOutput($this->parser);
+     * $result['node']->addSubTree($subres['node'], 'value');
+     * $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
+     * }
+     * </action>
+     * </node>
+
+
+     */
+    public function matchNodeTagOutput($previous, &$errorResult)
+    {
         $result = $this->parser->resultDefault;
         $error = array();
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
@@ -75,6 +72,7 @@ class TagOutputParser extends PegParser
         $pos1 = $this->parser->pos;
         $line1 = $this->parser->line;
         $error1 = $error;
+        $this->parser->addBacktrace(array('_s1_', ''));
         do {
             $error = array();
             // Start 'Ldel' min '1' max '1'
@@ -82,7 +80,7 @@ class TagOutputParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Ldel', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Ldel',  $subres['_text']));
+                $this->parser->successNode(array('Ldel', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -104,7 +102,7 @@ class TagOutputParser extends PegParser
                     $result['_text'] .= ' ';
                 }
             }
-            $this->parser->successNode(array("' '",  $match[0]));
+            $this->parser->successNode(array("' '", $match[0]));
             $valid = true;
             // End '_?'
             if (!$valid) {
@@ -118,7 +116,7 @@ class TagOutputParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Expr', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Expr',  $subres['_text']));
+                $this->parser->successNode(array('Expr', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $this->TagOutput_value($result, $subres);
                 $valid = true;
@@ -138,7 +136,7 @@ class TagOutputParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Rdel', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Rdel',  $subres['_text']));
+                $this->parser->successNode(array('Rdel', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -153,10 +151,14 @@ class TagOutputParser extends PegParser
             }
             break;
         } while (true);
+        $remove = array_pop($this->parser->backtrace);
         if (!$valid) {
+            $this->parser->failNode($remove);
             $this->parser->pos = $pos1;
             $this->parser->line = $line1;
             $result = $backup1;
+        } else {
+            $this->parser->successNode($remove);
         }
         $error = $error1;
         unset($backup1);
@@ -173,13 +175,11 @@ class TagOutputParser extends PegParser
         return $result;
     }
 
-    public function TagOutput_value (&$result, $subres) {
+    public function TagOutput_value(&$result, $subres)
+    {
         $result['node'] = new TagOutput($this->parser);
         $result['node']->addSubTree($subres['node'], 'value');
         $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
     }
-
-
-
 }
 

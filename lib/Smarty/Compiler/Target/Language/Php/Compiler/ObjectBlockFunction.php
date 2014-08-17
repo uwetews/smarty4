@@ -61,16 +61,16 @@ class Smarty_Compiler_Php_ompiler_Internal_ObjectBlockFunction extends \Smarty_C
             $compiler->nocache = $compiler->nocache | $compiler->tag_nocache;
             // compile code
             $this->code("\$this->smarty->_tag_stack[] = array('{$tag}->{$method}', {$_params});")
-                ->newline();
+                 ->newline();
             $this->code("\$_block_repeat=true;")
-                ->newline();
+                 ->newline();
             $this->code("echo \$this->smarty->_registered['object']['{$tag}'][0]->{$method}({$_params}, null, \$this->smarty, \$_block_repeat);")
-                ->newline();
+                 ->newline();
             $this->code("while (\$_block_repeat) {")
-                ->newline()
-                ->indent();
+                 ->newline()
+                 ->indent();
             $this->code("ob_start();")
-                ->newline();
+                 ->newline();
         } else {
             $base_tag = substr($tag, 0, - 5);
             // must endblock be nocache?
@@ -85,24 +85,24 @@ class Smarty_Compiler_Php_ompiler_Internal_ObjectBlockFunction extends \Smarty_C
             $this->iniTagCode($compiler);
 
             $this->code("\$_block_content = ob_get_clean();")
-                ->newline();
+                 ->newline();
             $this->code("\$_block_repeat=false;")
-                ->newline();
+                 ->newline();
             if (isset($parameter['modifier_list'])) {
                 $this->code("ob_start();")
-                    ->newline();
+                     ->newline();
             }
             $this->code("echo \$this->smarty->_registered['object']['{$base_tag}'][0]->{$method}({$_params}, \$_block_content, \$this->smarty, \$_block_repeat);")
-                ->newline();
+                 ->newline();
             if (isset($parameter['modifier_list'])) {
                 $this->code('echo ' . $compiler->compileTag('Internal_Modifier', array(), array('modifier_list' => $parameter['modifier_list'], 'value' => 'ob_get_clean()')) . ';')
-                    ->newline();
+                     ->newline();
             }
             $this->outdent()
-                ->code("}")
-                ->newline();
+                 ->code("}")
+                 ->newline();
             $this->code("array_pop(\$this->smarty->_tag_stack);")
-                ->newline();
+                 ->newline();
         }
 
         return $this->returnTagCode($compiler);

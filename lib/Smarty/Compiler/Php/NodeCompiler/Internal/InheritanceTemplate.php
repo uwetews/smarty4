@@ -53,14 +53,14 @@ class Smarty_Compiler_Php_ompiler_Internal_InheritanceTemplate extends \Smarty_C
 
         if ($_attr['child'] === true) {
             $this->code("\$compiled_obj = \$this->_getInheritanceTemplate ('{$file}', \$this->smarty->cacheId, \$this->smarty->compileId, {$_caching}, (isset(\$tpl) ? \$tpl : \$this->smarty), true);")
-                ->newline();
+                 ->newline();
             $this->code("\$compiled_obj->_getRenderedTemplate\$this->smarty, \$_scope);")
-                ->newline();
+                 ->newline();
         } else {
             $this->code("\$compiled_obj = \$this->_getInheritanceTemplate ('{$file}', \$this->smarty->cacheId, \$this->smarty->compileId, {$_caching}, (isset(\$tpl) ? \$tpl : \$this->smarty));")
-                ->newline();
+                 ->newline();
             $this->code("echo \$compiled_obj->_getRenderedTemplate(\$this->smarty, \$_scope);")
-                ->newline();
+                 ->newline();
         }
         $compiler->has_code = true;
 

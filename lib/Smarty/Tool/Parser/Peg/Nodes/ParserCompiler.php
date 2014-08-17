@@ -37,7 +37,7 @@ class ParserCompiler
      * @var int
      */
     public $indentation = 1;
-     /**
+    /**
      * @var bool
      */
     public $indent_on = true;
@@ -220,7 +220,7 @@ class ParserCompiler
     /**
      * Add a line of PHP code to output.
      *
-     * @param  string $value PHP source
+     * @param  string $value  PHP source
      * @param int     $indent negative = outdent before code, positive indent after code
      *
      * @return $this
@@ -451,7 +451,7 @@ class ParserCompiler
              ->php("\$remove = array_pop(\$this->parser->backtrace);\n")
              ->php("if (\$subres) {\n")
              ->indent();
-        if($la !== true) {
+        if ($la !== true) {
             $this->php("\$this->parser->successNode(array('{$params['_param']}',  \$subres['_text']));\n");
         }
         $this->compileRuleMatch($params, 'result', 'subres');
@@ -651,7 +651,7 @@ class ParserCompiler
              ->php("\$pos{$index} = \$this->parser->pos;\n")
              ->php("\$line{$index} = \$this->parser->line;\n")
              ->php("\$error{$index} = \$error;\n")
-        ->php("\$this->parser->addBacktrace(array('_s{$index}_', ''));\n")
+             ->php("\$this->parser->addBacktrace(array('_s{$index}_', ''));\n")
              ->php("do {\n")
              ->indent();
         foreach ($params['_param'] as $rule) {
@@ -672,18 +672,18 @@ class ParserCompiler
         $this->php("break;\n")
              ->outdent()
              ->php("} while (true);\n")
-            ->php("\$remove = array_pop(\$this->parser->backtrace);\n")
-            ->php("if (!\$valid) {\n")
+             ->php("\$remove = array_pop(\$this->parser->backtrace);\n")
+             ->php("if (!\$valid) {\n")
              ->indent()
-            ->php("\$this->parser->failNode(\$remove);\n")
+             ->php("\$this->parser->failNode(\$remove);\n")
              ->php("\$this->parser->pos = \$pos{$index};\n")
              ->php("\$this->parser->line = \$line{$index};\n")
              ->php("\$result = \$backup{$index};\n")
              ->outdent()
              ->php("} else {\n", 1)
              ->php("\$this->parser->successNode(\$remove);\n")
-        ->php("}\n")
-        ->php("\$error = \$error{$index};\n");
+             ->php("}\n")
+             ->php("\$error = \$error{$index};\n");
         if ($la === false) {
             $this->php("\$valid = !\$valid;\n");
         }
@@ -710,23 +710,23 @@ class ParserCompiler
         $index = $this->index ++;
         $this->php("\$error{$index} = \$error;\n");
         $this->php("\$errorOption{$index} =array();\n")
-        ->php("\$this->parser->addBacktrace(array('_o{$index}_', ''));\n")
-        ->php("do {\n")
+             ->php("\$this->parser->addBacktrace(array('_o{$index}_', ''));\n")
+             ->php("do {\n")
              ->indent();
         $i = 0;
         foreach ($params['_param'] as $rule) {
             if (isset($params['_actions'])) {
                 $rule['_actions'] = $params['_actions'];
             }
-            $i++;
+            $i ++;
             $rule['_name'] = $params['_name'];
             $this->php("\$error = array();\n")
-                ->php("array_pop(\$this->parser->backtrace);\n")
-                ->php("\$this->parser->addBacktrace(array('_o{$index}:{$i}_', ''));\n");
+                 ->php("array_pop(\$this->parser->backtrace);\n")
+                 ->php("\$this->parser->addBacktrace(array('_o{$index}:{$i}_', ''));\n");
             $this->compileMatchRule($rule);
             $this->php("if (\$valid) {\n")
                  ->indent()
-                ->php("\$this->parser->successNode(array_pop(\$this->parser->backtrace));\n");
+                 ->php("\$this->parser->successNode(array_pop(\$this->parser->backtrace));\n");
 
             if ($la === false) {
                 $this->php("\$this->parser->shouldNotMatchError(\$error{$index}, '{$params['_name']}', \$error;\n;");

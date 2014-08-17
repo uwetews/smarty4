@@ -71,7 +71,7 @@ class Smarty_Compiler_Php_ompiler_Internal_PluginFunction extends \Smarty_Compil
         $this->iniTagCode($compiler);
 
         $this->code("echo {$function}({$result});")
-            ->newline();
+             ->newline();
 
         return $this->returnTagCode($compiler);
     }

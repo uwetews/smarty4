@@ -4,7 +4,7 @@ namespace Smarty\Parser\Source\Language\Smarty\Node\Operator;
 use Smarty\Node;
 
 /**
- * Class Unimath
+ * Class Condition
  *
  * @package Smarty\Parser\Source\Language\Smarty\Node\Operator
  */
@@ -40,21 +40,21 @@ class Condition extends Node
      *
      * @var array
      */
-    private $translation = array('===' => ' === ',
-                                 '==' => ' == ',
-                                 '!=' => ' != ',
-                                 '<=' => ' <= ',
-                                 '<' => ' < ',
-                                 '>=' => ' >= ',
-                                 '>' => ' > ',
-                                 'eq' => ' == ',
-                                 'ne' => ' != ',
-                                 'le' => ' <= ',
-                                 'lte' => ' <= ',
-                                 'lt' => ' < ',
-                                 'ge' => ' >= ',
-                                 'gte' => ' >= ',
-                                 'gt' => ' > ',
+    private $translation = array('==='        => ' === ',
+                                 '=='         => ' == ',
+                                 '!='         => ' != ',
+                                 '<='         => ' <= ',
+                                 '<'          => ' < ',
+                                 '>='         => ' >= ',
+                                 '>'          => ' > ',
+                                 'eq'         => ' == ',
+                                 'ne'         => ' != ',
+                                 'le'         => ' <= ',
+                                 'lte'        => ' <= ',
+                                 'lt'         => ' < ',
+                                 'ge'         => ' >= ',
+                                 'gte'        => ' >= ',
+                                 'gt'         => ' > ',
                                  'instanceof' => ' instanceof ',
     );
 

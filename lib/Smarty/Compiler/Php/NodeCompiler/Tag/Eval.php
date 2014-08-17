@@ -62,17 +62,17 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Eval extends Smarty_Compiler_Code_Php
 
         // create template object
         $this->code("\$tpl_obj = \$this->smarty->createTemplate('eval:'." . $_attr['var'] . ", \$this->smarty);")
-            ->newline();
+             ->newline();
         //was there an assign attribute?
         if (isset($_assign)) {
             $this->code("\$this->assign($_assign,\$tpl_obj->fetch());")
-                ->newline();
+                 ->newline();
         } else {
             $this->code("echo \$tpl_obj->fetch();")
-                ->newline();
+                 ->newline();
         }
         $this->code("unset(\$tpl_obj->source, \$tpl_obj->compiled, \$tpl_obj->compiler, \$tpl_obj);")
-            ->newline();
+             ->newline();
 
         return $this->returnTagCode($compiler);
     }

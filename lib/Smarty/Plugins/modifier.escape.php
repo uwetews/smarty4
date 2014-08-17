@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Smarty plugin
  *
@@ -9,29 +8,27 @@
 
 /**
  * Smarty escape modifier plugin
- * NOTE: This plugin is called only when smarty_modifiercompiler_escape() is not able to produce inline code
  * Type:     modifier<br>
  * Name:     escape<br>
  * Purpose:  escape string for output
  *
- * @link   http://www.smarty.net/docs/en/language.modifier.escape.tpl (Smarty online manual)
+ * @link   http://www.smarty.net/docs/en/language.modifier.escape
  * @author Monte Ohrt <monte at ohrt dot com>
  *
- * @param Smarty  $tpl_obj       template object
  * @param string  $string        input string
  * @param string  $esc_type      escape type
  * @param string  $char_set      character set, used for htmlspecialchars() or htmlentities()
  * @param boolean $double_encode encode already encoded entitites again, used for htmlspecialchars() or htmlentities()
  *
- * @throws Smarty_Exception_Runtime
  * @return string escaped input string
  */
-function smarty_modifier_escape(Smarty $tpl_obj, $string, $esc_type = 'html', $char_set = null, $double_encode = true)
+function smarty_modifier_escape($string, $esc_type = 'html', $char_set = null, $double_encode = true)
 {
     static $_double_encode = null;
     if ($_double_encode === null) {
         $_double_encode = version_compare(PHP_VERSION, '5.2.3', '>=');
     }
+
     if (!$char_set) {
         $char_set = Smarty::$_CHARSET;
     }
@@ -74,6 +71,7 @@ function smarty_modifier_escape(Smarty $tpl_obj, $string, $esc_type = 'html', $c
                         return $string;
                     }
                 }
+
                 // htmlentities() won't convert everything, so use mb_convert_encoding
                 return mb_convert_encoding($string, 'HTML-ENTITIES', $char_set);
             }
@@ -117,7 +115,7 @@ function smarty_modifier_escape(Smarty $tpl_obj, $string, $esc_type = 'html', $c
         case 'hexentity':
             $return = '';
             if (Smarty::$_MBSTRING) {
-                require_once(Smarty::$_SMARTY_PLUGINS_DIR . 'shared.mb_unicode.php');
+                require_once(SMARTY_PLUGINS_DIR . 'shared.mb_unicode.php');
                 $return = '';
                 foreach (smarty_mb_to_unicode($string, Smarty::$_CHARSET) as $unicode) {
                     $return .= '&#x' . strtoupper(dechex($unicode)) . ';';
@@ -136,7 +134,7 @@ function smarty_modifier_escape(Smarty $tpl_obj, $string, $esc_type = 'html', $c
         case 'decentity':
             $return = '';
             if (Smarty::$_MBSTRING) {
-                require_once(Smarty::$_SMARTY_PLUGINS_DIR . 'shared.mb_unicode.php');
+                require_once(SMARTY_PLUGINS_DIR . 'shared.mb_unicode.php');
                 $return = '';
                 foreach (smarty_mb_to_unicode($string, Smarty::$_CHARSET) as $unicode) {
                     $return .= '&#' . $unicode . ';';
@@ -158,7 +156,7 @@ function smarty_modifier_escape(Smarty $tpl_obj, $string, $esc_type = 'html', $c
 
         case 'mail':
             if (Smarty::$_MBSTRING) {
-                require_once(Smarty::$_SMARTY_PLUGINS_DIR . 'shared.mb_str_replace.php');
+                require_once(SMARTY_PLUGINS_DIR . 'shared.mb_str_replace.php');
 
                 return smarty_mb_str_replace(array('@', '.'), array(' [AT] ', ' [DOT] '), $string);
             }
@@ -169,7 +167,7 @@ function smarty_modifier_escape(Smarty $tpl_obj, $string, $esc_type = 'html', $c
             // escape non-standard chars, such as ms document quotes
             $return = '';
             if (Smarty::$_MBSTRING) {
-                require_once(Smarty::$_SMARTY_PLUGINS_DIR . 'shared.mb_unicode.php');
+                require_once(SMARTY_PLUGINS_DIR . 'shared.mb_unicode.php');
                 foreach (smarty_mb_to_unicode($string, Smarty::$_CHARSET) as $unicode) {
                     if ($unicode >= 126) {
                         $return .= '&#' . $unicode . ';';
@@ -195,6 +193,6 @@ function smarty_modifier_escape(Smarty $tpl_obj, $string, $esc_type = 'html', $c
             return $return;
 
         default:
-            throw new Smarty_Exception_Runtime("Modifier escape: Illegal escape type '{$esc_type}'", $tpl_obj);
+            return $string;
     }
 }

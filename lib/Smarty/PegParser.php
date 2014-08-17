@@ -43,8 +43,12 @@ class PegParser// extends Magic
      *
      * @param Parser $parser parser object
      */
-    public function __construct (Parser $parser) {
+    public function __construct(Parser $parser)
+    {
         $this->parser = $parser;
     }
 
+    public function instanceNode($p1 = null, $p2 = null, $p3 = null)
+    {
+    }
 }

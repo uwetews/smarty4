@@ -186,7 +186,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tagxxx
     {
         // get PHPdoc data
         $doc = $this->buildReflection($callback)
-            ->getDocComment();
+                    ->getDocComment();
         if ($doc && preg_match('#@' . $parameter . '(.*)$#m', $doc, $matches)) {
             $m = explode(',', $matches[1]);
             $m = array_map('trim', $m);
@@ -245,7 +245,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tagxxx
                 $par_array = array();
                 $par_names = array();
                 $parameters = $this->buildReflection($callback)
-                    ->getParameters();
+                                   ->getParameters();
                 // lose first argument, since it must've been Smarty
                 array_shift($parameters);
                 if ($block) {
@@ -324,7 +324,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tagxxx
     {
         // get list of parameters
         $args = $this->buildReflection($callback)
-            ->getParameters();
+                     ->getParameters();
         if (!$args) {
             return false;
         }
@@ -364,6 +364,6 @@ class Smarty_Compiler_Php_NodeCompiler_Tagxxx
     public function getNoOfRequiredParameter($callback)
     {
         return $this->buildReflection($callback)
-            ->getNumberOfRequiredParameters();
+                    ->getNumberOfRequiredParameters();
     }
 }

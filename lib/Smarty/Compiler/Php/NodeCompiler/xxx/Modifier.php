@@ -171,7 +171,7 @@ class Smarty_Compiler_Php_NodeCompiler_Value_Modifier
         $object = '';
         //NOTE: For some PHP functions in PHP < 5.3 getParameters() did not return a result
         if ($parameters = $this->buildReflection($callback)
-            ->getParameters()
+                               ->getParameters()
         ) {
             if ($result = $this->injectObject($callback, array('Smarty', 'Smarty_Internal_Template', 'Smarty_Compiler_CompilerCore'), 0)) {
                 if ($result[0] == 'Smarty' || $result[0] == 'Smarty_Internal_Template') {

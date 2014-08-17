@@ -8,6 +8,7 @@ Use Smarty\Template\Context;
 Use Smarty\Compiler;
 Use Smarty\Parser;
 use Smarty\Parser\Exception\NoRule;
+
 /**
  * Class PegParser
  *
@@ -40,17 +41,14 @@ class Generator extends Parser
      */
     public $whitespacePattern = '/[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))*/';
 
-   
     /**
-     *
      * Parser generated on 2014-06-29 17:56:13
      *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Tool/Parser/Peg/InternalTool/ParserGenerator.peg.inc' dated 2014-06-29 17:10:50
-     *
-    */
+
+     */
 
     /**
-     Flag that compiled Peg Parser class is valid
-     *
+     * Flag that compiled Peg Parser class is valid
      * @var bool
      */
     public $valid = true;
@@ -61,61 +59,59 @@ class Generator extends Parser
      * @var array
      */
     public $matchMethods = array(
-            "attrvalue" => "matchNodeattrvalue",
-            "attrentry" => "matchNodeattrentry",
-            "attr" => "matchNodeattr",
-            "Name" => "matchNodeName",
-            "Header" => "matchNodeHeader",
-            "End" => "matchNodeEnd",
-            "Comment" => "matchNodeComment",
-            "Text" => "matchNodeText",
-            "Parser" => "matchNodeParser",
-            "Attribute" => "matchNodeAttribute",
-            "Node" => "matchNodeNode",
-            "Rule" => "matchNodeRule",
-            "Action" => "matchNodeAction",
-            "PHP" => "matchNodePHP",
-            "Arguments" => "matchNodeArguments",
-            "Option" => "matchNodeOption",
-            "Sequence" => "matchNodeSequence",
-            "RuleToken" => "matchNodeRuleToken",
-            "File" => "matchNodeFile"
-        );
+        "attrvalue" => "matchNodeattrvalue",
+        "attrentry" => "matchNodeattrentry",
+        "attr"      => "matchNodeattr",
+        "Name"      => "matchNodeName",
+        "Header"    => "matchNodeHeader",
+        "End"       => "matchNodeEnd",
+        "Comment"   => "matchNodeComment",
+        "Text"      => "matchNodeText",
+        "Parser"    => "matchNodeParser",
+        "Attribute" => "matchNodeAttribute",
+        "Node"      => "matchNodeNode",
+        "Rule"      => "matchNodeRule",
+        "Action"    => "matchNodeAction",
+        "PHP"       => "matchNodePHP",
+        "Arguments" => "matchNodeArguments",
+        "Option"    => "matchNodeOption",
+        "Sequence"  => "matchNodeSequence",
+        "RuleToken" => "matchNodeRuleToken",
+        "File"      => "matchNodeFile"
+    );
 
     /**
      * Array of node attributes
      *
      * @var array
      */
-    public $nodeAttributes = array(
-            
-        );
+    public $nodeAttributes = array();
+
     /**
-     *
      * Parser rules and action for node 'attrvalue'
-     *
      *  Rule:
-     <node attrvalue> <rule>  .._? (  /(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/ | (  '(' sub:attr ')' ) ) </rule>  <action sub> {
-                        $result['value'] = $subres['_attr'];
-                    } </action>  <action _finish> {
-                        $mr = $result['_matchres'];
-                        if (isset($mr['v1']) && !empty($mr['v1'])) {
-                            $result['value'] = trim($mr['v1'], "'\"");
-                        }
-                        if (isset($mr['true']) && !empty($mr['true'])) {
-                            $result['value'] = true;
-                        }
-                        if (isset($mr['false']) && !empty($mr['false'])) {
-                            $result['value'] = false;
-                        }
-                        if (isset($mr['null']) && !empty($mr['null'])) {
-                            $result['value'] = null;
-                        }
-                        $result['_matchres'] = array();
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeattrvalue($previous){
+     * <node attrvalue> <rule>  .._? (  /(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/ | (  '(' sub:attr ')' ) ) </rule>  <action sub> {
+     * $result['value'] = $subres['_attr'];
+     * } </action>  <action _finish> {
+     * $mr = $result['_matchres'];
+     * if (isset($mr['v1']) && !empty($mr['v1'])) {
+     * $result['value'] = trim($mr['v1'], "'\"");
+     * }
+     * if (isset($mr['true']) && !empty($mr['true'])) {
+     * $result['value'] = true;
+     * }
+     * if (isset($mr['false']) && !empty($mr['false'])) {
+     * $result['value'] = false;
+     * }
+     * if (isset($mr['null']) && !empty($mr['null'])) {
+     * $result['value'] = null;
+     * }
+     * $result['_matchres'] = array();
+     * } </action> </node>
+
+     */
+    public function matchNodeattrvalue($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -209,7 +205,7 @@ class Generator extends Parser
                     $subres = $this->parser->matchRule($result, 'attr');
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('attr',  $subres));
+                        $this->parser->successNode(array('attr', $subres));
                         $result['_text'] .= $subres['_text'];
                         $this->attrvalue_sub($result, $subres);
                         $valid = true;
@@ -276,12 +272,13 @@ class Generator extends Parser
         return $result;
     }
 
-    public function attrvalue_sub (&$result, $subres) {
+    public function attrvalue_sub(&$result, $subres)
+    {
         $result['value'] = $subres['_attr'];
     }
 
-
-    public function attrvalue___FINISH (&$result) {
+    public function attrvalue___FINISH(&$result)
+    {
         $mr = $result['_matchres'];
         if (isset($mr['v1']) && !empty($mr['v1'])) {
             $result['value'] = trim($mr['v1'], "'\"");
@@ -298,21 +295,19 @@ class Generator extends Parser
         $result['_matchres'] = array();
     }
 
-
     /**
-     *
      * Parser rules and action for node 'attrentry'
-     *
      *  Rule:
-     <node attrentry> <rule>  .._? key:Name .._? (  '=' .._? val:attrvalue )? </rule>  <action key> {
-                    $result['key'] = $subres['_text'];
-                    $result['value'] = array($result['key'] => true);
-                } </action>  <action val> {
-                    $result['value'][$result['key']] = $subres['value'];
-                } </action> </node> 
-     *
-    */
-    public function matchNodeattrentry($previous){
+     * <node attrentry> <rule>  .._? key:Name .._? (  '=' .._? val:attrvalue )? </rule>  <action key> {
+     * $result['key'] = $subres['_text'];
+     * $result['value'] = array($result['key'] => true);
+     * } </action>  <action val> {
+     * $result['value'][$result['key']] = $subres['value'];
+     * } </action> </node>
+
+     */
+    public function matchNodeattrentry($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -337,7 +332,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'Name');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Name',  $subres));
+                $this->parser->successNode(array('Name', $subres));
                 $result['_text'] .= $subres['_text'];
                 $this->attrentry_key($result, $subres);
                 $valid = true;
@@ -394,7 +389,7 @@ class Generator extends Parser
                 $subres = $this->parser->matchRule($result, 'attrvalue');
                 $remove = array_pop($this->parser->backtrace);
                 if ($subres) {
-                    $this->parser->successNode(array('attrvalue',  $subres));
+                    $this->parser->successNode(array('attrvalue', $subres));
                     $result['_text'] .= $subres['_text'];
                     $this->attrentry_val($result, $subres);
                     $valid = true;
@@ -440,31 +435,30 @@ class Generator extends Parser
         return $result;
     }
 
-    public function attrentry_key (&$result, $subres) {
+    public function attrentry_key(&$result, $subres)
+    {
         $result['key'] = $subres['_text'];
         $result['value'] = array($result['key'] => true);
     }
 
-
-    public function attrentry_val (&$result, $subres) {
+    public function attrentry_val(&$result, $subres)
+    {
         $result['value'][$result['key']] = $subres['value'];
     }
 
-
     /**
-     *
      * Parser rules and action for node 'attr'
-     *
      *  Rule:
-     <node attr> <rule>  attrentry (  ',' attrentry )* </rule>  <action _all> {
-                    if (!isset($result['_attr'])) {
-                        $result['_attr'] = array();
-                    }
-                    $result['_attr'] = array_merge($result['_attr'], $subres['value']);
-                } </action> </node> 
-     *
-    */
-    public function matchNodeattr($previous){
+     * <node attr> <rule>  attrentry (  ',' attrentry )* </rule>  <action _all> {
+     * if (!isset($result['_attr'])) {
+     * $result['_attr'] = array();
+     * }
+     * $result['_attr'] = array_merge($result['_attr'], $subres['value']);
+     * } </action> </node>
+
+     */
+    public function matchNodeattr($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -479,7 +473,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'attrentry');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('attrentry',  $subres));
+                $this->parser->successNode(array('attrentry', $subres));
                 $result['_text'] .= $subres['_text'];
                 $this->attr___ALL($result, $subres);
                 $valid = true;
@@ -518,7 +512,7 @@ class Generator extends Parser
                     $subres = $this->parser->matchRule($result, 'attrentry');
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('attrentry',  $subres));
+                        $this->parser->successNode(array('attrentry', $subres));
                         $result['_text'] .= $subres['_text'];
                         $this->attr___ALL($result, $subres);
                         $valid = true;
@@ -544,7 +538,9 @@ class Generator extends Parser
                     $valid = true;
                     break;
                 }
-                if (!$valid) break;
+                if (!$valid) {
+                    break;
+                }
             } while (true);
             // End 'attr'
             if (!$valid) {
@@ -570,23 +566,22 @@ class Generator extends Parser
         return $result;
     }
 
-    public function attr___ALL (&$result, $subres) {
+    public function attr___ALL(&$result, $subres)
+    {
         if (!isset($result['_attr'])) {
             $result['_attr'] = array();
         }
         $result['_attr'] = array_merge($result['_attr'], $subres['value']);
     }
 
-
     /**
-     *
      * Parser rules and action for node 'Name'
-     *
      *  Rule:
-     <node Name> <rule>  /\w+/ </rule> </node> 
-     *
-    */
-    public function matchNodeName($previous){
+     * <node Name> <rule>  /\w+/ </rule> </node>
+
+     */
+    public function matchNodeName($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -633,14 +628,13 @@ class Generator extends Parser
     }
 
     /**
-     *
      * Parser rules and action for node 'Header'
-     *
      *  Rule:
-     <node Header> <rule>  /\s*\/\*!\* / </rule> </node> 
-     *
-    */
-    public function matchNodeHeader($previous){
+     * <node Header> <rule>  /\s*\/\*!\* / </rule> </node>
+
+     */
+    public function matchNodeHeader($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -687,14 +681,13 @@ class Generator extends Parser
     }
 
     /**
-     *
      * Parser rules and action for node 'End'
-     *
      *  Rule:
-     <node End> <rule>  ./\s*\*\// </rule> </node> 
-     *
-    */
-    public function matchNodeEnd($previous){
+     * <node End> <rule>  ./\s*\*\// </rule> </node>
+
+     */
+    public function matchNodeEnd($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -740,14 +733,13 @@ class Generator extends Parser
     }
 
     /**
-     *
      * Parser rules and action for node 'Comment'
-     *
      *  Rule:
-     <node Comment> <rule>  /[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))* / </rule> </node> 
-     *
-    */
-    public function matchNodeComment($previous){
+     * <node Comment> <rule>  /[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))* / </rule> </node>
+
+     */
+    public function matchNodeComment($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -794,18 +786,17 @@ class Generator extends Parser
     }
 
     /**
-     *
      * Parser rules and action for node 'Text'
-     *
      *  Rule:
-     <node Text> <rule>  /([\S\s]+(?=([^\S\r\n]\/\*!\*)))|[\S\s]+/ </rule>  <action _start> {
-                        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Text ($this, null);
-                    } </action>  <action _all> {
-                        $result['_node']->_text = $subres['_text'];
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeText($previous){
+     * <node Text> <rule>  /([\S\s]+(?=([^\S\r\n]\/\*!\*)))|[\S\s]+/ </rule>  <action _start> {
+     * $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Text ($this, null);
+     * } </action>  <action _all> {
+     * $result['_node']->_text = $subres['_text'];
+     * } </action> </node>
+
+     */
+    public function matchNodeText($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -853,43 +844,42 @@ class Generator extends Parser
         return $result;
     }
 
-    public function Text___START (&$result, $previous) {
+    public function Text___START(&$result, $previous)
+    {
         $result['_node'] = new Text ($this, null);
     }
 
-
-    public function Text___ALL (&$result, $subres) {
+    public function Text___ALL(&$result, $subres)
+    {
         $result['_node']->_text = $subres['_text'];
     }
 
-
     /**
-     *
      * Parser rules and action for node 'Parser'
-     *
      *  Rule:
-     <node Parser> <rule>  ..Header .._? '<pegparser' _ Name '>' attr:Attribute* node:Node* .._? '</pegparser>' .._? End? </rule>  <action _start> {
-                        $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\ParserCompiler ($this, null);
-                    } </action>  <action attr> {
-                        if (!isset($result['_attr'])) {
-                            $result['_attr'] = array();
-                        }
-                        $result['_attr'] = array_merge($result['_attr'], $subres['_attr']);
-                    } </action>  <action node> {
-                        $subres['_nodedef']['rule']['_name'] = $subres['_nodedef']['name'];
-                        ksort($subres['_nodedef']['rule']);
-                        $result['_node']->nodes[$subres['_nodedef']['name']] = $subres['_nodedef']['rule'];
-                        $result['_node']->comments[$subres['_nodedef']['name']] = $subres['comment'];
-                        if (isset($subres['_attr'])) {
-                            $result['_node']->attributes[$subres['_nodedef']['name']] = $subres['_attr'];
-                        }
-                        if (isset($subres['_nodedef']['actions'])) {
-                            $result['_node']->actions[$subres['_nodedef']['name']] = $subres['_nodedef']['actions'];
-                        }
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeParser($previous){
+     * <node Parser> <rule>  ..Header .._? '<pegparser' _ Name '>' attr:Attribute* node:Node* .._? '</pegparser>' .._? End? </rule>  <action _start> {
+     * $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\ParserCompiler ($this, null);
+     * } </action>  <action attr> {
+     * if (!isset($result['_attr'])) {
+     * $result['_attr'] = array();
+     * }
+     * $result['_attr'] = array_merge($result['_attr'], $subres['_attr']);
+     * } </action>  <action node> {
+     * $subres['_nodedef']['rule']['_name'] = $subres['_nodedef']['name'];
+     * ksort($subres['_nodedef']['rule']);
+     * $result['_node']->nodes[$subres['_nodedef']['name']] = $subres['_nodedef']['rule'];
+     * $result['_node']->comments[$subres['_nodedef']['name']] = $subres['comment'];
+     * if (isset($subres['_attr'])) {
+     * $result['_node']->attributes[$subres['_nodedef']['name']] = $subres['_attr'];
+     * }
+     * if (isset($subres['_nodedef']['actions'])) {
+     * $result['_node']->actions[$subres['_nodedef']['name']] = $subres['_nodedef']['actions'];
+     * }
+     * } </action> </node>
+
+     */
+    public function matchNodeParser($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -905,7 +895,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'Header');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Header',  $subres));
+                $this->parser->successNode(array('Header', $subres));
                 $valid = true;
             } else {
                 $valid = false;
@@ -957,7 +947,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'Name');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Name',  $subres));
+                $this->parser->successNode(array('Name', $subres));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -989,7 +979,7 @@ class Generator extends Parser
                 $subres = $this->parser->matchRule($result, 'Attribute');
                 $remove = array_pop($this->parser->backtrace);
                 if ($subres) {
-                    $this->parser->successNode(array('Attribute',  $subres));
+                    $this->parser->successNode(array('Attribute', $subres));
                     $result['_text'] .= $subres['_text'];
                     $this->Parser_attr($result, $subres);
                     $valid = true;
@@ -1002,7 +992,9 @@ class Generator extends Parser
                     $valid = true;
                     break;
                 }
-                if (!$valid) break;
+                if (!$valid) {
+                    break;
+                }
             } while (true);
             // End 'Parser'
             if (!$valid) {
@@ -1015,7 +1007,7 @@ class Generator extends Parser
                 $subres = $this->parser->matchRule($result, 'Node');
                 $remove = array_pop($this->parser->backtrace);
                 if ($subres) {
-                    $this->parser->successNode(array('Node',  $subres));
+                    $this->parser->successNode(array('Node', $subres));
                     $result['_text'] .= $subres['_text'];
                     $this->Parser_node($result, $subres);
                     $valid = true;
@@ -1028,7 +1020,9 @@ class Generator extends Parser
                     $valid = true;
                     break;
                 }
-                if (!$valid) break;
+                if (!$valid) {
+                    break;
+                }
             } while (true);
             // End 'Parser'
             if (!$valid) {
@@ -1073,7 +1067,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'End');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('End',  $subres));
+                $this->parser->successNode(array('End', $subres));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -1105,20 +1099,21 @@ class Generator extends Parser
         return $result;
     }
 
-    public function Parser___START (&$result, $previous) {
+    public function Parser___START(&$result, $previous)
+    {
         $result['_node'] = new ParserCompiler ($this, null);
     }
 
-
-    public function Parser_attr (&$result, $subres) {
+    public function Parser_attr(&$result, $subres)
+    {
         if (!isset($result['_attr'])) {
             $result['_attr'] = array();
         }
         $result['_attr'] = array_merge($result['_attr'], $subres['_attr']);
     }
 
-
-    public function Parser_node (&$result, $subres) {
+    public function Parser_node(&$result, $subres)
+    {
         $subres['_nodedef']['rule']['_name'] = $subres['_nodedef']['name'];
         ksort($subres['_nodedef']['rule']);
         $result['_node']->nodes[$subres['_nodedef']['name']] = $subres['_nodedef']['rule'];
@@ -1131,18 +1126,16 @@ class Generator extends Parser
         }
     }
 
-
     /**
-     *
      * Parser rules and action for node 'Attribute'
-     *
      *  Rule:
-     <node Attribute> <rule>  .._? '<attribute>' attr:attr '</attribute>' .._? </rule>  <action attr> {
-                        $result['_attr'] = $subres['_attr'];
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeAttribute($previous){
+     * <node Attribute> <rule>  .._? '<attribute>' attr:attr '</attribute>' .._? </rule>  <action attr> {
+     * $result['_attr'] = $subres['_attr'];
+     * } </action> </node>
+
+     */
+    public function matchNodeAttribute($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -1181,7 +1174,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'attr');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('attr',  $subres));
+                $this->parser->successNode(array('attr', $subres));
                 $result['_text'] .= $subres['_text'];
                 $this->Attribute_attr($result, $subres);
                 $valid = true;
@@ -1237,50 +1230,49 @@ class Generator extends Parser
         return $result;
     }
 
-    public function Attribute_attr (&$result, $subres) {
+    public function Attribute_attr(&$result, $subres)
+    {
         $result['_attr'] = $subres['_attr'];
     }
 
-
     /**
-     *
      * Parser rules and action for node 'Node'
-     *
      *  Rule:
-     <node Node> <rule>  .._? /\s*\<(?<type>(node|token))\s+(?<nodename>[a-zA-Z_0-9]+)\>/ attr:Attribute* rule:Rule .act:Action* /<\/(node|token)>/ .._? </rule>  <action type> {
-                        $result['_nodedef']['rule']['_attr'] = array('_nodetype' => $subres['_matchres']['type']);
-                 } </action>  <action nodename> {
-                        $result['nodename'] = $subres['_matchres']['nodename'];
-                        $result['_nodedef']['name'] = $result['nodename'];
-                        unset($subres['_matchres']);
-                    } </action>  <action attr> {
-                         $result['_nodedef']['rule']['_attr'] = array_merge($result['_nodedef']['rule']['_attr'], $subres['_attr']);
-                    } </action>  <action rule> {
-                        $subres['_rule']['_name'] = $result['nodename'];
-                        $result['_nodedef']['rule'] = array_merge($result['_nodedef']['rule'], $subres['_rule']);
-                    } </action>  <action act> {
-                        if (!isset($result['_nodedef']['actions'])) {
-                           $result['_nodedef']['actions'] = array();
-                        }
-                        $index = count($result['_nodedef']['actions']);
-                        $result['_nodedef']['actions'][$index]['funcname'] = $subres['_matchres']['funcname'];
-                        $result['_nodedef']['actions'][$index]['code'] = $subres['code'];
-                        if (isset($subres['_matchres']['argument'])) {
-                            $result['_nodedef']['actions'][$index]['argument'] = $subres['_matchres']['argument'];
-                        }
-                        unset($subres['_matchres']);
-                    } </action>  <action _start> {
-                        $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) -1);
-                        $regexp .= '\s*\<(node|token)\s+[a-zA-Z_]+\>[\s\S]*?\<\/(node|token)\>[\s\S]*?[\n]/';
-                        if (preg_match($regexp, $this->source, $match, 0, $this->pos )) {
-                            $result['comment'] = $match[0];
-                        }
-                    } </action>  <action _finish> {
-                        ksort($result['_nodedef']['rule']);
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeNode($previous){
+     * <node Node> <rule>  .._? /\s*\<(?<type>(node|token))\s+(?<nodename>[a-zA-Z_0-9]+)\>/ attr:Attribute* rule:Rule .act:Action* /<\/(node|token)>/ .._? </rule>  <action type> {
+     * $result['_nodedef']['rule']['_attr'] = array('_nodetype' => $subres['_matchres']['type']);
+     * } </action>  <action nodename> {
+     * $result['nodename'] = $subres['_matchres']['nodename'];
+     * $result['_nodedef']['name'] = $result['nodename'];
+     * unset($subres['_matchres']);
+     * } </action>  <action attr> {
+     * $result['_nodedef']['rule']['_attr'] = array_merge($result['_nodedef']['rule']['_attr'], $subres['_attr']);
+     * } </action>  <action rule> {
+     * $subres['_rule']['_name'] = $result['nodename'];
+     * $result['_nodedef']['rule'] = array_merge($result['_nodedef']['rule'], $subres['_rule']);
+     * } </action>  <action act> {
+     * if (!isset($result['_nodedef']['actions'])) {
+     * $result['_nodedef']['actions'] = array();
+     * }
+     * $index = count($result['_nodedef']['actions']);
+     * $result['_nodedef']['actions'][$index]['funcname'] = $subres['_matchres']['funcname'];
+     * $result['_nodedef']['actions'][$index]['code'] = $subres['code'];
+     * if (isset($subres['_matchres']['argument'])) {
+     * $result['_nodedef']['actions'][$index]['argument'] = $subres['_matchres']['argument'];
+     * }
+     * unset($subres['_matchres']);
+     * } </action>  <action _start> {
+     * $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) -1);
+     * $regexp .= '\s*\<(node|token)\s+[a-zA-Z_]+\>[\s\S]*?\<\/(node|token)\>[\s\S]*?[\n]/';
+     * if (preg_match($regexp, $this->source, $match, 0, $this->pos )) {
+     * $result['comment'] = $match[0];
+     * }
+     * } </action>  <action _finish> {
+     * ksort($result['_nodedef']['rule']);
+     * } </action> </node>
+
+     */
+    public function matchNodeNode($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -1362,7 +1354,7 @@ class Generator extends Parser
                 $subres = $this->parser->matchRule($result, 'Attribute');
                 $remove = array_pop($this->parser->backtrace);
                 if ($subres) {
-                    $this->parser->successNode(array('Attribute',  $subres));
+                    $this->parser->successNode(array('Attribute', $subres));
                     $result['_text'] .= $subres['_text'];
                     $this->Node_attr($result, $subres);
                     $valid = true;
@@ -1375,7 +1367,9 @@ class Generator extends Parser
                     $valid = true;
                     break;
                 }
-                if (!$valid) break;
+                if (!$valid) {
+                    break;
+                }
             } while (true);
             // End 'Node'
             if (!$valid) {
@@ -1386,7 +1380,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'Rule');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Rule',  $subres));
+                $this->parser->successNode(array('Rule', $subres));
                 $result['_text'] .= $subres['_text'];
                 $this->Node_rule($result, $subres);
                 $valid = true;
@@ -1405,7 +1399,7 @@ class Generator extends Parser
                 $subres = $this->parser->matchRule($result, 'Action');
                 $remove = array_pop($this->parser->backtrace);
                 if ($subres) {
-                    $this->parser->successNode(array('Action',  $subres));
+                    $this->parser->successNode(array('Action', $subres));
                     $this->Node_act($result, $subres);
                     $valid = true;
                 } else {
@@ -1417,7 +1411,9 @@ class Generator extends Parser
                     $valid = true;
                     break;
                 }
-                if (!$valid) break;
+                if (!$valid) {
+                    break;
+                }
             } while (true);
             // End 'Node'
             if (!$valid) {
@@ -1489,30 +1485,31 @@ class Generator extends Parser
         return $result;
     }
 
-    public function Node_type (&$result, $subres) {
-        $result['_nodedef']['rule']['_attr'] = array('_nodetype'=> $subres['_matchres']['type']);
+    public function Node_type(&$result, $subres)
+    {
+        $result['_nodedef']['rule']['_attr'] = array('_nodetype' => $subres['_matchres']['type']);
     }
 
-
-    public function Node_nodename (&$result, $subres) {
+    public function Node_nodename(&$result, $subres)
+    {
         $result['nodename'] = $subres['_matchres']['nodename'];
         $result['_nodedef']['name'] = $result['nodename'];
         unset($subres['_matchres']);
     }
 
-
-    public function Node_attr (&$result, $subres) {
+    public function Node_attr(&$result, $subres)
+    {
         $result['_nodedef']['rule']['_attr'] = array_merge($result['_nodedef']['rule']['_attr'], $subres['_attr']);
     }
 
-
-    public function Node_rule (&$result, $subres) {
+    public function Node_rule(&$result, $subres)
+    {
         $subres['_rule']['_name'] = $result['nodename'];
         $result['_nodedef']['rule'] = array_merge($result['_nodedef']['rule'], $subres['_rule']);
     }
 
-
-    public function Node_act (&$result, $subres) {
+    public function Node_act(&$result, $subres)
+    {
         if (!isset($result['_nodedef']['actions'])) {
             $result['_nodedef']['actions'] = array();
         }
@@ -1525,32 +1522,30 @@ class Generator extends Parser
         unset($subres['_matchres']);
     }
 
-
-    public function Node___START (&$result, $previous) {
-        $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) -1);
+    public function Node___START(&$result, $previous)
+    {
+        $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) - 1);
         $regexp .= '\s*\<(node|token)\s+[a-zA-Z_]+\>[\s\S]*?\<\/(node|token)\>[\s\S]*?[\n]/';
-        if (preg_match($regexp, $this->source, $match, 0, $this->pos )) {
+        if (preg_match($regexp, $this->source, $match, 0, $this->pos)) {
             $result['comment'] = $match[0];
         }
     }
 
-
-    public function Node___FINISH (&$result) {
+    public function Node___FINISH(&$result)
+    {
         ksort($result['_nodedef']['rule']);
     }
 
-
     /**
-     *
      * Parser rules and action for node 'Rule'
-     *
      *  Rule:
-     <node Rule> <rule>  .._? '<rule>' .._? seq:Sequence .._? '</rule>' .._? </rule>  <action seq> {
-                        $result['_rule'] = $subres['_rule'];
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeRule($previous){
+     * <node Rule> <rule>  .._? '<rule>' .._? seq:Sequence .._? '</rule>' .._? </rule>  <action seq> {
+     * $result['_rule'] = $subres['_rule'];
+     * } </action> </node>
+
+     */
+    public function matchNodeRule($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -1599,7 +1594,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'Sequence');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Sequence',  $subres));
+                $this->parser->successNode(array('Sequence', $subres));
                 $result['_text'] .= $subres['_text'];
                 $this->Rule_seq($result, $subres);
                 $valid = true;
@@ -1665,22 +1660,21 @@ class Generator extends Parser
         return $result;
     }
 
-    public function Rule_seq (&$result, $subres) {
+    public function Rule_seq(&$result, $subres)
+    {
         $result['_rule'] = $subres['_rule'];
     }
 
-
     /**
-     *
      * Parser rules and action for node 'Action'
-     *
      *  Rule:
-     <node Action> <rule>  .._? /\<action\s+(?<funcname>\w+)(\((?<argument>\w+)\))?\>/ .._? code:/(\{(?:(?>[^{}]+|(?R))*)?\})/ .._? '</action>' .._? </rule>  <action code> {
-                        $result['code'] = $subres['_text'];
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeAction($previous){
+     * <node Action> <rule>  .._? /\<action\s+(?<funcname>\w+)(\((?<argument>\w+)\))?\>/ .._? code:/(\{(?:(?>[^{}]+|(?R))*)?\})/ .._? '</action>' .._? </rule>  <action code> {
+     * $result['code'] = $subres['_text'];
+     * } </action> </node>
+
+     */
+    public function matchNodeAction($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -1846,22 +1840,21 @@ class Generator extends Parser
         return $result;
     }
 
-    public function Action_code (&$result, $subres) {
+    public function Action_code(&$result, $subres)
+    {
         $result['code'] = $subres['_text'];
     }
 
-
     /**
-     *
      * Parser rules and action for node 'PHP'
-     *
      *  Rule:
-     <node PHP> <rule>  /.[\n\t ]* / .b:/(\{|\}|[^\n\}\{]+)* / </rule>  <action b> {
-                        $result['_text'] = trim($subres['_text']);
-                    } </action> </node> 
-     *
-    */
-    public function matchNodePHP($previous){
+     * <node PHP> <rule>  /.[\n\t ]* / .b:/(\{|\}|[^\n\}\{]+)* / </rule>  <action b> {
+     * $result['_text'] = trim($subres['_text']);
+     * } </action> </node>
+
+     */
+    public function matchNodePHP($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -1961,20 +1954,19 @@ class Generator extends Parser
         return $result;
     }
 
-    public function PHP_b (&$result, $subres) {
+    public function PHP_b(&$result, $subres)
+    {
         $result['_text'] = trim($subres['_text']);
     }
 
-
     /**
-     *
      * Parser rules and action for node 'Arguments'
-     *
      *  Rule:
-     <node Arguments> <rule>  '(' attr:Name (  '=' value:Name | value:Arguments )? (  ',' attr:Name (  '=' value:Name | value:Arguments )? )* ')' </rule> </node> 
-     *
-    */
-    public function matchNodeArguments($previous){
+     * <node Arguments> <rule>  '(' attr:Name (  '=' value:Name | value:Arguments )? (  ',' attr:Name (  '=' value:Name | value:Arguments )? )* ')' </rule> </node>
+
+     */
+    public function matchNodeArguments($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -2003,9 +1995,9 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'Name');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Name',  $subres));
+                $this->parser->successNode(array('Name', $subres));
                 $result['_text'] .= $subres['_text'];
-                if(!isset($result['attr'])) {
+                if (!isset($result['attr'])) {
                     $result['attr'] = $subres;
                 } else {
                     if (!is_array($result['attr'])) {
@@ -2050,9 +2042,9 @@ class Generator extends Parser
                     $subres = $this->parser->matchRule($result, 'Name');
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('Name',  $subres));
+                        $this->parser->successNode(array('Name', $subres));
                         $result['_text'] .= $subres['_text'];
-                        if(!isset($result['value'])) {
+                        if (!isset($result['value'])) {
                             $result['value'] = $subres;
                         } else {
                             if (!is_array($result['value'])) {
@@ -2074,9 +2066,9 @@ class Generator extends Parser
                     $subres = $this->parser->matchRule($result, 'Arguments');
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('Arguments',  $subres));
+                        $this->parser->successNode(array('Arguments', $subres));
                         $result['_text'] .= $subres['_text'];
-                        if(!isset($result['value'])) {
+                        if (!isset($result['value'])) {
                             $result['value'] = $subres;
                         } else {
                             if (!is_array($result['value'])) {
@@ -2141,9 +2133,9 @@ class Generator extends Parser
                     $subres = $this->parser->matchRule($result, 'Name');
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('Name',  $subres));
+                        $this->parser->successNode(array('Name', $subres));
                         $result['_text'] .= $subres['_text'];
-                        if(!isset($result['attr'])) {
+                        if (!isset($result['attr'])) {
                             $result['attr'] = $subres;
                         } else {
                             if (!is_array($result['attr'])) {
@@ -2188,9 +2180,9 @@ class Generator extends Parser
                             $subres = $this->parser->matchRule($result, 'Name');
                             $remove = array_pop($this->parser->backtrace);
                             if ($subres) {
-                                $this->parser->successNode(array('Name',  $subres));
+                                $this->parser->successNode(array('Name', $subres));
                                 $result['_text'] .= $subres['_text'];
-                                if(!isset($result['value'])) {
+                                if (!isset($result['value'])) {
                                     $result['value'] = $subres;
                                 } else {
                                     if (!is_array($result['value'])) {
@@ -2212,9 +2204,9 @@ class Generator extends Parser
                             $subres = $this->parser->matchRule($result, 'Arguments');
                             $remove = array_pop($this->parser->backtrace);
                             if ($subres) {
-                                $this->parser->successNode(array('Arguments',  $subres));
+                                $this->parser->successNode(array('Arguments', $subres));
                                 $result['_text'] .= $subres['_text'];
-                                if(!isset($result['value'])) {
+                                if (!isset($result['value'])) {
                                     $result['value'] = $subres;
                                 } else {
                                     if (!is_array($result['value'])) {
@@ -2266,7 +2258,9 @@ class Generator extends Parser
                     $valid = true;
                     break;
                 }
-                if (!$valid) break;
+                if (!$valid) {
+                    break;
+                }
             } while (true);
             // End 'Arguments'
             if (!$valid) {
@@ -2307,25 +2301,24 @@ class Generator extends Parser
     }
 
     /**
-     *
      * Parser rules and action for node 'Option'
-     *
      *  Rule:
-     <node Option> <rule>  _? result:RuleToken (  _? '|' _? option:RuleToken )* </rule>  <action result> {
-                        $result['_rule'] = $subres['_rule'];
-                    } </action>  <action option> {
-                        ksort($subres['_rule']);
-                        if(isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'option') {
-                            ksort($result['_rule']);
-                            $r = $result['_rule'];
-                            $result['_rule'] = array('_type' => 'option', '_param' => array($r, $subres['_rule']));
-                        } else {
-                            $result['_rule']['_param'][] = $subres['_rule'];
-                        }
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeOption($previous){
+     * <node Option> <rule>  _? result:RuleToken (  _? '|' _? option:RuleToken )* </rule>  <action result> {
+     * $result['_rule'] = $subres['_rule'];
+     * } </action>  <action option> {
+     * ksort($subres['_rule']);
+     * if(isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'option') {
+     * ksort($result['_rule']);
+     * $r = $result['_rule'];
+     * $result['_rule'] = array('_type' => 'option', '_param' => array($r, $subres['_rule']));
+     * } else {
+     * $result['_rule']['_param'][] = $subres['_rule'];
+     * }
+     * } </action> </node>
+
+     */
+    public function matchNodeOption($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -2351,7 +2344,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'RuleToken');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('RuleToken',  $subres));
+                $this->parser->successNode(array('RuleToken', $subres));
                 $result['_text'] .= $subres['_text'];
                 $this->Option_result($result, $subres);
                 $valid = true;
@@ -2412,7 +2405,7 @@ class Generator extends Parser
                     $subres = $this->parser->matchRule($result, 'RuleToken');
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('RuleToken',  $subres));
+                        $this->parser->successNode(array('RuleToken', $subres));
                         $result['_text'] .= $subres['_text'];
                         $this->Option_option($result, $subres);
                         $valid = true;
@@ -2438,7 +2431,9 @@ class Generator extends Parser
                     $valid = true;
                     break;
                 }
-                if (!$valid) break;
+                if (!$valid) {
+                    break;
+                }
             } while (true);
             // End 'Option'
             if (!$valid) {
@@ -2464,44 +2459,42 @@ class Generator extends Parser
         return $result;
     }
 
-    public function Option_result (&$result, $subres) {
+    public function Option_result(&$result, $subres)
+    {
         $result['_rule'] = $subres['_rule'];
     }
 
-
-    public function Option_option (&$result, $subres) {
+    public function Option_option(&$result, $subres)
+    {
         ksort($subres['_rule']);
-        if(isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'option') {
+        if (isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'option') {
             ksort($result['_rule']);
             $r = $result['_rule'];
-            $result['_rule'] = array('_type'=> 'option', '_param'=> array($r, $subres['_rule']));
-        }
-        else {
+            $result['_rule'] = array('_type' => 'option', '_param' => array($r, $subres['_rule']));
+        } else {
             $result['_rule']['_param'][] = $subres['_rule'];
         }
     }
 
-
     /**
-     *
      * Parser rules and action for node 'Sequence'
-     *
      *  Rule:
-     <node Sequence> <rule>  result:Option sequence:Option* </rule>  <action result> {
-                        $result['_rule'] = $subres['_rule'];
-                    } </action>  <action sequence> {
-                        ksort($subres['_rule']);
-                        if(isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'sequence') {
-                            ksort($result['_rule']);
-                            $r = $result['_rule'];
-                            $result['_rule'] = array('_type' => 'sequence', '_param' => array($r, $subres['_rule']));
-                        } else {
-                            $result['_rule']['_param'][] = $subres['_rule'];
-                        }
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeSequence($previous){
+     * <node Sequence> <rule>  result:Option sequence:Option* </rule>  <action result> {
+     * $result['_rule'] = $subres['_rule'];
+     * } </action>  <action sequence> {
+     * ksort($subres['_rule']);
+     * if(isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'sequence') {
+     * ksort($result['_rule']);
+     * $r = $result['_rule'];
+     * $result['_rule'] = array('_type' => 'sequence', '_param' => array($r, $subres['_rule']));
+     * } else {
+     * $result['_rule']['_param'][] = $subres['_rule'];
+     * }
+     * } </action> </node>
+
+     */
+    public function matchNodeSequence($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -2516,7 +2509,7 @@ class Generator extends Parser
             $subres = $this->parser->matchRule($result, 'Option');
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Option',  $subres));
+                $this->parser->successNode(array('Option', $subres));
                 $result['_text'] .= $subres['_text'];
                 $this->Sequence_result($result, $subres);
                 $valid = true;
@@ -2535,7 +2528,7 @@ class Generator extends Parser
                 $subres = $this->parser->matchRule($result, 'Option');
                 $remove = array_pop($this->parser->backtrace);
                 if ($subres) {
-                    $this->parser->successNode(array('Option',  $subres));
+                    $this->parser->successNode(array('Option', $subres));
                     $result['_text'] .= $subres['_text'];
                     $this->Sequence_sequence($result, $subres);
                     $valid = true;
@@ -2548,7 +2541,9 @@ class Generator extends Parser
                     $valid = true;
                     break;
                 }
-                if (!$valid) break;
+                if (!$valid) {
+                    break;
+                }
             } while (true);
             // End 'Sequence'
             if (!$valid) {
@@ -2574,93 +2569,91 @@ class Generator extends Parser
         return $result;
     }
 
-    public function Sequence_result (&$result, $subres) {
+    public function Sequence_result(&$result, $subres)
+    {
         $result['_rule'] = $subres['_rule'];
     }
 
-
-    public function Sequence_sequence (&$result, $subres) {
+    public function Sequence_sequence(&$result, $subres)
+    {
         ksort($subres['_rule']);
-        if(isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'sequence') {
+        if (isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'sequence') {
             ksort($result['_rule']);
             $r = $result['_rule'];
-            $result['_rule'] = array('_type'=> 'sequence', '_param'=> array($r, $subres['_rule']));
-        }
-        else {
+            $result['_rule'] = array('_type' => 'sequence', '_param' => array($r, $subres['_rule']));
+        } else {
             $result['_rule']['_param'][] = $subres['_rule'];
         }
     }
 
-
     /**
-     *
      * Parser rules and action for node 'RuleToken'
-     *
      *  Rule:
-     <node RuleToken> <rule>  /((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/? (  /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<osp>_\?)|(?<wsp>_))|(?<node>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | (  '(' .._? seq:Sequence .._? ')' ) ) /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/? </rule>  <action _start> {
-                        $result['_rule'] = array();
-                    } </action>  <action seq> {
-                        $result['_rule'] = array_merge ($result['_rule'], $subres['_rule']);
-                    } </action>  <action _finish> {
-                        $result['_rule']['_tagcomment'] = $result['_text'];
-                        $mr = $result['_matchres'];
-                        if (isset($mr['osp']) && !empty($mr['osp'])) {
-                            $result['_rule']['_type'] = 'whitespace';
-                            $result['_rule']['_param'] = true;
-                        }
-                        if (isset($mr['wsp']) && !empty($mr['wsp'])) {
-                            $result['_rule']['_type'] = 'whitespace';
-                            $result['_rule']['_param'] = false;
-                        }
-                        if (isset($mr['node']) && !empty($mr['node'])) {
-                            $result['_rule']['_type'] = 'recurse';
-                            $result['_rule']['_param'] = $mr['node'];
-                        }
-                        if (isset($mr['expression']) && !empty($mr['expression'])) {
-                            $result['_rule']['_type'] = 'expression';
-                            $result['_rule']['_param'] = $mr['expression'];
-                        }
-                        if (isset($mr['literal']) && !empty($mr['literal'])) {
-                            $result['_rule']['_type'] = 'literal';
-                            $result['_rule']['_param'] = trim($mr['literal'],"'\"");
-                        }
-                        if (isset($mr['rx']) && !empty($mr['rx'])) {
-                            $result['_rule']['_type'] = 'rx';
-                            $result['_rule']['_param'] = $mr['rx'];
-                        }
-                        if (isset($mr['silent']) && !empty($mr['silent'])) {
-                            $result['_rule']['_silent'] = strlen($mr['silent']);
-                        }
-                        if (isset($mr['pla']) && !empty($mr['pla'])) {
-                            $result['_rule']['_pla'] = true;
-                        }
-                        if (isset($mr['nla']) && !empty($mr['nla'])) {
-                            $result['_rule']['_nla'] = true;
-                        }
-                        if (isset($mr['tag']) && !empty($mr['tag'])) {
-                            $result['_rule']['_tag'] =$mr['tag'];
-                        }
-                        if (isset($mr['quest']) && !empty($mr['quest'])) {
-                            $result['_rule']['_min'] = 0;
-                        } elseif (isset($mr['any']) && !empty($mr['any'])) {
-                            $result['_rule']['_min'] = 0;
-                            $result['_rule']['_max'] = null;
-                        } elseif (isset($mr['must']) && !empty($mr['must'])) {
-                            $result['_rule']['_max'] = null;
-                        } else {
-                            if (isset($mr['min']) && !empty($mr['min'])) {
-                                $result['_rule']['_min'] = $mr['min'];
-                                $result['_rule']['_max'] = null;
-                            }
-                            if (isset($mr['max']) && !empty($mr['max'])) {
-                                $result['_rule']['_max'] = $mr['max'];
-                            }
-                        }
-                        $result['_matchres'] = array();
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeRuleToken($previous){
+     * <node RuleToken> <rule>  /((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/? (  /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<osp>_\?)|(?<wsp>_))|(?<node>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | (  '(' .._? seq:Sequence .._? ')' ) ) /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/? </rule>  <action _start> {
+     * $result['_rule'] = array();
+     * } </action>  <action seq> {
+     * $result['_rule'] = array_merge ($result['_rule'], $subres['_rule']);
+     * } </action>  <action _finish> {
+     * $result['_rule']['_tagcomment'] = $result['_text'];
+     * $mr = $result['_matchres'];
+     * if (isset($mr['osp']) && !empty($mr['osp'])) {
+     * $result['_rule']['_type'] = 'whitespace';
+     * $result['_rule']['_param'] = true;
+     * }
+     * if (isset($mr['wsp']) && !empty($mr['wsp'])) {
+     * $result['_rule']['_type'] = 'whitespace';
+     * $result['_rule']['_param'] = false;
+     * }
+     * if (isset($mr['node']) && !empty($mr['node'])) {
+     * $result['_rule']['_type'] = 'recurse';
+     * $result['_rule']['_param'] = $mr['node'];
+     * }
+     * if (isset($mr['expression']) && !empty($mr['expression'])) {
+     * $result['_rule']['_type'] = 'expression';
+     * $result['_rule']['_param'] = $mr['expression'];
+     * }
+     * if (isset($mr['literal']) && !empty($mr['literal'])) {
+     * $result['_rule']['_type'] = 'literal';
+     * $result['_rule']['_param'] = trim($mr['literal'],"'\"");
+     * }
+     * if (isset($mr['rx']) && !empty($mr['rx'])) {
+     * $result['_rule']['_type'] = 'rx';
+     * $result['_rule']['_param'] = $mr['rx'];
+     * }
+     * if (isset($mr['silent']) && !empty($mr['silent'])) {
+     * $result['_rule']['_silent'] = strlen($mr['silent']);
+     * }
+     * if (isset($mr['pla']) && !empty($mr['pla'])) {
+     * $result['_rule']['_pla'] = true;
+     * }
+     * if (isset($mr['nla']) && !empty($mr['nla'])) {
+     * $result['_rule']['_nla'] = true;
+     * }
+     * if (isset($mr['tag']) && !empty($mr['tag'])) {
+     * $result['_rule']['_tag'] =$mr['tag'];
+     * }
+     * if (isset($mr['quest']) && !empty($mr['quest'])) {
+     * $result['_rule']['_min'] = 0;
+     * } elseif (isset($mr['any']) && !empty($mr['any'])) {
+     * $result['_rule']['_min'] = 0;
+     * $result['_rule']['_max'] = null;
+     * } elseif (isset($mr['must']) && !empty($mr['must'])) {
+     * $result['_rule']['_max'] = null;
+     * } else {
+     * if (isset($mr['min']) && !empty($mr['min'])) {
+     * $result['_rule']['_min'] = $mr['min'];
+     * $result['_rule']['_max'] = null;
+     * }
+     * if (isset($mr['max']) && !empty($mr['max'])) {
+     * $result['_rule']['_max'] = $mr['max'];
+     * }
+     * }
+     * $result['_matchres'] = array();
+     * } </action> </node>
+
+     */
+    public function matchNodeRuleToken($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -2802,7 +2795,7 @@ class Generator extends Parser
                     $subres = $this->parser->matchRule($result, 'Sequence');
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('Sequence',  $subres));
+                        $this->parser->successNode(array('Sequence', $subres));
                         $result['_text'] .= $subres['_text'];
                         $this->RuleToken_seq($result, $subres);
                         $valid = true;
@@ -2926,17 +2919,18 @@ class Generator extends Parser
         return $result;
     }
 
-    public function RuleToken___START (&$result, $previous) {
+    public function RuleToken___START(&$result, $previous)
+    {
         $result['_rule'] = array();
     }
 
-
-    public function RuleToken_seq (&$result, $subres) {
-        $result['_rule'] = array_merge ($result['_rule'], $subres['_rule']);
+    public function RuleToken_seq(&$result, $subres)
+    {
+        $result['_rule'] = array_merge($result['_rule'], $subres['_rule']);
     }
 
-
-    public function RuleToken___FINISH (&$result) {
+    public function RuleToken___FINISH(&$result)
+    {
         $result['_rule']['_tagcomment'] = $result['_text'];
         $mr = $result['_matchres'];
         if (isset($mr['osp']) && !empty($mr['osp'])) {
@@ -2957,7 +2951,7 @@ class Generator extends Parser
         }
         if (isset($mr['literal']) && !empty($mr['literal'])) {
             $result['_rule']['_type'] = 'literal';
-            $result['_rule']['_param'] = trim($mr['literal'],"'\"");
+            $result['_rule']['_param'] = trim($mr['literal'], "'\"");
         }
         if (isset($mr['rx']) && !empty($mr['rx'])) {
             $result['_rule']['_type'] = 'rx';
@@ -2973,19 +2967,16 @@ class Generator extends Parser
             $result['_rule']['_nla'] = true;
         }
         if (isset($mr['tag']) && !empty($mr['tag'])) {
-            $result['_rule']['_tag'] =$mr['tag'];
+            $result['_rule']['_tag'] = $mr['tag'];
         }
         if (isset($mr['quest']) && !empty($mr['quest'])) {
             $result['_rule']['_min'] = 0;
-        }
-        elseif (isset($mr['any']) && !empty($mr['any'])) {
+        } elseif (isset($mr['any']) && !empty($mr['any'])) {
             $result['_rule']['_min'] = 0;
             $result['_rule']['_max'] = null;
-        }
-        elseif (isset($mr['must']) && !empty($mr['must'])) {
+        } elseif (isset($mr['must']) && !empty($mr['must'])) {
             $result['_rule']['_max'] = null;
-        }
-        else {
+        } else {
             if (isset($mr['min']) && !empty($mr['min'])) {
                 $result['_rule']['_min'] = $mr['min'];
                 $result['_rule']['_max'] = null;
@@ -2997,22 +2988,20 @@ class Generator extends Parser
         $result['_matchres'] = array();
     }
 
-
     /**
-     *
      * Parser rules and action for node 'File'
-     *
      *  Rule:
-     <node File> <rule>  (  .Text .Parser* )* </rule>  <action _start> {
-                        $result['_nodes']= array();
-                    } </action>  <action _all> {
-                        if (isset($subres['_node'])) {
-                            $result['_nodes'][] = $subres['_node'];
-                        }
-                    } </action> </node> 
-     *
-    */
-    public function matchNodeFile($previous){
+     * <node File> <rule>  (  .Text .Parser* )* </rule>  <action _start> {
+     * $result['_nodes']= array();
+     * } </action>  <action _all> {
+     * if (isset($subres['_node'])) {
+     * $result['_nodes'][] = $subres['_node'];
+     * }
+     * } </action> </node>
+
+     */
+    public function matchNodeFile($previous)
+    {
         $result = $this->parser->resultDefault;
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
         $result['_lineno'] = $this->parser->line;
@@ -3030,7 +3019,7 @@ class Generator extends Parser
                 $subres = $this->parser->matchRule($result, 'Text');
                 $remove = array_pop($this->parser->backtrace);
                 if ($subres) {
-                    $this->parser->successNode(array('Text',  $subres));
+                    $this->parser->successNode(array('Text', $subres));
                     $this->File___ALL($result, $subres);
                     $valid = true;
                 } else {
@@ -3048,7 +3037,7 @@ class Generator extends Parser
                     $subres = $this->parser->matchRule($result, 'Parser');
                     $remove = array_pop($this->parser->backtrace);
                     if ($subres) {
-                        $this->parser->successNode(array('Parser',  $subres));
+                        $this->parser->successNode(array('Parser', $subres));
                         $this->File___ALL($result, $subres);
                         $valid = true;
                     } else {
@@ -3060,7 +3049,9 @@ class Generator extends Parser
                         $valid = true;
                         break;
                     }
-                    if (!$valid) break;
+                    if (!$valid) {
+                        break;
+                    }
                 } while (true);
                 // End 'File'
                 if (!$valid) {
@@ -3080,7 +3071,9 @@ class Generator extends Parser
                 $valid = true;
                 break;
             }
-            if (!$valid) break;
+            if (!$valid) {
+                break;
+            }
         } while (true);
         // End 'File'
         if ($valid) {
@@ -3093,19 +3086,17 @@ class Generator extends Parser
         return $result;
     }
 
-    public function File___START (&$result, $previous) {
-        $result['_nodes']= array();
+    public function File___START(&$result, $previous)
+    {
+        $result['_nodes'] = array();
     }
 
-
-    public function File___ALL (&$result, $subres) {
+    public function File___ALL(&$result, $subres)
+    {
         if (isset($subres['_node'])) {
             $result['_nodes'][] = $subres['_node'];
         }
     }
-
-
-
 
     /**
      * Constructor
@@ -3132,7 +3123,6 @@ class Generator extends Parser
         }
     }
 
-
     /**
      * @param string $ruleName
      *
@@ -3149,7 +3139,6 @@ class Generator extends Parser
         }
         return $rule;
     }
-
 
     /**
      * @param $infile
@@ -3190,14 +3179,15 @@ class Generator extends Parser
         file_put_contents($outfile, $string);
     }
 
-    public function compileDynamic($string) {
+    public function compileDynamic($string)
+    {
         $this->setSource($string);
         if (preg_match("/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/", $this->parser->source, $match)) {
             $this->parser->pos += strlen($match[1]);
             $this->parser->line += substr_count($match[1], "\n");
             $result = $this->parser->parse('Parser');
             return $result['_node']->nodes;
-                   }
+        }
         return '';
     }
 }

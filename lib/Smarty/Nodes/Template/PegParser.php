@@ -13,23 +13,23 @@ class PegParser
 
     public $rules = array(
         "Template" => array(
-            "_name"     => "Template",
-            "_param" => array(
+            "_name"    => "Template",
+            "_param"   => array(
                 0 => array(
-                    "_min"     => 0,
-                    "_silent"  => 1,
-                    "_param" => "Bom",
-                    "_type"    => "recurse"
+                    "_min"    => 0,
+                    "_silent" => 1,
+                    "_param"  => "Bom",
+                    "_type"   => "recurse"
                 ),
                 1 => array(
-                    "_min"     => 0,
+                    "_min"   => 0,
                     "_param" => "Body",
-                    "_tag"     => "nodes",
-                    "_type"    => "recurse"
+                    "_tag"   => "nodes",
+                    "_type"  => "recurse"
                 )
             ),
-            "_type"     => "sequence",
-            "_actions"  => array(
+            "_type"    => "sequence",
+            "_actions" => array(
                 "_start" => array(
                     "Template___START" => true
                 ),
@@ -41,9 +41,9 @@ class PegParser
             )
         ),
         "Bom"      => array(
-            "_name"   => "Bom",
+            "_name"  => "Bom",
             "_param" => "/\\xEF\\xBB\\xBF|\\xFE\\xFF|\\xFF\\xFE/",
-            "_type"   => "rx"
+            "_type"  => "rx"
         )
     );
 

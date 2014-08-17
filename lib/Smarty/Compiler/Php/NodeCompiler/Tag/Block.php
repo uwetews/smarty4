@@ -140,19 +140,19 @@ class Smarty_ComSmarty_Compiler_Php_er_Tag_Blockclose extends Smarty_CompilerSma
 
         $block_code = new Smarty_Compiler_Code(2);
         $block_code->code("public function " . $compiler->block_nesting_info[0]['function'] . " (\$this->smarty, \$_scope) {")
-            ->newline()
-            ->indent();
+                   ->newline()
+                   ->indent();
         $block_code->code("ob_start();")
-            ->newline();
+                   ->newline();
         $block_code->code("/* Line {$saved_data[5]} */")
-            ->newline();
+                   ->newline();
         $block_code->precompiled .= $compiler->template_code->precompiled;
         $block_code->code("return ob_get_clean();")
-            ->newline();
+                   ->newline();
 
         $block_code->outdent()
-            ->code('}')
-            ->newline(3);
+                   ->code('}')
+                   ->newline(3);
 
         $compiler->inheritance_blocks_code[] .= $block_code->precompiled;
 
@@ -167,23 +167,23 @@ class Smarty_ComSmarty_Compiler_Php_er_Tag_Blockclose extends Smarty_CompilerSma
                 $code = new Smarty_Compiler_Code();
                 $code->iniTagCode($this);
                 $code->code("\$this->inheritance_blocks['$int_name']['valid'] = true;")
-                    ->newline();
+                     ->newline();
                 $compiler->postfix_code[] = $code;
             } else {
                 $this->code("\$this->inheritance_blocks['$int_name']['valid'] = true;")
-                    ->newline();
+                     ->newline();
             }
         } else {
             if ($compiler->tag_nocache) {
                 $code = new Smarty_Compiler_Code();
                 $code->iniTagCode($this);
                 $code->code("echo \$this->_getInheritanceBlock ('{$int_name}', \$this->smarty, \$_scope, 1);")
-                    ->newline();
+                     ->newline();
                 $compiler->postfix_code[] = $code;
             } else {
                 //                $this->code("\$this->inheritance_blocks['$int_name']['valid'] = true;")->newline();
                 $this->code("echo \$this->_getInheritanceBlock ('{$int_name}', \$this->smarty, \$_scope, 0);")
-                    ->newline();
+                     ->newline();
             }
         }
         if ($compiler->block_nesting_level > 1) {

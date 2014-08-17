@@ -1,5 +1,6 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
+
 use Smarty\PegParser;
 
 /**
@@ -9,17 +10,15 @@ use Smarty\PegParser;
  */
 class TagAssignParser extends PegParser
 {
-    
-    /**
-     *
-     * Parser generated on 2014-07-10 23:09:00
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagAssign.peg.inc' dated 2014-07-08 03:12:19
-     *
-    */
 
     /**
-     Flag that compiled Peg Parser class is valid
-     *
+     * Parser generated on 2014-08-10 18:55:25
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagAssign.peg.inc' dated 2014-07-08 03:12:19
+
+     */
+
+    /**
+     * Flag that compiled Peg Parser class is valid
      * @var bool
      */
     public $valid = true;
@@ -30,8 +29,8 @@ class TagAssignParser extends PegParser
      * @var array
      */
     public $matchMethods = array(
-            "TagAssign" => "matchNodeTagAssign"
-        );
+        "TagAssign" => "matchNodeTagAssign"
+    );
 
     /**
      * Array of node attributes
@@ -39,40 +38,38 @@ class TagAssignParser extends PegParser
      * @var array
      */
     public $nodeAttributes = array(
-            "TagAssign" => array(
-                    "_nodetype" => "node",
-                    "attributes" => array(
-                            "required" => array(
-                                    "var" => true,
-                                    "value" => true
-                                )
-                        ),
-                    "options" => array(
-                            "nocache" => true,
-                            "cachevalue" => true
-                        )
+        "TagAssign" => array(
+            "_nodetype"  => "node",
+            "attributes" => array(
+                "required" => array(
+                    "var"   => true,
+                    "value" => true
                 )
-        );
+            ),
+            "options"    => array(
+                "nocache"    => true,
+                "cachevalue" => true
+            )
+        )
+    );
+
     /**
-     *
      * Parser rules and action for node 'TagAssign'
-     *
      *  Rule:
-    
+     * <node TagAssign>
+     * <attribute>attributes=(required=(var,value)),options=(nocache,cachevalue)</attribute>
+     * <rule>Ldel 'assign' SmartyTagAttributes SmartyTagOptions Rdel</rule>
+     * <action _start>
+     * {
+     * $result['node'] = $previous['node'];
+     * }
+     * </action>
+     * </node>
 
-            <node TagAssign>
-                <attribute>attributes=(required=(var,value)),options=(nocache,cachevalue)</attribute>
-                <rule>Ldel 'assign' SmartyTagAttributes SmartyTagOptions Rdel</rule>
-                <action _start>
-                {
-                    $result['node'] = $previous['node'];
-                }
-                </action>
-            </node>
 
-     *
-    */
-    public function matchNodeTagAssign($previous, &$errorResult){
+     */
+    public function matchNodeTagAssign($previous, &$errorResult)
+    {
         $result = $this->parser->resultDefault;
         $error = array();
         $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
@@ -84,6 +81,7 @@ class TagAssignParser extends PegParser
         $pos1 = $this->parser->pos;
         $line1 = $this->parser->line;
         $error1 = $error;
+        $this->parser->addBacktrace(array('_s1_', ''));
         do {
             $error = array();
             // Start 'Ldel' min '1' max '1'
@@ -91,7 +89,7 @@ class TagAssignParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Ldel', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Ldel',  $subres['_text']));
+                $this->parser->successNode(array('Ldel', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -113,7 +111,7 @@ class TagAssignParser extends PegParser
                 $valid = true;
             } else {
                 $this->parser->matchError($error, 'literal', 'assign');
-                $this->parser->failNode(array('\'assign\'',  ''));
+                $this->parser->failNode(array('\'assign\'', ''));
                 $valid = false;
             }
             // End ''assign''
@@ -128,7 +126,7 @@ class TagAssignParser extends PegParser
             $subres = $this->parser->matchRule($result, 'SmartyTagAttributes', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('SmartyTagAttributes',  $subres['_text']));
+                $this->parser->successNode(array('SmartyTagAttributes', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -147,7 +145,7 @@ class TagAssignParser extends PegParser
             $subres = $this->parser->matchRule($result, 'SmartyTagOptions', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('SmartyTagOptions',  $subres['_text']));
+                $this->parser->successNode(array('SmartyTagOptions', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -166,7 +164,7 @@ class TagAssignParser extends PegParser
             $subres = $this->parser->matchRule($result, 'Rdel', $error);
             $remove = array_pop($this->parser->backtrace);
             if ($subres) {
-                $this->parser->successNode(array('Rdel',  $subres['_text']));
+                $this->parser->successNode(array('Rdel', $subres['_text']));
                 $result['_text'] .= $subres['_text'];
                 $valid = true;
             } else {
@@ -181,10 +179,14 @@ class TagAssignParser extends PegParser
             }
             break;
         } while (true);
+        $remove = array_pop($this->parser->backtrace);
         if (!$valid) {
+            $this->parser->failNode($remove);
             $this->parser->pos = $pos1;
             $this->parser->line = $line1;
             $result = $backup1;
+        } else {
+            $this->parser->successNode($remove);
         }
         $error = $error1;
         unset($backup1);
@@ -201,11 +203,9 @@ class TagAssignParser extends PegParser
         return $result;
     }
 
-    public function TagAssign___START (&$result, $previous) {
+    public function TagAssign___START(&$result, $previous)
+    {
         $result['node'] = $previous['node'];
     }
-
-
-
 }
 

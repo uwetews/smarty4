@@ -4,7 +4,7 @@ namespace Smarty\Parser\Source\Language\Smarty\Node\Operator;
 use Smarty\Node;
 
 /**
- * Class Unimath
+ * Class Logical
  *
  * @package Smarty\Parser\Source\Language\Smarty\Node\Operator
  */
@@ -40,10 +40,10 @@ class Logical extends Node
      *
      * @var array
      */
-    private $translation = array('||' => ' || ',
-                                 '&&' => ' && ',
+    private $translation = array('||'  => ' || ',
+                                 '&&'  => ' && ',
                                  'and' => ' && ',
-                                 'or' => ' || ',
+                                 'or'  => ' || ',
                                  'xor' => ' xor ',
     );
 

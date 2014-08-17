@@ -64,18 +64,18 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Extends extends Smarty_Compiler_Code_
         $this->iniTagCode($compiler);
 
         $this->code("ob_get_clean();")
-            ->newline();
+             ->newline();
         $this->code("\$compiled_obj = \$this->_getInheritanceTemplate ({$_attr['file']}, \$this->smarty->cacheId, \$this->smarty->compileId, {$_caching}, \$this->smarty);")
-            ->newline();
+             ->newline();
         $this->code("echo \$compiled_obj->_getRenderedTemplate(\$this->smarty, \$_scope);")
-            ->newline();
+             ->newline();
 
         $compiler->compiled_footer_code[] = $this->precompiled;
         $this->precompiled = '';
 
         // code for grabbing all output of child template which must be dropped
         $this->code("ob_start();")
-            ->newline();
+             ->newline();
         //      TODO remove
         //        $this->code("\$this->is_child = true;")->newline();
         $compiler->has_code = true;

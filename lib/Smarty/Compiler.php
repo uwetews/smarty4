@@ -13,17 +13,9 @@ use Smarty\Template\Context;
 use Smarty\Template\Scope;
 
 /**
- * Smarty Internal Plugin Smarty Template Compiler Base
- * This file contains the basic classes and methods for compiling Smarty templates with lexer/parser
+ * Class Compiler
  *
- * @package Smarty\Compiler\PHP
- * @author  Uwe Tews
- */
-
-/**
- * Main abstract compiler class
- *
- * @package Smarty\Compiler\PHP
+ * @package Smarty
  */
 class Compiler extends Magic
 {
@@ -264,7 +256,7 @@ class Compiler extends Magic
      *
      * @var null|string
      */
-    public $output_var = 'output';
+    public $output_var = null;
     /**
      * Timestamp when we started compilation
      *
@@ -287,7 +279,10 @@ class Compiler extends Magic
 
     /**
      * Initialize compiler
-
+     *
+     * @param Context $context
+     *
+     * @throws NoConfigFile
      */
     public function __construct(Context $context)
     {
@@ -302,13 +297,13 @@ class Compiler extends Magic
             throw new NoConfigFile($file);
         }
         {
-            $this->compilerConfig = $this->context->smarty->simpleXMLToArray($this->compilerConfigXml->compiler, 'param');
+            $this->compilerConfig = $this->context->smarty->simpleXMLToArray($this->compilerConfigXml->compiler);
             $this->baseDir = !empty($this->compilerConfig->baseDir) ? (string) $this->compilerConfig->baseDir : __DIR__;
             $this->sourceConfig['rootDir'] = $this->baseDir . $this->compilerConfig['source']['rootDir'];
             $this->sourceConfigXML = simplexml_load_file($this->sourceConfig['rootDir'] . $this->compilerConfig['source']['configFile']);
-            $this->sourceConfig = array_merge($this->sourceConfig, $this->context->smarty->simpleXMLToArray($this->sourceConfigXML, 'param'));
+            $this->sourceConfig = array_merge($this->sourceConfig, $this->context->smarty->simpleXMLToArray($this->sourceConfigXML->language->{$context->getSourceLanguage()}));
         }
-         // make sure that we don't run into backtrack limit errors
+        // make sure that we don't run into backtrack limit errors
         ini_set('pcre.backtrack_limit', - 1);
     }
 
@@ -405,15 +400,17 @@ class Compiler extends Magic
      * @param string                   $nodeName node name
      * @param \Smarty\Template\Context $context
      * @param null                     $parser
+     * @param null                     $tokenName
+     * @param bool                     $quiet
      * @param int                      $ruleGroups
      *
-     * @throws NodeClassNotFound
-     * @throws ParserClassNotFound
+     * @throws Compiler\Exception\NodeClassNotFound
+     * @throws Compiler\Exception\ParserClassNotFound
      * @return \Smarty\Node
      */
     public function instanceNode($nodeName, Context $context = null, $parser = null, $tokenName = null, $quiet = false, $ruleGroups = self::ALL)
     {
-        $tokenName = isset($tokenName)  ? $tokenName : $nodeName;
+        $tokenName = isset($tokenName) ? $tokenName : $nodeName;
         $context = isset($context) ? $context : $this->context;
         $groups = ($ruleGroups === self::ALL) ? (self::USER + self::SOURCE + self::TARGET + self::SHARED + self::COMMON) : $ruleGroups;
         if (isset($this->nodeClassCache[$groups]) && isset($this->nodeClassCache[$groups][$nodeName])) {
@@ -494,37 +491,6 @@ class Compiler extends Magic
     }
 
     /**
-     * Compile node and its optional subtree nodes and move precompiled code into current node
-     *
-     * @param null|Node $node   optional target node for compiled code
-     * @param bool      $delete flag if compiled nodes shall be deleted
-     *
-     * @return Node  current node
-     */
-    public function compileNodexx($node, $delete = true)
-    {
-        // try external compiler class for this node
-        if (false !== $callback = $this->compiler->getNodeCompilerCallback($node)) {
-            $callback($this, $node, $delete);
-            return $this;
-        }
-        // compiled code in node so just copy it
-        if (isset($node->code)) {
-            $this->raw($node->code);
-            return $this;
-        }
-        // try compile method in node object
-        if (method_exists($node, 'compile')) {
-            $node->compile($this, $delete);
-        }
-        // fall through compile it's subtree
-        if (!empty($node->subtreeNodes)) {
-            $this->compileNodeArray($node->subtreeNodes, $delete);
-        }
-        return $this;
-    }
-
-    /**
      * Check if class exists
      *
      * @param string $class     class name
@@ -547,11 +513,15 @@ class Compiler extends Magic
     /**
      * Compile node
      *
-     * @param \Smarty_Compiler_Node $node
-     * @param Context               $context
-     * @param null                  $indentation
+     * @param Node|\Smarty_Compiler_Node $node
+     * @param Code                       $codeTargetObj
+     * @param bool                       $delete
      *
      * @throws Exception
+     * @throws NodeCompilerClassNotFound
+     * @throws \Exception
+     * @internal param Context $context
+     * @internal param null $indentation
      * @return string compiled code
      */
     public function compileNode(Node $node, Code $codeTargetObj = null, $delete = true)
@@ -577,7 +547,7 @@ class Compiler extends Magic
                 throw new NodeCompilerClassNotFound($node->name, 0, $this->context);
             }
         }
-        // TODO
+            // TODO
         catch (Exception $e) {
             // in case of exception free memory
             $parser = $node->parser;
@@ -588,15 +558,20 @@ class Compiler extends Magic
             throw $e;
         }
     }
+
     /**
      * Compile an array of nodes and move compiled code into target node if specified
      *
      * @param  array $nodesArray array of nodes to be compiled
+     * @param Code   $codeTargetObj
      * @param bool   $delete     flag if compiled nodes shall be deleted
      *
+     * @throws Exception
+     * @throws NodeCompilerClassNotFound
+     * @throws \Exception
      * @return Node  current node
      */
-    public function compileNodeArray(&$nodesArray,  Code $codeTargetObj = null, $delete = true)
+    public function compileNodeArray(&$nodesArray, Code $codeTargetObj = null, $delete = true)
     {
         $codeTargetObj = isset($codeTargetObj) ? $codeTargetObj : new Code($nodesArray);
         if (is_array($nodesArray)) {
@@ -624,7 +599,7 @@ class Compiler extends Magic
     /**
      * Get node compiler object
      *
-     * @param  \Smarty_Compiler_Node $node
+     * @param Node|\Smarty_Compiler_Node $node
      *
      * @return object node compiler object
      */
@@ -1051,5 +1026,4 @@ class Compiler extends Magic
     {
         return '_SmartyTemplate_' . str_replace(array('.', ','), '_', uniqid('', true));
     }
-
 }

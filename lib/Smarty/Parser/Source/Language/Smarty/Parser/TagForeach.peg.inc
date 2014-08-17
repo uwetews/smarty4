@@ -2,6 +2,7 @@
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
 use Smarty\PegParser;
+
 /**
  * Class PegParser
  *
