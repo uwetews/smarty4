@@ -1,0 +1,1891 @@
+<?php
+namespace Smarty\Parser\Source\Language\Smarty\Parser;
+
+use Smarty\Parser\Peg\RuleRoot;
+use Smarty\Node;
+
+/**
+ * Class CoreTagParser
+ *
+ * @package Smarty\Parser\Source\Language\Smarty\Parser
+ */
+class CoreTagParser extends RuleRoot
+{
+   
+    /**
+     *
+     * Parser generated on 2014-08-22 06:59:30
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/CoreTag.peg.inc' dated 2014-08-22 05:17:46
+     *
+    */
+
+    /**
+     Flag that compiled Peg Parser class is valid
+     *
+     * @var bool
+     */
+    public $valid = true;
+
+    /**
+     * Array of match method names for rules of this Peg Parser
+     *
+     * @var array
+     */
+    public $ruleMethods = array(
+            "CoreTag" => "matchNodeCoreTag",
+            "SmartyTagAttributes" => "matchNodeSmartyTagAttributes",
+            "SmartyTagOptions" => "matchNodeSmartyTagOptions",
+            "SmartyTagScopes" => "matchNodeSmartyTagScopes",
+            "Smarty_Tag_Default" => "matchNodeSmarty_Tag_Default",
+            "Smarty_Tag_Block_Default" => "matchNodeSmarty_Tag_Block_Default",
+            "SmartyBlockCloseTag" => "matchNodeSmartyBlockCloseTag",
+            "SmartyTagPrefix" => "matchNodeSmartyTagPrefix"
+        );
+
+    /**
+     * Array of node attributes
+     *
+     * @var array
+     */
+    public $nodeAttributes = array(
+            "CoreTag" => array(
+                    "_nodetype" => "token"
+                ),
+            "SmartyTagAttributes" => array(
+                    "_nodetype" => "token"
+                ),
+            "SmartyTagOptions" => array(
+                    "_nodetype" => "token"
+                ),
+            "SmartyTagScopes" => array(
+                    "_nodetype" => "token",
+                    "expected" => array(
+                            "literal" => array(
+                                    "parent" => true,
+                                    "root" => true,
+                                    "global" => true
+                                )
+                        )
+                ),
+            "Smarty_Tag_Default" => array(
+                    "_nodetype" => "node"
+                ),
+            "Smarty_Tag_Block_Default" => array(
+                    "_nodetype" => "node"
+                ),
+            "SmartyBlockCloseTag" => array(
+                    "_nodetype" => "token",
+                    "matchall" => true
+                ),
+            "SmartyTagPrefix" => array(
+                    "_nodetype" => "token",
+                    "matchall" => true
+                )
+        );
+    /**
+     *
+     * Parser rules and action for node 'CoreTag'
+     *
+     *  Rule:
+    
+
+    #
+    #   Tag parsing
+    #   ###########
+    #
+    #   Except for the output tag a tag dispatcher is called.
+    #
+    #   The tag dispatcher scans for registered tags, plugins, template functions,
+    #   core language tags and calls the corresponding parser.
+    #
+    #
+        <token CoreTag>
+            <rule> ( tagname:SmartyTagPrefix tag:$SmartyTag) | ( !SmartyTagPrefix ( tag:TagOutput | tag:TagStatement )) </rule>
+            <action _start>
+            {
+                $i = 1;
+            }
+            </action>
+             <action _expression(SmartyTag)>
+                {
+                    $nodeRes['_text'] = '';
+                    return $this->parser->tagDispatcher($nodeRes);
+                }
+            </action>
+            <action tag>
+                {
+                    $nodeRes['node'] = $matchRes['node'];
+                }
+            </action>
+            <action tagname>
+                {
+                    $nodeRes['tagname'] = $matchRes['_pregMatch']['tagname'];
+                    $nodeRes['savedstartpos'] = $matchRes['_startpos'];
+                    $nodeRes['savedline'] = $matchRes['_lineno'];
+                }
+            </action>
+        </token>
+
+     *
+    */
+    public function matchNodeCoreTag($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->CoreTag___START($nodeRes, $previous);
+        // Start 'CoreTag' min '1' max '1'
+        // start option
+        $error1 = $error;
+        $errorOption1 =array();
+        if ($trace) {
+            $this->parser->addBacktrace(array('_o1_', ''));
+        }
+        do {
+            $error = array();
+            array_pop($this->parser->backtrace);
+            if ($trace) {
+                $this->parser->addBacktrace(array('_o1:1_', ''));
+            }
+            // Start '(tagname:SmartyTagPrefix tag:$SmartyTag)' min '1' max '1'
+            // start sequence
+            $backup3 = $nodeRes;
+            $pos3 = $this->parser->pos;
+            $line3 = $this->parser->line;
+            $error3 = $error;
+            if ($trace) {
+                $this->parser->addBacktrace(array('_s3_', ''));
+            }
+            do {
+                $error = array();
+                // Start 'tagname:SmartyTagPrefix' tag 'tagname' min '1' max '1'
+                if ($trace) {
+                    $this->parser->addBacktrace(array('SmartyTagPrefix', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'SmartyTagPrefix', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('SmartyTagPrefix',  $matchRes['_text']));
+                    }
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    $this->CoreTag_tagname($nodeRes, $matchRes);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                // End 'tagname:SmartyTagPrefix'
+                if (!$valid) {
+                    $this->parser->matchError($error3, 'SequenceElement', $error);
+                    $error = $error3;
+                    break;
+                }
+                $error = array();
+                // Start 'tag:$SmartyTag' tag 'tag' min '1' max '1'
+                $matchRes = $nodeRes;
+                if ($trace) {
+                    $this->parser->addBacktrace(array('CoreTag', ''));
+                }
+                $valid = false;
+                $method = 'CoreTag_EXP_SmartyTag';
+                $valid = $this->$method($matchRes);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($valid) {
+                    if ($trace) {
+                        $this->parser->successNode($remove);
+                    }
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    $this->CoreTag_tag($nodeRes, $matchRes);
+                } else {
+                    $this->parser->matchError($error, 'expression', 'CoreTag');
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                // End 'tag:$SmartyTag'
+                if (!$valid) {
+                    $this->parser->matchError($error3, 'SequenceElement', $error);
+                    $error = $error3;
+                    break;
+                }
+                break;
+            } while (true);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if (!$valid) {
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+                $this->parser->pos = $pos3;
+                $this->parser->line = $line3;
+                $nodeRes = $backup3;
+            } elseif ($trace) {
+                $this->parser->successNode($remove);
+            }
+            $error = $error3;
+            unset($backup3);
+            // end sequence
+            // End '(tagname:SmartyTagPrefix tag:$SmartyTag)'
+            if ($valid) {
+                if ($trace) {
+                    $this->parser->successNode(array_pop($this->parser->backtrace));
+                }
+                $error = $error1;
+                break;
+            } else {
+                $this->parser->logOption($errorOption1, 'CoreTag', $error);
+            }
+            $error = array();
+            array_pop($this->parser->backtrace);
+            if ($trace) {
+                $this->parser->addBacktrace(array('_o1:2_', ''));
+            }
+            // Start '(!SmartyTagPrefix (tag:TagOutput | tag:TagStatement))' min '1' max '1'
+            // start sequence
+            $backup7 = $nodeRes;
+            $pos7 = $this->parser->pos;
+            $line7 = $this->parser->line;
+            $error7 = $error;
+            if ($trace) {
+                $this->parser->addBacktrace(array('_s7_', ''));
+            }
+            do {
+                $error = array();
+                // Start '!SmartyTagPrefix' min '1' max '1' negative lookahead
+                $backup8 = $nodeRes;
+                $pos8 = $this->parser->pos;
+                $line8 = $this->parser->line;
+                if ($trace) {
+                    $this->parser->addBacktrace(array('SmartyTagPrefix', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'SmartyTagPrefix', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('SmartyTagPrefix',  $matchRes['_text']));
+                    }
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    $valid = false;
+                } else {
+                    $valid = true;
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                $this->parser->pos = $pos8;
+                $this->parser->line = $line8;
+                $nodeRes = $backup8;
+                unset($backup8);
+                // End '!SmartyTagPrefix'
+                if (!$valid) {
+                    $this->parser->matchError($error7, 'SequenceElement', $error);
+                    $error = $error7;
+                    break;
+                }
+                $error = array();
+                // Start '(tag:TagOutput | tag:TagStatement)' min '1' max '1'
+                // start option
+                $error10 = $error;
+                $errorOption10 =array();
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_o10_', ''));
+                }
+                do {
+                    $error = array();
+                    array_pop($this->parser->backtrace);
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('_o10:1_', ''));
+                    }
+                    // Start 'tag:TagOutput' tag 'tag' min '1' max '1'
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('TagOutput', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'TagOutput', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('TagOutput',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->CoreTag_tag($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    // End 'tag:TagOutput'
+                    if ($valid) {
+                        if ($trace) {
+                            $this->parser->successNode(array_pop($this->parser->backtrace));
+                        }
+                        $error = $error10;
+                        break;
+                    } else {
+                        $this->parser->logOption($errorOption10, 'CoreTag', $error);
+                    }
+                    $error = array();
+                    array_pop($this->parser->backtrace);
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('_o10:2_', ''));
+                    }
+                    // Start 'tag:TagStatement' tag 'tag' min '1' max '1'
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('TagStatement', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'TagStatement', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('TagStatement',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->CoreTag_tag($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    // End 'tag:TagStatement'
+                    if ($valid) {
+                        if ($trace) {
+                            $this->parser->successNode(array_pop($this->parser->backtrace));
+                        }
+                        $error = $error10;
+                        break;
+                    } else {
+                        $this->parser->logOption($errorOption10, 'CoreTag', $error);
+                    }
+                    $error = $error10;
+                    array_pop($this->parser->backtrace);
+                    break;
+                } while (true);
+                // end option
+                // End '(tag:TagOutput | tag:TagStatement)'
+                if (!$valid) {
+                    $this->parser->matchError($error7, 'SequenceElement', $error);
+                    $error = $error7;
+                    break;
+                }
+                break;
+            } while (true);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if (!$valid) {
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+                $this->parser->pos = $pos7;
+                $this->parser->line = $line7;
+                $nodeRes = $backup7;
+            } elseif ($trace) {
+                $this->parser->successNode($remove);
+            }
+            $error = $error7;
+            unset($backup7);
+            // end sequence
+            // End '(!SmartyTagPrefix (tag:TagOutput | tag:TagStatement))'
+            if ($valid) {
+                if ($trace) {
+                    $this->parser->successNode(array_pop($this->parser->backtrace));
+                }
+                $error = $error1;
+                break;
+            } else {
+                $this->parser->logOption($errorOption1, 'CoreTag', $error);
+            }
+            $error = $error1;
+            array_pop($this->parser->backtrace);
+            break;
+        } while (true);
+        // end option
+        // End 'CoreTag'
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'CoreTag');
+        }
+        return $nodeRes;
+    }
+
+    public function CoreTag___START (&$nodeRes, $previous) {
+        $i = 1;
+    }
+
+
+    public function CoreTag_EXP_SmartyTag (&$nodeRes) {
+        $nodeRes['_text'] = '';
+        return $this->parser->tagDispatcher($nodeRes);
+    }
+
+
+    public function CoreTag_tag (&$nodeRes, $matchRes) {
+        $nodeRes['node'] = $matchRes['node'];
+    }
+
+
+    public function CoreTag_tagname (&$nodeRes, $matchRes) {
+        $nodeRes['tagname'] = $matchRes['_pregMatch']['tagname'];
+        $nodeRes['savedstartpos'] = $matchRes['_startpos'];
+        $nodeRes['savedline'] = $matchRes['_lineno'];
+    }
+
+
+    /**
+     *
+     * Parser rules and action for node 'SmartyTagAttributes'
+     *
+     *  Rule:
+    <token SmartyTagAttributes>
+            <rule>  ( _  (&'scope' scope:SmartyTagScopes) | (( name:Id _? '=' _?)? value:Expr))* </rule>
+             <action _start>
+            {
+                $nodeRes['node'] = $previous['node'];
+            }
+            </action>
+           <action name>
+            {
+                $nodeRes['name'] = strtolower($matchRes['_text']);
+            }
+            </action>
+            <action value>
+            {
+                $nodeRes['node']->setTagAttribute(array(isset($nodeRes['name']) ? $nodeRes['name'] : null, $matchRes['node']));
+            }
+            </action>
+            <action scope>
+            {
+                $nodeRes['node']->setTagAttribute(array('scope', $matchRes['node']));
+            }
+            </action>
+            <action _finish>
+            {
+                $i = 1;
+            }
+            </action>
+        </token>
+
+     *
+    */
+    public function matchNodeSmartyTagAttributes($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->SmartyTagAttributes___START($nodeRes, $previous);
+        // Start '(_ (&'scope' scope:SmartyTagScopes) | ((name:Id _? '=' _?)? value:Expr))*' min '0' max 'null'
+        $iteration0 = 0;
+        do {
+            // start sequence
+            $backup1 = $nodeRes;
+            $pos1 = $this->parser->pos;
+            $line1 = $this->parser->line;
+            $error1 = $error;
+            if ($trace) {
+                $this->parser->addBacktrace(array('_s1_', ''));
+            }
+            do {
+                $error = array();
+                // Start '_' min '1' max '1'
+                if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                    if (!empty($pregMatch[0])) {
+                        $this->parser->pos += strlen($pregMatch[0]);
+                        $this->parser->line += substr_count($pregMatch[0], "\n");
+                        $nodeRes['_text'] .= ' ';
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                    }
+                } else {
+                    $valid = false;
+                }
+                if ($valid) {
+                    if ($trace) {
+                        $this->parser->successNode(array("' '",  ' '));
+                    }
+                } else {
+                if ($trace) {
+                    $this->parser->failNode(array("' '",  ''));
+                }
+            }
+            // End '_'
+            if (!$valid) {
+                $this->parser->matchError($error1, 'SequenceElement', $error);
+                $error = $error1;
+                break;
+            }
+            $error = array();
+            // Start 'SmartyTagAttributes' min '1' max '1'
+            // start option
+            $error4 = $error;
+            $errorOption4 =array();
+            if ($trace) {
+                $this->parser->addBacktrace(array('_o4_', ''));
+            }
+            do {
+                $error = array();
+                array_pop($this->parser->backtrace);
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_o4:1_', ''));
+                }
+                // Start '(&'scope' scope:SmartyTagScopes)' min '1' max '1'
+                // start sequence
+                $backup6 = $nodeRes;
+                $pos6 = $this->parser->pos;
+                $line6 = $this->parser->line;
+                $error6 = $error;
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_s6_', ''));
+                }
+                do {
+                    $error = array();
+                    // Start '&'scope'' min '1' max '1' positive lookahead
+                    $backup7 = $nodeRes;
+                    $pos7 = $this->parser->pos;
+                    $line7 = $this->parser->line;
+                    if ('scope' == substr($this->parser->source, $this->parser->pos, 5)) {
+                        $this->parser->pos += 5;
+                        $nodeRes['_text'] .= 'scope';
+                        if ($trace) {
+                            $this->parser->successNode(array('\'scope\'', 'scope'));
+                        }
+                        $valid = true;
+                    } else {
+                        $this->parser->matchError($error, 'literal', 'scope');
+                        if ($trace) {
+                            $this->parser->failNode(array('\'scope\'',  ''));
+                        }
+                        $valid = false;
+                    }
+                    $this->parser->pos = $pos7;
+                    $this->parser->line = $line7;
+                    $nodeRes = $backup7;
+                    unset($backup7);
+                    // End '&'scope''
+                    if (!$valid) {
+                        $this->parser->matchError($error6, 'SequenceElement', $error);
+                        $error = $error6;
+                        break;
+                    }
+                    $error = array();
+                    // Start 'scope:SmartyTagScopes' tag 'scope' min '1' max '1'
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('SmartyTagScopes', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'SmartyTagScopes', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('SmartyTagScopes',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->SmartyTagAttributes_scope($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    // End 'scope:SmartyTagScopes'
+                    if (!$valid) {
+                        $this->parser->matchError($error6, 'SequenceElement', $error);
+                        $error = $error6;
+                        break;
+                    }
+                    break;
+                } while (true);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if (!$valid) {
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                    $this->parser->pos = $pos6;
+                    $this->parser->line = $line6;
+                    $nodeRes = $backup6;
+                } elseif ($trace) {
+                    $this->parser->successNode($remove);
+                }
+                $error = $error6;
+                unset($backup6);
+                // end sequence
+                // End '(&'scope' scope:SmartyTagScopes)'
+                if ($valid) {
+                    if ($trace) {
+                        $this->parser->successNode(array_pop($this->parser->backtrace));
+                    }
+                    $error = $error4;
+                    break;
+                } else {
+                    $this->parser->logOption($errorOption4, 'SmartyTagAttributes', $error);
+                }
+                $error = array();
+                array_pop($this->parser->backtrace);
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_o4:2_', ''));
+                }
+                // Start '((name:Id _? '=' _?)? value:Expr)' min '0' max '1'
+                $error = array();
+                // start sequence
+                $backup10 = $nodeRes;
+                $pos10 = $this->parser->pos;
+                $line10 = $this->parser->line;
+                $error10 = $error;
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_s10_', ''));
+                }
+                do {
+                    $error = array();
+                    // Start 'name:Id' tag 'name' min '1' max '1'
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('Id', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'Id', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('Id',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->SmartyTagAttributes_name($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    // End 'name:Id'
+                    if (!$valid) {
+                        $this->parser->matchError($error10, 'SequenceElement', $error);
+                        $error = $error10;
+                        break;
+                    }
+                    $error = array();
+                    // Start '_?' min '1' max '1'
+                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                        if (!empty($pregMatch[0])) {
+                            $this->parser->pos += strlen($pregMatch[0]);
+                            $this->parser->line += substr_count($pregMatch[0], "\n");
+                            $nodeRes['_text'] .= ' ';
+                        }
+                    }
+                    if ($trace) {
+                        $this->parser->successNode(array("' '",  $pregMatch[0]));
+                    }
+                    $valid = true;
+                    // End '_?'
+                    if (!$valid) {
+                        $this->parser->matchError($error10, 'SequenceElement', $error);
+                        $error = $error10;
+                        break;
+                    }
+                    $error = array();
+                    // Start ''='' min '1' max '1'
+                    if ('=' == substr($this->parser->source, $this->parser->pos, 1)) {
+                        $this->parser->pos += 1;
+                        $nodeRes['_text'] .= '=';
+                        if ($trace) {
+                            $this->parser->successNode(array('\'=\'', '='));
+                        }
+                        $valid = true;
+                    } else {
+                        $this->parser->matchError($error, 'literal', '=');
+                        if ($trace) {
+                            $this->parser->failNode(array('\'=\'',  ''));
+                        }
+                        $valid = false;
+                    }
+                    // End ''=''
+                    if (!$valid) {
+                        $this->parser->matchError($error10, 'SequenceElement', $error);
+                        $error = $error10;
+                        break;
+                    }
+                    $error = array();
+                    // Start '_?' min '1' max '1'
+                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                        if (!empty($pregMatch[0])) {
+                            $this->parser->pos += strlen($pregMatch[0]);
+                            $this->parser->line += substr_count($pregMatch[0], "\n");
+                            $nodeRes['_text'] .= ' ';
+                        }
+                    }
+                    if ($trace) {
+                        $this->parser->successNode(array("' '",  $pregMatch[0]));
+                    }
+                    $valid = true;
+                    // End '_?'
+                    if (!$valid) {
+                        $this->parser->matchError($error10, 'SequenceElement', $error);
+                        $error = $error10;
+                        break;
+                    }
+                    $error = array();
+                    // Start 'value:Expr' tag 'value' min '1' max '1'
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('Expr', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'Expr', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('Expr',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->SmartyTagAttributes_value($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    // End 'value:Expr'
+                    if (!$valid) {
+                        $this->parser->matchError($error10, 'SequenceElement', $error);
+                        $error = $error10;
+                        break;
+                    }
+                    break;
+                } while (true);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if (!$valid) {
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                    $this->parser->pos = $pos10;
+                    $this->parser->line = $line10;
+                    $nodeRes = $backup10;
+                } elseif ($trace) {
+                    $this->parser->successNode($remove);
+                }
+                $error = $error10;
+                unset($backup10);
+                // end sequence
+                if (!$valid) {
+                    $this->parser->logOption($errorResult, 'SmartyTagAttributes', $error);
+                }
+                $valid = true;
+                // End '((name:Id _? '=' _?)? value:Expr)'
+                if ($valid) {
+                    if ($trace) {
+                        $this->parser->successNode(array_pop($this->parser->backtrace));
+                    }
+                    $error = $error4;
+                    break;
+                } else {
+                    $this->parser->logOption($errorOption4, 'SmartyTagAttributes', $error);
+                }
+                $error = $error4;
+                array_pop($this->parser->backtrace);
+                break;
+            } while (true);
+            // end option
+            // End 'SmartyTagAttributes'
+            if (!$valid) {
+                $this->parser->matchError($error1, 'SequenceElement', $error);
+                $error = $error1;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos1;
+            $this->parser->line = $line1;
+            $nodeRes = $backup1;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error1;
+        unset($backup1);
+        // end sequence
+        $iteration0 = $valid ? ($iteration0 + 1) : $iteration0;
+        if (!$valid && $iteration0 >= 0) {
+            $valid = true;
+            break;
+        }
+        if (!$valid) break;
+    } while (true);
+    // End '(_ (&'scope' scope:SmartyTagScopes) | ((name:Id _? '=' _?)? value:Expr))*'
+    if ($valid) {
+        $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_endline'] = $this->parser->line;
+        $this->SmartyTagAttributes___FINISH($nodeRes);
+    }
+    if (!$valid) {
+        $nodeRes = false;
+        $this->parser->matchError($errorResult, 'token', $error, 'SmartyTagAttributes');
+    }
+    return $nodeRes;
+}
+
+public function SmartyTagAttributes___START (&$nodeRes, $previous) {
+    $nodeRes['node'] = $previous['node'];
+}
+
+
+public function SmartyTagAttributes_name (&$nodeRes, $matchRes) {
+    $nodeRes['name'] = strtolower($matchRes['_text']);
+}
+
+
+public function SmartyTagAttributes_value (&$nodeRes, $matchRes) {
+    $nodeRes['node']->setTagAttribute(array(isset($nodeRes['name']) ? $nodeRes['name'] : null, $matchRes['node']));
+}
+
+
+public function SmartyTagAttributes_scope (&$nodeRes, $matchRes) {
+    $nodeRes['node']->setTagAttribute(array('scope', $matchRes['node']));
+}
+
+
+public function SmartyTagAttributes___FINISH (&$nodeRes) {
+    $i = 1;
+}
+
+
+/**
+ *
+ * Parser rules and action for node 'SmartyTagOptions'
+ *
+ *  Rule:
+<token SmartyTagOptions>
+            <rule>  ( _ option:Id)* </rule>
+            <action _start>
+            {
+                $nodeRes['node'] = $previous['node'];
+            }
+            </action>
+           <action option>
+            {
+                $nodeRes['node']->setTagOption(strtolower($matchRes['_text']));
+            }
+            </action>
+        </token>
+
+ *
+*/
+public function matchNodeSmartyTagOptions($previous, &$errorResult){
+    $trace = $this->parser->trace;
+    $nodeRes = $this->parser->resultDefault;
+    $error = array();
+    $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+    $nodeRes['_lineno'] = $this->parser->line;
+    $this->SmartyTagOptions___START($nodeRes, $previous);
+    // Start '(_ option:Id)*' min '0' max 'null'
+    $iteration0 = 0;
+    do {
+        // start sequence
+        $backup1 = $nodeRes;
+        $pos1 = $this->parser->pos;
+        $line1 = $this->parser->line;
+        $error1 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s1_', ''));
+        }
+        do {
+            $error = array();
+            // Start '_' min '1' max '1'
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                    $nodeRes['_text'] .= ' ';
+                    $valid = true;
+                } else {
+                    $valid = false;
+                }
+            } else {
+                $valid = false;
+            }
+            if ($valid) {
+                if ($trace) {
+                    $this->parser->successNode(array("' '",  ' '));
+                }
+            } else {
+            if ($trace) {
+                $this->parser->failNode(array("' '",  ''));
+            }
+        }
+        // End '_'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start 'option:Id' tag 'option' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('Id', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'Id', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('Id',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $this->SmartyTagOptions_option($nodeRes, $matchRes);
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'option:Id'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        break;
+    } while (true);
+    if ($trace) {
+        $remove = array_pop($this->parser->backtrace);
+    }
+    if (!$valid) {
+        if ($trace) {
+            $this->parser->failNode($remove);
+        }
+        $this->parser->pos = $pos1;
+        $this->parser->line = $line1;
+        $nodeRes = $backup1;
+    } elseif ($trace) {
+        $this->parser->successNode($remove);
+    }
+    $error = $error1;
+    unset($backup1);
+    // end sequence
+    $iteration0 = $valid ? ($iteration0 + 1) : $iteration0;
+    if (!$valid && $iteration0 >= 0) {
+        $valid = true;
+        break;
+    }
+    if (!$valid) break;
+} while (true);
+// End '(_ option:Id)*'
+if ($valid) {
+    $nodeRes['_endpos'] = $this->parser->pos;
+    $nodeRes['_endline'] = $this->parser->line;
+}
+if (!$valid) {
+    $nodeRes = false;
+    $this->parser->matchError($errorResult, 'token', $error, 'SmartyTagOptions');
+}
+return $nodeRes;
+}
+
+public function SmartyTagOptions___START (&$nodeRes, $previous) {
+    $nodeRes['node'] = $previous['node'];
+}
+
+
+public function SmartyTagOptions_option (&$nodeRes, $matchRes) {
+    $nodeRes['node']->setTagOption(strtolower($matchRes['_text']));
+}
+
+
+/**
+ *
+ * Parser rules and action for node 'SmartyTagScopes'
+ *
+ *  Rule:
+<token SmartyTagScopes>
+            <attribute>expected=(literal=(parent,root,global))</attribute>
+            <rule> 'scope' _? '=' _? /(?<scope>(parent|root|global))/ | error:Unexpected </rule>
+            <action _start>
+            {
+                $nodeRes['node'] = new Node($this->parser, 'SmartyTagScopes');
+            }
+            </action>
+           <action scope>
+            {
+                $nodeRes['node']->setValue(strtolower($matchRes['_pregMatch']['scope']));
+            }
+            </action>
+           <action error>
+            {
+                $nodeRes['node']->addError($matchRes['error']);
+            }
+            </action>
+        </token>
+
+ *
+*/
+public function matchNodeSmartyTagScopes($previous, &$errorResult){
+    $trace = $this->parser->trace;
+    $nodeRes = $this->parser->resultDefault;
+    $error = array();
+    $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+    $nodeRes['_lineno'] = $this->parser->line;
+    $this->SmartyTagScopes___START($nodeRes, $previous);
+    // Start 'SmartyTagScopes' min '1' max '1'
+    // start sequence
+    $backup1 = $nodeRes;
+    $pos1 = $this->parser->pos;
+    $line1 = $this->parser->line;
+    $error1 = $error;
+    if ($trace) {
+        $this->parser->addBacktrace(array('_s1_', ''));
+    }
+    do {
+        $error = array();
+        // Start ''scope'' min '1' max '1'
+        if ('scope' == substr($this->parser->source, $this->parser->pos, 5)) {
+            $this->parser->pos += 5;
+            $nodeRes['_text'] .= 'scope';
+            if ($trace) {
+                $this->parser->successNode(array('\'scope\'', 'scope'));
+            }
+            $valid = true;
+        } else {
+            $this->parser->matchError($error, 'literal', 'scope');
+            if ($trace) {
+                $this->parser->failNode(array('\'scope\'',  ''));
+            }
+            $valid = false;
+        }
+        // End ''scope''
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start '_?' min '1' max '1'
+        if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+            if (!empty($pregMatch[0])) {
+                $this->parser->pos += strlen($pregMatch[0]);
+                $this->parser->line += substr_count($pregMatch[0], "\n");
+                $nodeRes['_text'] .= ' ';
+            }
+        }
+        if ($trace) {
+            $this->parser->successNode(array("' '",  $pregMatch[0]));
+        }
+        $valid = true;
+        // End '_?'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start ''='' min '1' max '1'
+        if ('=' == substr($this->parser->source, $this->parser->pos, 1)) {
+            $this->parser->pos += 1;
+            $nodeRes['_text'] .= '=';
+            if ($trace) {
+                $this->parser->successNode(array('\'=\'', '='));
+            }
+            $valid = true;
+        } else {
+            $this->parser->matchError($error, 'literal', '=');
+            if ($trace) {
+                $this->parser->failNode(array('\'=\'',  ''));
+            }
+            $valid = false;
+        }
+        // End ''=''
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start '_?' min '1' max '1'
+        if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+            if (!empty($pregMatch[0])) {
+                $this->parser->pos += strlen($pregMatch[0]);
+                $this->parser->line += substr_count($pregMatch[0], "\n");
+                $nodeRes['_text'] .= ' ';
+            }
+        }
+        if ($trace) {
+            $this->parser->successNode(array("' '",  $pregMatch[0]));
+        }
+        $valid = true;
+        // End '_?'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start 'SmartyTagScopes' min '1' max '1'
+        // start option
+        $error7 = $error;
+        $errorOption7 =array();
+        if ($trace) {
+            $this->parser->addBacktrace(array('_o7_', ''));
+        }
+        do {
+            $error = array();
+            array_pop($this->parser->backtrace);
+            if ($trace) {
+                $this->parser->addBacktrace(array('_o7:1_', ''));
+            }
+            // Start '/(?<scope>(parent|root|global))/' min '1' max '1'
+            $regexp = "/(?<scope>(parent|root|global))/";
+            $pos = $this->parser->pos;
+            if (isset($this->parser->regexpCache['SmartyTagScopes10'][$pos])) {
+                $matchRes = $this->parser->regexpCache['SmartyTagScopes10'][$pos];
+            } else {
+                if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos)) {
+                    if (strlen($pregMatch[0][0]) != 0) {
+                        $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                        foreach ($pregMatch as $n => $v) {
+                            if (is_string($n) && strlen($v[0])) {
+                                $matchRes['_pregMatch'][$n] = $v[0];
+                            }
+                        }
+                        if ($matchRes['_startpos'] != $pos) {
+                            $this->parser->regexpCache['SmartyTagScopes10'][$matchRes['_startpos']] = $matchRes;
+                            $this->parser->regexpCache['SmartyTagScopes10'][$pos] = false;
+                            $matchRes = false;
+                        }
+                    } else {
+                        $this->parser->regexpCache['SmartyTagScopes10'][$pos] = false;
+                        $matchRes = false;
+                    }
+                } else {
+                    $this->parser->regexpCache['SmartyTagScopes10'][$pos] = false;
+                    $matchRes = false;
+                }
+            }
+            if ($matchRes) {
+                $matchRes['_lineno'] = $this->parser->line;
+                $this->parser->pos = $matchRes['_endpos'];
+                $this->parser->line += substr_count($matchRes['_text'], "\n");
+                $matchRes['_tag'] = false;
+                $matchRes['_name'] = 'SmartyTagScopes';
+                if (isset($matchRes['_pregMatch']['scope'])) {
+                    $this->SmartyTagScopes_scope($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['scope']);
+                }
+                $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            if ($valid) {
+                $nodeRes['_text'] .= $matchRes['_text'];
+            } else {
+                $this->parser->matchError($error, 'rx', "/(?<scope>(parent|root|global))/");
+            }
+            // End '/(?<scope>(parent|root|global))/'
+            if ($valid) {
+                if ($trace) {
+                    $this->parser->successNode(array_pop($this->parser->backtrace));
+                }
+                $error = $error7;
+                break;
+            } else {
+                $this->parser->logOption($errorOption7, 'SmartyTagScopes', $error);
+            }
+            $error = array();
+            array_pop($this->parser->backtrace);
+            if ($trace) {
+                $this->parser->addBacktrace(array('_o7:2_', ''));
+            }
+            // Start 'error:Unexpected' tag 'error' min '1' max '1'
+            if ($trace) {
+                $this->parser->addBacktrace(array('Unexpected', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Unexpected', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('Unexpected',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->SmartyTagScopes_error($nodeRes, $matchRes);
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            // End 'error:Unexpected'
+            if ($valid) {
+                if ($trace) {
+                    $this->parser->successNode(array_pop($this->parser->backtrace));
+                }
+                $error = $error7;
+                break;
+            } else {
+                $this->parser->logOption($errorOption7, 'SmartyTagScopes', $error);
+            }
+            $error = $error7;
+            array_pop($this->parser->backtrace);
+            break;
+        } while (true);
+        // end option
+        // End 'SmartyTagScopes'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        break;
+    } while (true);
+    if ($trace) {
+        $remove = array_pop($this->parser->backtrace);
+    }
+    if (!$valid) {
+        if ($trace) {
+            $this->parser->failNode($remove);
+        }
+        $this->parser->pos = $pos1;
+        $this->parser->line = $line1;
+        $nodeRes = $backup1;
+    } elseif ($trace) {
+        $this->parser->successNode($remove);
+    }
+    $error = $error1;
+    unset($backup1);
+    // end sequence
+    // End 'SmartyTagScopes'
+    if ($valid) {
+        $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_endline'] = $this->parser->line;
+    }
+    if (!$valid) {
+        $nodeRes = false;
+        $this->parser->matchError($errorResult, 'token', $error, 'SmartyTagScopes');
+    }
+    return $nodeRes;
+}
+
+public function SmartyTagScopes___START (&$nodeRes, $previous) {
+    $nodeRes['node'] = new Node($this->parser, 'SmartyTagScopes');
+}
+
+
+public function SmartyTagScopes_scope (&$nodeRes, $matchRes) {
+    $nodeRes['node']->setValue(strtolower($matchRes['_pregMatch']['scope']));
+}
+
+
+public function SmartyTagScopes_error (&$nodeRes, $matchRes) {
+    $nodeRes['node']->addError($matchRes['error']);
+}
+
+
+/**
+ *
+ * Parser rules and action for node 'Smarty_Tag_Default'
+ *
+ *  Rule:
+<node Smarty_Tag_Default>
+            <rule> Ldel Id SmartyTagAttributes SmartyTagOptions Rdel </rule>
+            <action _start>
+            {
+                $nodeRes['node'] = $previous['node'];
+            }
+            </action>
+            <action _finish>
+            {
+                $nodeRes['tagAttributes'] = array();
+                if (isset($nodeRes['attrib'])) {
+                    $nodeRes['tagAttributes'] = $nodeRes['attrib']['attrib'];
+                    unset($nodeRes['attrib']);
+                }
+                $nodeRes['tagOptions'] = array();
+                if (isset($nodeRes['options'])) {
+                    $nodeRes['tagOptions'] = $nodeRes['options']['Options'];
+                    unset($nodeRes['options']);
+                }
+
+            }
+            </action>
+        </node>
+
+ *
+*/
+public function matchNodeSmarty_Tag_Default($previous, &$errorResult){
+    $trace = $this->parser->trace;
+    $nodeRes = $this->parser->resultDefault;
+    $error = array();
+    $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+    $nodeRes['_lineno'] = $this->parser->line;
+    $this->Smarty_Tag_Default___START($nodeRes, $previous);
+    // Start 'Smarty_Tag_Default' min '1' max '1'
+    // start sequence
+    $backup1 = $nodeRes;
+    $pos1 = $this->parser->pos;
+    $line1 = $this->parser->line;
+    $error1 = $error;
+    if ($trace) {
+        $this->parser->addBacktrace(array('_s1_', ''));
+    }
+    do {
+        $error = array();
+        // Start 'Ldel' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('Ldel', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'Ldel', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('Ldel',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'Ldel'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start 'Id' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('Id', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'Id', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('Id',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'Id'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start 'SmartyTagAttributes' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('SmartyTagAttributes', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'SmartyTagAttributes', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('SmartyTagAttributes',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'SmartyTagAttributes'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start 'SmartyTagOptions' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('SmartyTagOptions', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'SmartyTagOptions', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('SmartyTagOptions',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'SmartyTagOptions'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start 'Rdel' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('Rdel', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'Rdel', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('Rdel',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'Rdel'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        break;
+    } while (true);
+    if ($trace) {
+        $remove = array_pop($this->parser->backtrace);
+    }
+    if (!$valid) {
+        if ($trace) {
+            $this->parser->failNode($remove);
+        }
+        $this->parser->pos = $pos1;
+        $this->parser->line = $line1;
+        $nodeRes = $backup1;
+    } elseif ($trace) {
+        $this->parser->successNode($remove);
+    }
+    $error = $error1;
+    unset($backup1);
+    // end sequence
+    // End 'Smarty_Tag_Default'
+    if ($valid) {
+        $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_endline'] = $this->parser->line;
+        $this->Smarty_Tag_Default___FINISH($nodeRes);
+    }
+    if (!$valid) {
+        $nodeRes = false;
+        $this->parser->matchError($errorResult, 'token', $error, 'Smarty_Tag_Default');
+    }
+    return $nodeRes;
+}
+
+public function Smarty_Tag_Default___START (&$nodeRes, $previous) {
+    $nodeRes['node'] = $previous['node'];
+}
+
+
+public function Smarty_Tag_Default___FINISH (&$nodeRes) {
+    $nodeRes['tagAttributes'] = array();
+    if (isset($nodeRes['attrib'])) {
+        $nodeRes['tagAttributes'] = $nodeRes['attrib']['attrib'];
+        unset($nodeRes['attrib']);
+    }
+    $nodeRes['tagOptions'] = array();
+    if (isset($nodeRes['options'])) {
+        $nodeRes['tagOptions'] = $nodeRes['options']['Options'];
+        unset($nodeRes['options']);
+    }
+}
+
+
+/**
+ *
+ * Parser rules and action for node 'Smarty_Tag_Block_Default'
+ *
+ *  Rule:
+<node Smarty_Tag_Block_Default>
+            <rule> Smarty_Tag_Default body:Body Smarty_Tag_Block_Close</rule>
+        </node>
+
+ *
+*/
+public function matchNodeSmarty_Tag_Block_Default($previous, &$errorResult){
+    $trace = $this->parser->trace;
+    $nodeRes = $this->parser->resultDefault;
+    $error = array();
+    $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+    $nodeRes['_lineno'] = $this->parser->line;
+    // Start 'Smarty_Tag_Block_Default' min '1' max '1'
+    // start sequence
+    $backup1 = $nodeRes;
+    $pos1 = $this->parser->pos;
+    $line1 = $this->parser->line;
+    $error1 = $error;
+    if ($trace) {
+        $this->parser->addBacktrace(array('_s1_', ''));
+    }
+    do {
+        $error = array();
+        // Start 'Smarty_Tag_Default' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('Smarty_Tag_Default', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'Smarty_Tag_Default', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('Smarty_Tag_Default',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'Smarty_Tag_Default'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start 'body:Body' tag 'body' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('Body', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'Body', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('Body',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            if(!isset($nodeRes['body'])) {
+                $nodeRes['body'] = $matchRes;
+            } else {
+                if (!is_array($nodeRes['body'])) {
+                    $nodeRes['body'] = array($nodeRes['body']);
+                }
+                $nodeRes['body'][] = $matchRes;
+            }
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'body:Body'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        $error = array();
+        // Start 'Smarty_Tag_Block_Close' min '1' max '1'
+        if ($trace) {
+            $this->parser->addBacktrace(array('Smarty_Tag_Block_Close', ''));
+        }
+        $matchRes = $this->parser->matchRule($nodeRes, 'Smarty_Tag_Block_Close', $error);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if ($matchRes) {
+            if ($trace) {
+                $this->parser->successNode(array('Smarty_Tag_Block_Close',  $matchRes['_text']));
+            }
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+        }
+        // End 'Smarty_Tag_Block_Close'
+        if (!$valid) {
+            $this->parser->matchError($error1, 'SequenceElement', $error);
+            $error = $error1;
+            break;
+        }
+        break;
+    } while (true);
+    if ($trace) {
+        $remove = array_pop($this->parser->backtrace);
+    }
+    if (!$valid) {
+        if ($trace) {
+            $this->parser->failNode($remove);
+        }
+        $this->parser->pos = $pos1;
+        $this->parser->line = $line1;
+        $nodeRes = $backup1;
+    } elseif ($trace) {
+        $this->parser->successNode($remove);
+    }
+    $error = $error1;
+    unset($backup1);
+    // end sequence
+    // End 'Smarty_Tag_Block_Default'
+    if ($valid) {
+        $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_endline'] = $this->parser->line;
+    }
+    if (!$valid) {
+        $nodeRes = false;
+        $this->parser->matchError($errorResult, 'token', $error, 'Smarty_Tag_Block_Default');
+    }
+    return $nodeRes;
+}
+
+/**
+ *
+ * Parser rules and action for node 'SmartyBlockCloseTag'
+ *
+ *  Rule:
+<token SmartyBlockCloseTag>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/{getLdel}\/(?<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ){getRdel}/</rule>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+            <action _init(getRdel)>
+                {
+                    return $this->parser->Rdel;
+                }
+            </action>
+        </token>
+
+ *
+*/
+public function matchNodeSmartyBlockCloseTag($previous, &$errorResult){
+    $trace = $this->parser->trace;
+    $nodeRes = $this->parser->resultDefault;
+    $error = array();
+    $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+    $nodeRes['_lineno'] = $this->parser->line;
+    // Start '/{getLdel}\/(?<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ){getRdel}/' min '1' max '1'
+    $regexp = "/{getLdel}\\/(?<name>[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]* ){getRdel}/";
+    $pos = $this->parser->pos;
+    if (isset($this->parser->regexpCache['SmartyBlockCloseTag2'][$pos])) {
+        $matchRes = $this->parser->regexpCache['SmartyBlockCloseTag2'][$pos];
+    } else {
+        if (isset($this->parser->rxCache['SmartyBlockCloseTag2'])) {
+            $regexp = $this->parser->rxCache['SmartyBlockCloseTag2'];
+        } else {
+            $this->parser->rxCache['SmartyBlockCloseTag2'] = $regexp = $this->parser->initRxReplace('SmartyBlockCloseTag',$regexp);
+        }
+        if (empty($this->parser->regexpCache['SmartyBlockCloseTag2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $pregMatches, PREG_OFFSET_CAPTURE+PREG_SET_ORDER, $pos)) {
+            $this->parser->regexpCache['SmartyBlockCloseTag2'][- 1] = true;
+            foreach ($pregMatches as  $pregMatch) {
+                $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                foreach ($pregMatch as $n => $v) {
+                    if (is_string($n) && strlen($v[0])) {
+                        $matchRes['_pregMatch'][$n] = $v[0];
+                    }
+                }
+                $this->parser->regexpCache['SmartyBlockCloseTag2'][$pregMatch[0][1]] = $matchRes;
+            }
+        } else {
+            $this->parser->regexpCache['SmartyBlockCloseTag2'][- 1] = false;
+            $matchRes = false;
+        }
+    }
+    if (isset($this->parser->regexpCache['SmartyBlockCloseTag2'][$pos])) {
+        $matchRes = $this->parser->regexpCache['SmartyBlockCloseTag2'][$pos];
+    } else {
+        $this->parser->regexpCache['SmartyBlockCloseTag2'][$pos] = false;
+        $matchRes = false;
+    }
+    if ($matchRes) {
+        $matchRes['_lineno'] = $this->parser->line;
+        $this->parser->pos = $matchRes['_endpos'];
+        $this->parser->line += substr_count($matchRes['_text'], "\n");
+        $matchRes['_tag'] = false;
+        $matchRes['_name'] = 'SmartyBlockCloseTag';
+        $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+        $valid = true;
+    } else {
+        $valid = false;
+    }
+    if ($valid) {
+        $nodeRes['_text'] .= $matchRes['_text'];
+    } else {
+        $this->parser->matchError($error, 'rx', "/{getLdel}\\/(?<name>[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]* ){getRdel}/");
+    }
+    // End '/{getLdel}\/(?<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ){getRdel}/'
+    if ($valid) {
+        $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_endline'] = $this->parser->line;
+    }
+    if (!$valid) {
+        $nodeRes = false;
+        $this->parser->matchError($errorResult, 'token', $error, 'SmartyBlockCloseTag');
+    }
+    return $nodeRes;
+}
+
+public function SmartyBlockCloseTag_INIT_getLdel (&$rule) {
+    return $this->parser->Ldel;
+}
+
+
+public function SmartyBlockCloseTag_INIT_getRdel (&$rule) {
+    return $this->parser->Rdel;
+}
+
+
+/**
+ *
+ * Parser rules and action for node 'SmartyTagPrefix'
+ *
+ *  Rule:
+<token SmartyTagPrefix>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/({getLdel})(?<tagname>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ))(?!(\s*\())/</rule>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+        </token>
+
+ *
+*/
+public function matchNodeSmartyTagPrefix($previous, &$errorResult){
+    $trace = $this->parser->trace;
+    $nodeRes = $this->parser->resultDefault;
+    $error = array();
+    $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+    $nodeRes['_lineno'] = $this->parser->line;
+    // Start '/({getLdel})(?<tagname>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ))(?!(\s*\())/' min '1' max '1'
+    $regexp = "/({getLdel})(?<tagname>([a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]* ))(?!(\\s*\\())/";
+    $pos = $this->parser->pos;
+    if (isset($this->parser->regexpCache['SmartyTagPrefix2'][$pos])) {
+        $matchRes = $this->parser->regexpCache['SmartyTagPrefix2'][$pos];
+    } else {
+        if (isset($this->parser->rxCache['SmartyTagPrefix2'])) {
+            $regexp = $this->parser->rxCache['SmartyTagPrefix2'];
+        } else {
+            $this->parser->rxCache['SmartyTagPrefix2'] = $regexp = $this->parser->initRxReplace('SmartyTagPrefix',$regexp);
+        }
+        if (empty($this->parser->regexpCache['SmartyTagPrefix2']) && preg_match_all($regexp . 'Sx', $this->parser->source, $pregMatches, PREG_OFFSET_CAPTURE+PREG_SET_ORDER, $pos)) {
+            $this->parser->regexpCache['SmartyTagPrefix2'][- 1] = true;
+            foreach ($pregMatches as  $pregMatch) {
+                $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                foreach ($pregMatch as $n => $v) {
+                    if (is_string($n) && strlen($v[0])) {
+                        $matchRes['_pregMatch'][$n] = $v[0];
+                    }
+                }
+                $this->parser->regexpCache['SmartyTagPrefix2'][$pregMatch[0][1]] = $matchRes;
+            }
+        } else {
+            $this->parser->regexpCache['SmartyTagPrefix2'][- 1] = false;
+            $matchRes = false;
+        }
+    }
+    if (isset($this->parser->regexpCache['SmartyTagPrefix2'][$pos])) {
+        $matchRes = $this->parser->regexpCache['SmartyTagPrefix2'][$pos];
+    } else {
+        $this->parser->regexpCache['SmartyTagPrefix2'][$pos] = false;
+        $matchRes = false;
+    }
+    if ($matchRes) {
+        $matchRes['_lineno'] = $this->parser->line;
+        $this->parser->pos = $matchRes['_endpos'];
+        $this->parser->line += substr_count($matchRes['_text'], "\n");
+        $matchRes['_tag'] = false;
+        $matchRes['_name'] = 'SmartyTagPrefix';
+        $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+        $valid = true;
+    } else {
+        $valid = false;
+    }
+    if ($valid) {
+        $nodeRes['_text'] .= $matchRes['_text'];
+    } else {
+        $this->parser->matchError($error, 'rx', "/({getLdel})(?<tagname>([a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]* ))(?!(\\s*\\())/");
+    }
+    // End '/({getLdel})(?<tagname>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ))(?!(\s*\())/'
+    if ($valid) {
+        $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_endline'] = $this->parser->line;
+    }
+    if (!$valid) {
+        $nodeRes = false;
+        $this->parser->matchError($errorResult, 'token', $error, 'SmartyTagPrefix');
+    }
+    return $nodeRes;
+}
+
+public function SmartyTagPrefix_INIT_getLdel (&$rule) {
+    return $this->parser->Ldel;
+}
+
+
+
+}

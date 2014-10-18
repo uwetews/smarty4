@@ -144,32 +144,32 @@ class TagInclude extends Magic
             $file_string = false;
         }
         $_file = $compiling_node->compileNode($node->attributeNodes['file'])
-                                ->getFormated();
+                                ->getFormatted();
         unset($node->attributeNodes['file']);
         $_assign = null;
         if (isset($node->attributeNodes['assign'])) {
             $_assign = $compiling_node->compileNode($node->attributeNodes['assign'])
-                                      ->getFormated();
+                                      ->getFormatted();
             unset($node->attributeNodes['assign']);
         }
         $_cacheLifetime = 0;
         if (isset($node->attributeNodes['cacheLifetime'])) {
             $_cacheLifetime = $compiling_node->compileNode($node->attributeNodes['cacheLifetime'])
-                                             ->getFormated();
+                                             ->getFormatted();
             unset($node->attributeNodes['cacheLifetime']);
             $_caching = Smarty::CACHING_LIFETIME_CURRENT;
         }
         $_cacheId = 'null';
         if (isset($node->attributeNodes['cacheId'])) {
             $_cacheId = $compiling_node->compileNode($node->attributeNodes['cacheId'])
-                                       ->getFormated();
+                                       ->getFormatted();
             unset($node->attributeNodes['cacheId']);
             $_caching = Smarty::CACHING_LIFETIME_CURRENT;
         }
         $_compileId = 'null';
         if (isset($node->attributeNodes['compileId'])) {
             $_compileId = $compiling_node->compileNode($node->attributeNodes['compileId'])
-                                         ->getFormated();
+                                         ->getFormatted();
             unset($node->attributeNodes['compileId']);
         }
         $_vars = array();

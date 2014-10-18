@@ -2,12 +2,12 @@
 namespace Smarty\Nodes\Resource;
 
 /**
- * Class PegParser
+ * Class RuleRoot;
  *
  * @package Smarty\Nodes\Resource
  */
 
-class PegParser
+class RuleRoot;
 {
 
     public $rules = array(
@@ -15,7 +15,7 @@ class PegParser
             "_name"  => "Resource",
             "_param" => "Template",
             "_tag"   => "main",
-            "_type"  => "recurse"
+            "_type"  => "token"
         )
     );
     /**

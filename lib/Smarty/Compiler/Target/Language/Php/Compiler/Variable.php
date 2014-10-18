@@ -67,7 +67,16 @@ class Variable
                     $codeTargetObj->raw('->')
                                   ->compileNodeArray($suffix['name'], $codeTargetObj, $delete);
                     if (isset($suffix['method'])) {
-                        $codeTargetObj->compileNode($suffix['method'], $delete);
+                        $codeTargetObj->raw('(');
+                        $first = true;
+                        foreach($suffix['method'] as $parameter) {
+                            if (!first) {
+                                $codeTargetObj->raw(', ');
+                            }
+                            $codeTargetObj->compileNode($parameter, $delete);
+                            $first = false;
+                        }
+                        $codeTargetObj->raw(')');
                     }
                 }
             }

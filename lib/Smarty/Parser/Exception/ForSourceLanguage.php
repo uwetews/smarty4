@@ -8,7 +8,7 @@
 namespace Smarty\Parser\Exception;
 
 use Smarty\Exception\Runtime;
-use Smarty\Template\Context;
+use Smarty\Context;
 
 /**
  * Smarty parser not found exception

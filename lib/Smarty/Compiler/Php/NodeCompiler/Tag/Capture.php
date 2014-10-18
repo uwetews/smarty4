@@ -50,17 +50,17 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Capture extends SmartSmarty_Compiler_
         // check and get attributes
         $_attr = $this->getAttributes($compiler, $args);
 
-        $precompiled = isset($_attr['name']) ? $_attr['name'] : "'default'";
+        $preCompiled = isset($_attr['name']) ? $_attr['name'] : "'default'";
         $assign = isset($_attr['assign']) ? $_attr['assign'] : 'null';
         $append = isset($_attr['append']) ? $_attr['append'] : 'null';
 
-        self::$_capture_stack[] = array($precompiled, $assign, $append, $compiler->nocache);
+        self::$_capture_stack[] = array($preCompiled, $assign, $append, $compiler->nocache);
         // maybe nocache because of nocache variables
         $compiler->nocache = $compiler->nocache | $compiler->tag_nocache;
 
         $this->iniTagCode($compiler);
 
-        $this->code("\$this->_capture_stack[0][] = array($precompiled, $assign, $append);")
+        $this->code("\$this->_capture_stack[0][] = array($preCompiled, $assign, $append);")
              ->newline();
         $this->code("ob_start();")
              ->newline();
@@ -94,7 +94,7 @@ class Smarty_ComSmarty_Compiler_Php_er_Tag_CaptureClose extends Smarty_CompilerS
             $compiler->tag_nocache = true;
         }
 
-        list($precompiled, $assign, $append, $compiler->nocache) = array_pop(Smarty_Compiler_Code_Php_NodeCompiler_Tag_Capture::$_capture_stack);
+        list($preCompiled, $assign, $append, $compiler->nocache) = array_pop(Smarty_Compiler_Code_Php_NodeCompiler_Tag_Capture::$_capture_stack);
 
         $this->iniTagCode($compiler);
 

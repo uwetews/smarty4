@@ -57,6 +57,6 @@ class Magic
 
     public function __destruct()
     {
-        echo "\n<br>" . get_class($this) . " destructed <br>\n";
+//        echo "\n<br>" . get_class($this) . " destructed <br>\n";
     }
 }

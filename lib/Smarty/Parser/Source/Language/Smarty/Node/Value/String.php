@@ -79,10 +79,10 @@ class String extends Node
     public function setValue($value, $compileAsValue = false, $trim = true)
     {
         if ($compileAsValue == true) {
-            $this->compileAsValue = $compileAsValue;
+            $this->compileAsValue = true;
         }
-        if ($trim === null || $trim === true) {
-            $this->value = trim($value, "'\"");
+        if ($trim === true && in_array($value[0], array('"', "'") )) {
+            $this->value =substr($value, 1, strlen($value) - 2 );
         } else {
             $this->value = $value;
         }

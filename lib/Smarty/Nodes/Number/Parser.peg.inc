@@ -2,11 +2,11 @@
 namespace Smarty\Nodes\Number;
 
 /**
- * Class PegParser
+ * Class RuleRoot;
  *
  * @package Smarty\Nodes\Core
  */
-class PegParser
+class RuleRoot;
 {
     /*!*
     <pegparser Number>
@@ -14,10 +14,10 @@ class PegParser
             <rule>/[0-9]+(?:\.[0-9]+)?/</rule>
             <action _finish>
             {
-                $result->_value = $result->_text;
-                $result->_compile = $result->_text;
-                $result->_type = 'value';
-                $result->_subtype = 'numeric';
+                $nodeRes->_value = $nodeRes->_text;
+                $nodeRes->_compile = $nodeRes->_text;
+                $nodeRes->_type = 'value';
+                $nodeRes->_subtype = 'numeric';
             }
             </action>
         </node>

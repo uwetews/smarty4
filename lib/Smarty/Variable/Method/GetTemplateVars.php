@@ -31,11 +31,11 @@ class Smarty_Variable_Method_GetTemplateVars
     {
         $smarty = isset($object->smarty) ? $object->smarty : $object;
         if (isset($varname)) {
-            $result = $smarty->_getVariable($varname, $_ptr, $search_parents, false);
-            if ($result === null) {
+            $nodeRes = $smarty->_getVariable($varname, $_ptr, $search_parents, false);
+            if ($nodeRes === null) {
                 return false;
             } else {
-                return $result->value;
+                return $nodeRes->value;
             }
         } else {
             $_result = array();

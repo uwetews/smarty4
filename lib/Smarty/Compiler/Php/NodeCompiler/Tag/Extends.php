@@ -70,8 +70,8 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Extends extends Smarty_Compiler_Code_
         $this->code("echo \$compiled_obj->_getRenderedTemplate(\$this->smarty, \$_scope);")
              ->newline();
 
-        $compiler->compiled_footer_code[] = $this->precompiled;
-        $this->precompiled = '';
+        $compiler->compiled_footer_code[] = $this->preCompiled;
+        $this->preCompiled = '';
 
         // code for grabbing all output of child template which must be dropped
         $this->code("ob_start();")

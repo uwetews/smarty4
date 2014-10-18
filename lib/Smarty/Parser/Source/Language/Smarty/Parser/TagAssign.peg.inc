@@ -1,14 +1,14 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class TagAssignParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class TagAssignParser extends PegParser
+class TagAssignParser extends RuleRoot
 {
     /*!*
        <pegparser TagAssign>
@@ -18,7 +18,7 @@ class TagAssignParser extends PegParser
                <rule>Ldel 'assign' SmartyTagAttributes SmartyTagOptions Rdel</rule>
                <action _start>
                {
-                   $result['node'] = $previous['node'];
+                   $nodeRes['node'] = $previous['node'];
                }
                </action>
            </node>

@@ -2,7 +2,7 @@
 
 namespace Smarty\Node;
 
-use Smarty\Template\Context;
+use Smarty\Context;
 use Smarty\Parser;
 use Smarty\Node;
 

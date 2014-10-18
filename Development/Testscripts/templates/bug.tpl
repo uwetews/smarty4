@@ -1,6 +1,8 @@
-<br>kk
-{assign var='i' value=9}
-{$i}
-{counter}
-<br>
 
+{$i = 'ja'}
+{$i}
+{$i = 'nein'}
+{$i}
+{foreach $a as $aa}
+    <br>{$aa}{3+5}
+{/foreach}

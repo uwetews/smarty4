@@ -3,14 +3,14 @@ namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
 use Smarty\Node;
 use Smarty\Parser\Source\Shared\Node\InternalText;
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class TextParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class TextParser extends PegParser
+class TextParser extends RuleRoot
 {
     /*!*
     <pegparser Text>
@@ -23,14 +23,14 @@ class TextParser extends PegParser
             <rule>/({getLdel}\s*literal\s*{getRdel}.*?{getLdel}\/\s*literal\s*{getRdel})?(([\s\S])*?(?=({getLdel})))|[\S\s]+/</rule>
             <action _finish>
             {
-                if ($result['_text'] == '') {
-                    $result = false;
+                if ($nodeRes['_text'] == '') {
+                    $nodeRes = false;
                     return;
                 }
-                $result['node'] = new InternalText($this->parser);
-                $result['node']->addText($result['_text'])->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
-                $result['_text'] = '';
-                $result['_silent'] = 1;
+                $nodeRes['node'] = new InternalText($this->parser);
+                $nodeRes['node']->addText($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], '', $nodeRes['_startpos'], $nodeRes['_endpos']);
+                $nodeRes['_text'] = '';
+                $nodeRes['_silent'] = 1;
             }
             </action>
             <action _init(getLdel)>

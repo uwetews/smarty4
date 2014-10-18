@@ -4,7 +4,7 @@ namespace Smarty\Parser\Source\Language\Smarty\Parser;
 use Smarty\Parser\Source\Laguage\Smarty\Nodes;
 
 /**
- * Class PegParser
+ * Class RuleRoot;
  *
  * @package Smarty\Source\Smarty\Nodes\Smarty
  */

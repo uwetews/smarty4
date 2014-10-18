@@ -2,14 +2,14 @@
 namespace Smarty\Compiler\Target\Language\Php\Parser;
 
 use Smarty\Nodes;
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class ResourceParser
  *
  * @package Smarty\Compiler\Target\Language\Php\Parser
  */
-class ResourceParser extends PegParser
+class ResourceParser extends RuleRoot
 {
 
     /*!*
@@ -18,12 +18,12 @@ class ResourceParser extends PegParser
                 <rule>main:Template</rule>
                 <action _start>
                 {
-                    $result['node'] = $previous['node'];
+                    $nodeRes['node'] = $previous['node'];
                 }
                 </action>
                 <action main>
                 {
-                    $result['node']->templateNode = $subres['node'];
+                    $nodeRes['node']->templateNode = $matchRes['node'];
                 }
                 </action>
             </node>

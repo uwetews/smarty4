@@ -1,16 +1,12 @@
 <?php
 namespace Smarty\Tool\Parser\Peg;
 
-use Smarty\Tool\Parser\Peg\Nodes\ParserCompiler;
-use Smarty\Tool\Parser\Peg\Nodes\Text;
-Use Smarty\Tool\Parser\Peg\Root;
-Use Smarty\Template\Context;
+Use Smarty\Context;
 Use Smarty\Compiler;
 Use Smarty\Parser;
 use Smarty\Parser\Exception\NoRule;
-
 /**
- * Class PegParser
+ * Class RuleRoot;
  *
  * @package Smarty\Nodes\Template
  */
@@ -42,3028 +38,220 @@ class Generator extends Parser
     public $whitespacePattern = '/[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))*/';
 
     /**
-     * Parser generated on 2014-06-29 17:56:13
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Tool/Parser/Peg/InternalTool/ParserGenerator.peg.inc' dated 2014-06-29 17:10:50
-
+     * Flag if rules shall ba compiled as array
+     *
+     * @var bool
      */
+    public $asArray = false;
+
+   
+    /**
+     *
+     * Parser generated on 2014-09-01 22:32:55
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Tool/Parser/Peg/InternalTool/ParserGenerator.peg.inc' dated 2014-08-31 19:03:42
+     *
+    */
 
     /**
-     * Flag that compiled Peg Parser class is valid
+     Flag that compiled Peg Parser class is valid
+     *
      * @var bool
      */
     public $valid = true;
+
 
     /**
      * Array of match method names for rules of this Peg Parser
      *
      * @var array
      */
-    public $matchMethods = array(
-        "attrvalue" => "matchNodeattrvalue",
-        "attrentry" => "matchNodeattrentry",
-        "attr"      => "matchNodeattr",
-        "Name"      => "matchNodeName",
-        "Header"    => "matchNodeHeader",
-        "End"       => "matchNodeEnd",
-        "Comment"   => "matchNodeComment",
-        "Text"      => "matchNodeText",
-        "Parser"    => "matchNodeParser",
-        "Attribute" => "matchNodeAttribute",
-        "Node"      => "matchNodeNode",
-        "Rule"      => "matchNodeRule",
-        "Action"    => "matchNodeAction",
-        "PHP"       => "matchNodePHP",
-        "Arguments" => "matchNodeArguments",
-        "Option"    => "matchNodeOption",
-        "Sequence"  => "matchNodeSequence",
-        "RuleToken" => "matchNodeRuleToken",
-        "File"      => "matchNodeFile"
-    );
+    public $ruleMethods = array(
+            "Root" => "matchNodeRoot",
+            "Text" => "matchNodeText",
+            "Parser" => "matchNodeParser",
+            "Name" => "matchNodeName",
+            "Header" => "matchNodeHeader",
+            "End" => "matchNodeEnd",
+            "Comment" => "matchNodeComment",
+            "AttrValue" => "matchNodeAttrValue",
+            "AttrEntry" => "matchNodeAttrEntry",
+            "Attribute" => "matchNodeAttribute",
+            "Node" => "matchNodeNode",
+            "Rule" => "matchNodeRule",
+            "Action" => "matchNodeAction",
+            "Option" => "matchNodeOption",
+            "Sequence" => "matchNodeSequence",
+            "RuleToken" => "matchNodeRuleToken"
+        );
 
     /**
      * Array of node attributes
      *
      * @var array
      */
-    public $nodeAttributes = array();
-
+    public $nodeAttributes = array(
+            "Attribute" => array(
+                    "importNode" => true
+                ),
+            "Rule" => array(
+                    "importNode" => true
+                ),
+            "Action" => array(
+                    "importNode" => true
+                )
+        );
     /**
-     * Parser rules and action for node 'attrvalue'
+     *
+     * Parser rules and action for node 'Root'
+     *
      *  Rule:
-     * <node attrvalue> <rule>  .._? (  /(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/ | (  '(' sub:attr ')' ) ) </rule>  <action sub> {
-     * $result['value'] = $subres['_attr'];
-     * } </action>  <action _finish> {
-     * $mr = $result['_matchres'];
-     * if (isset($mr['v1']) && !empty($mr['v1'])) {
-     * $result['value'] = trim($mr['v1'], "'\"");
-     * }
-     * if (isset($mr['true']) && !empty($mr['true'])) {
-     * $result['value'] = true;
-     * }
-     * if (isset($mr['false']) && !empty($mr['false'])) {
-     * $result['value'] = false;
-     * }
-     * if (isset($mr['null']) && !empty($mr['null'])) {
-     * $result['value'] = null;
-     * }
-     * $result['_matchres'] = array();
-     * } </action> </node>
-
-     */
-    public function matchNodeattrvalue($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'attrvalue' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'attrvalue' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'attrvalue'
-            if (!$valid) {
-                break;
-            }
-            // Start 'attrvalue' min '1' max '1'
-            // start option
-            do {
-                // Start 'attrvalue' min '1' max '1'
-                $regexp = "/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|(\"[^\"]*\")|\\d+|\\w+))/";
-                $pos = $this->parser->pos;
-                if (isset($this->parser->regexpCache['attrvalue6'][$pos])) {
-                    $subres = $this->parser->regexpCache['attrvalue6'][$pos];
-                } else {
-                    if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                        if (strlen($match[0][0]) != 0) {
-                            $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                            foreach ($match as $n => $v) {
-                                if (is_string($n) && !empty($v[0])) {
-                                    $subres['_matchres'][$n] = $v[0];
-                                }
-                            }
-                            if ($subres['_startpos'] != $pos) {
-                                $this->parser->regexpCache['attrvalue6'][$subres['_startpos']] = $subres;
-                                $this->parser->regexpCache['attrvalue6'][$pos] = false;
-                                $subres = false;
-                            }
-                        } else {
-                            $this->parser->regexpCache['attrvalue6'][$pos] = false;
-                            $subres = false;
-                        }
-                    } else {
-                        $this->parser->regexpCache['attrvalue6'][$pos] = false;
-                        $subres = false;
-                    }
-                }
-                if ($subres) {
-                    $subres['_lineno'] = $this->parser->line;
-                    $this->parser->pos = $subres['_endpos'];
-                    $this->parser->line += substr_count($subres['_text'], "\n");
-                    $subres['_tag'] = false;
-                    $subres['_name'] = 'attrvalue';
-                    $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
-                    $valid = true;
-                } else {
-                    $valid = false;
-                }
-                if ($valid) {
-                    $result['_text'] .= $subres['_text'];
-                }
-                // End 'attrvalue'
-                if ($valid) {
-                    break;
-                }
-                // Start 'attrvalue' min '1' max '1'
-                // start sequence
-                $backup7 = $result;
-                $pos7 = $this->parser->pos;
-                $line7 = $this->parser->line;
-                do {
-                    // Start 'attrvalue' min '1' max '1'
-                    if ('(' == substr($this->parser->source, $this->parser->pos, 1)) {
-                        $this->parser->pos += 1;
-                        $result['_text'] .= '(';
-                        $this->parser->successLiteral('(');
-                        $valid = true;
-                    } else {
-                        $this->parser->failLiteral('(');
-                        $valid = false;
-                    }
-                    // End 'attrvalue'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'attrvalue' tag 'sub' min '1' max '1'
-                    $this->parser->addBacktrace(array('attr', $result));
-                    $subres = $this->parser->matchRule($result, 'attr');
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('attr', $subres));
-                        $result['_text'] .= $subres['_text'];
-                        $this->attrvalue_sub($result, $subres);
-                        $valid = true;
-                    } else {
-                        $valid = false;
-                        $this->parser->failNode($remove);
-                    }
-                    // End 'attrvalue'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'attrvalue' min '1' max '1'
-                    if (')' == substr($this->parser->source, $this->parser->pos, 1)) {
-                        $this->parser->pos += 1;
-                        $result['_text'] .= ')';
-                        $this->parser->successLiteral(')');
-                        $valid = true;
-                    } else {
-                        $this->parser->failLiteral(')');
-                        $valid = false;
-                    }
-                    // End 'attrvalue'
-                    if (!$valid) {
-                        break;
-                    }
-                    break;
-                } while (true);
-                if (!$valid) {
-                    $this->parser->pos = $pos7;
-                    $this->parser->line = $line7;
-                    $result = $backup7;
-                }
-                unset($backup7);
-                // end sequence
-                // End 'attrvalue'
-                if ($valid) {
-                    break;
-                }
-                break;
-            } while (true);
-            // end option
-            // End 'attrvalue'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'attrvalue'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-            $this->attrvalue___FINISH($result);
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function attrvalue_sub(&$result, $subres)
-    {
-        $result['value'] = $subres['_attr'];
-    }
-
-    public function attrvalue___FINISH(&$result)
-    {
-        $mr = $result['_matchres'];
-        if (isset($mr['v1']) && !empty($mr['v1'])) {
-            $result['value'] = trim($mr['v1'], "'\"");
-        }
-        if (isset($mr['true']) && !empty($mr['true'])) {
-            $result['value'] = true;
-        }
-        if (isset($mr['false']) && !empty($mr['false'])) {
-            $result['value'] = false;
-        }
-        if (isset($mr['null']) && !empty($mr['null'])) {
-            $result['value'] = null;
-        }
-        $result['_matchres'] = array();
-    }
-
-    /**
-     * Parser rules and action for node 'attrentry'
-     *  Rule:
-     * <node attrentry> <rule>  .._? key:Name .._? (  '=' .._? val:attrvalue )? </rule>  <action key> {
-     * $result['key'] = $subres['_text'];
-     * $result['value'] = array($result['key'] => true);
-     * } </action>  <action val> {
-     * $result['value'][$result['key']] = $subres['value'];
-     * } </action> </node>
-
-     */
-    public function matchNodeattrentry($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'attrentry' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'attrentry' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'attrentry'
-            if (!$valid) {
-                break;
-            }
-            // Start 'attrentry' tag 'key' min '1' max '1'
-            $this->parser->addBacktrace(array('Name', $result));
-            $subres = $this->parser->matchRule($result, 'Name');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Name', $subres));
-                $result['_text'] .= $subres['_text'];
-                $this->attrentry_key($result, $subres);
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'attrentry'
-            if (!$valid) {
-                break;
-            }
-            // Start 'attrentry' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'attrentry'
-            if (!$valid) {
-                break;
-            }
-            // Start 'attrentry' min '0' max '1'
-            // start sequence
-            $backup6 = $result;
-            $pos6 = $this->parser->pos;
-            $line6 = $this->parser->line;
-            do {
-                // Start 'attrentry' min '1' max '1'
-                if ('=' == substr($this->parser->source, $this->parser->pos, 1)) {
-                    $this->parser->pos += 1;
-                    $result['_text'] .= '=';
-                    $this->parser->successLiteral('=');
-                    $valid = true;
-                } else {
-                    $this->parser->failLiteral('=');
-                    $valid = false;
-                }
-                // End 'attrentry'
-                if (!$valid) {
-                    break;
-                }
-                // Start 'attrentry' min '1' max '1'
-                if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                    $this->parser->pos += strlen($match[0]);
-                    $this->parser->line += substr_count($match[0], "\n");
-                }
-                $valid = true;
-                // End 'attrentry'
-                if (!$valid) {
-                    break;
-                }
-                // Start 'attrentry' tag 'val' min '1' max '1'
-                $this->parser->addBacktrace(array('attrvalue', $result));
-                $subres = $this->parser->matchRule($result, 'attrvalue');
-                $remove = array_pop($this->parser->backtrace);
-                if ($subres) {
-                    $this->parser->successNode(array('attrvalue', $subres));
-                    $result['_text'] .= $subres['_text'];
-                    $this->attrentry_val($result, $subres);
-                    $valid = true;
-                } else {
-                    $valid = false;
-                    $this->parser->failNode($remove);
-                }
-                // End 'attrentry'
-                if (!$valid) {
-                    break;
-                }
-                break;
-            } while (true);
-            if (!$valid) {
-                $this->parser->pos = $pos6;
-                $this->parser->line = $line6;
-                $result = $backup6;
-            }
-            unset($backup6);
-            // end sequence
-            $valid = true;
-            // End 'attrentry'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'attrentry'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function attrentry_key(&$result, $subres)
-    {
-        $result['key'] = $subres['_text'];
-        $result['value'] = array($result['key'] => true);
-    }
-
-    public function attrentry_val(&$result, $subres)
-    {
-        $result['value'][$result['key']] = $subres['value'];
-    }
-
-    /**
-     * Parser rules and action for node 'attr'
-     *  Rule:
-     * <node attr> <rule>  attrentry (  ',' attrentry )* </rule>  <action _all> {
-     * if (!isset($result['_attr'])) {
-     * $result['_attr'] = array();
-     * }
-     * $result['_attr'] = array_merge($result['_attr'], $subres['value']);
-     * } </action> </node>
-
-     */
-    public function matchNodeattr($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'attr' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'attr' min '1' max '1'
-            $this->parser->addBacktrace(array('attrentry', $result));
-            $subres = $this->parser->matchRule($result, 'attrentry');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('attrentry', $subres));
-                $result['_text'] .= $subres['_text'];
-                $this->attr___ALL($result, $subres);
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'attr'
-            if (!$valid) {
-                break;
-            }
-            // Start 'attr' min '0' max 'null'
-            $iteration3 = 0;
-            do {
-                // start sequence
-                $backup4 = $result;
-                $pos4 = $this->parser->pos;
-                $line4 = $this->parser->line;
-                do {
-                    // Start 'attr' min '1' max '1'
-                    if (',' == substr($this->parser->source, $this->parser->pos, 1)) {
-                        $this->parser->pos += 1;
-                        $result['_text'] .= ',';
-                        $this->parser->successLiteral(',');
-                        $valid = true;
-                    } else {
-                        $this->parser->failLiteral(',');
-                        $valid = false;
-                    }
-                    // End 'attr'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'attr' min '1' max '1'
-                    $this->parser->addBacktrace(array('attrentry', $result));
-                    $subres = $this->parser->matchRule($result, 'attrentry');
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('attrentry', $subres));
-                        $result['_text'] .= $subres['_text'];
-                        $this->attr___ALL($result, $subres);
-                        $valid = true;
-                    } else {
-                        $valid = false;
-                        $this->parser->failNode($remove);
-                    }
-                    // End 'attr'
-                    if (!$valid) {
-                        break;
-                    }
-                    break;
-                } while (true);
-                if (!$valid) {
-                    $this->parser->pos = $pos4;
-                    $this->parser->line = $line4;
-                    $result = $backup4;
-                }
-                unset($backup4);
-                // end sequence
-                $iteration3 = $valid ? ($iteration3 + 1) : $iteration3;
-                if (!$valid && $iteration3 >= 0) {
-                    $valid = true;
-                    break;
-                }
-                if (!$valid) {
-                    break;
-                }
-            } while (true);
-            // End 'attr'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'attr'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function attr___ALL(&$result, $subres)
-    {
-        if (!isset($result['_attr'])) {
-            $result['_attr'] = array();
-        }
-        $result['_attr'] = array_merge($result['_attr'], $subres['value']);
-    }
-
-    /**
-     * Parser rules and action for node 'Name'
-     *  Rule:
-     * <node Name> <rule>  /\w+/ </rule> </node>
-
-     */
-    public function matchNodeName($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Name' min '1' max '1'
-        $regexp = "/\\w+/";
-        $pos = $this->parser->pos;
-        if (isset($this->parser->regexpCache['Name2'][$pos])) {
-            $subres = $this->parser->regexpCache['Name2'][$pos];
-        } else {
-            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                if ($subres['_startpos'] != $pos) {
-                    $this->parser->regexpCache['Name2'][$subres['_startpos']] = $subres;
-                    $this->parser->regexpCache['Name2'][$pos] = false;
-                    $subres = false;
-                }
-            } else {
-                $this->parser->regexpCache['Name2'][$pos] = false;
-                $subres = false;
-            }
-        }
-        if ($subres) {
-            $subres['_lineno'] = $this->parser->line;
-            $this->parser->pos = $subres['_endpos'];
-            $this->parser->line += substr_count($subres['_text'], "\n");
-            $subres['_tag'] = false;
-            $subres['_name'] = 'Name';
-            $valid = true;
-        } else {
-            $valid = false;
-        }
-        if ($valid) {
-            $result['_text'] .= $subres['_text'];
-        }
-        // End 'Name'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    /**
-     * Parser rules and action for node 'Header'
-     *  Rule:
-     * <node Header> <rule>  /\s*\/\*!\* / </rule> </node>
-
-     */
-    public function matchNodeHeader($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Header' min '1' max '1'
-        $regexp = "/\\s*\\/\\*!\\* /";
-        $pos = $this->parser->pos;
-        if (isset($this->parser->regexpCache['Header2'][$pos])) {
-            $subres = $this->parser->regexpCache['Header2'][$pos];
-        } else {
-            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                if ($subres['_startpos'] != $pos) {
-                    $this->parser->regexpCache['Header2'][$subres['_startpos']] = $subres;
-                    $this->parser->regexpCache['Header2'][$pos] = false;
-                    $subres = false;
-                }
-            } else {
-                $this->parser->regexpCache['Header2'][$pos] = false;
-                $subres = false;
-            }
-        }
-        if ($subres) {
-            $subres['_lineno'] = $this->parser->line;
-            $this->parser->pos = $subres['_endpos'];
-            $this->parser->line += substr_count($subres['_text'], "\n");
-            $subres['_tag'] = false;
-            $subres['_name'] = 'Header';
-            $valid = true;
-        } else {
-            $valid = false;
-        }
-        if ($valid) {
-            $result['_text'] .= $subres['_text'];
-        }
-        // End 'Header'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    /**
-     * Parser rules and action for node 'End'
-     *  Rule:
-     * <node End> <rule>  ./\s*\*\// </rule> </node>
-
-     */
-    public function matchNodeEnd($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'End' min '1' max '1'
-        $regexp = "/\\s*\\*\\//";
-        $pos = $this->parser->pos;
-        if (isset($this->parser->regexpCache['End2'][$pos])) {
-            $subres = $this->parser->regexpCache['End2'][$pos];
-        } else {
-            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                if ($subres['_startpos'] != $pos) {
-                    $this->parser->regexpCache['End2'][$subres['_startpos']] = $subres;
-                    $this->parser->regexpCache['End2'][$pos] = false;
-                    $subres = false;
-                }
-            } else {
-                $this->parser->regexpCache['End2'][$pos] = false;
-                $subres = false;
-            }
-        }
-        if ($subres) {
-            $subres['_lineno'] = $this->parser->line;
-            $this->parser->pos = $subres['_endpos'];
-            $this->parser->line += substr_count($subres['_text'], "\n");
-            $subres['_tag'] = false;
-            $subres['_name'] = 'End';
-            $valid = true;
-        } else {
-            $valid = false;
-        }
-        if ($valid) {
-        }
-        // End 'End'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    /**
-     * Parser rules and action for node 'Comment'
-     *  Rule:
-     * <node Comment> <rule>  /[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))* / </rule> </node>
-
-     */
-    public function matchNodeComment($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Comment' min '1' max '1'
-        $regexp = "/[\\s\\t]*(([#][^\\r\\n]*)?([\\r\\n]+[\\s\\t]*))* /";
-        $pos = $this->parser->pos;
-        if (isset($this->parser->regexpCache['Comment2'][$pos])) {
-            $subres = $this->parser->regexpCache['Comment2'][$pos];
-        } else {
-            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                if ($subres['_startpos'] != $pos) {
-                    $this->parser->regexpCache['Comment2'][$subres['_startpos']] = $subres;
-                    $this->parser->regexpCache['Comment2'][$pos] = false;
-                    $subres = false;
-                }
-            } else {
-                $this->parser->regexpCache['Comment2'][$pos] = false;
-                $subres = false;
-            }
-        }
-        if ($subres) {
-            $subres['_lineno'] = $this->parser->line;
-            $this->parser->pos = $subres['_endpos'];
-            $this->parser->line += substr_count($subres['_text'], "\n");
-            $subres['_tag'] = false;
-            $subres['_name'] = 'Comment';
-            $valid = true;
-        } else {
-            $valid = false;
-        }
-        if ($valid) {
-            $result['_text'] .= $subres['_text'];
-        }
-        // End 'Comment'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    /**
-     * Parser rules and action for node 'Text'
-     *  Rule:
-     * <node Text> <rule>  /([\S\s]+(?=([^\S\r\n]\/\*!\*)))|[\S\s]+/ </rule>  <action _start> {
-     * $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\Text ($this, null);
-     * } </action>  <action _all> {
-     * $result['_node']->_text = $subres['_text'];
-     * } </action> </node>
-
-     */
-    public function matchNodeText($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $this->Text___START($result, $previous);
-        // Start 'Text' min '1' max '1'
-        $regexp = "/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/";
-        $pos = $this->parser->pos;
-        if (isset($this->parser->regexpCache['Text2'][$pos])) {
-            $subres = $this->parser->regexpCache['Text2'][$pos];
-        } else {
-            if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                if ($subres['_startpos'] != $pos) {
-                    $this->parser->regexpCache['Text2'][$subres['_startpos']] = $subres;
-                    $this->parser->regexpCache['Text2'][$pos] = false;
-                    $subres = false;
-                }
-            } else {
-                $this->parser->regexpCache['Text2'][$pos] = false;
-                $subres = false;
-            }
-        }
-        if ($subres) {
-            $subres['_lineno'] = $this->parser->line;
-            $this->parser->pos = $subres['_endpos'];
-            $this->parser->line += substr_count($subres['_text'], "\n");
-            $subres['_tag'] = false;
-            $subres['_name'] = 'Text';
-            $valid = true;
-        } else {
-            $valid = false;
-        }
-        if ($valid) {
-            $result['_text'] .= $subres['_text'];
-            $this->Text___ALL($result, $subres);
-        }
-        // End 'Text'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function Text___START(&$result, $previous)
-    {
-        $result['_node'] = new Text ($this, null);
-    }
-
-    public function Text___ALL(&$result, $subres)
-    {
-        $result['_node']->_text = $subres['_text'];
-    }
-
-    /**
-     * Parser rules and action for node 'Parser'
-     *  Rule:
-     * <node Parser> <rule>  ..Header .._? '<pegparser' _ Name '>' attr:Attribute* node:Node* .._? '</pegparser>' .._? End? </rule>  <action _start> {
-     * $result['_node'] = new \Smarty\Tool\Parser\Peg\Nodes\ParserCompiler ($this, null);
-     * } </action>  <action attr> {
-     * if (!isset($result['_attr'])) {
-     * $result['_attr'] = array();
-     * }
-     * $result['_attr'] = array_merge($result['_attr'], $subres['_attr']);
-     * } </action>  <action node> {
-     * $subres['_nodedef']['rule']['_name'] = $subres['_nodedef']['name'];
-     * ksort($subres['_nodedef']['rule']);
-     * $result['_node']->nodes[$subres['_nodedef']['name']] = $subres['_nodedef']['rule'];
-     * $result['_node']->comments[$subres['_nodedef']['name']] = $subres['comment'];
-     * if (isset($subres['_attr'])) {
-     * $result['_node']->attributes[$subres['_nodedef']['name']] = $subres['_attr'];
-     * }
-     * if (isset($subres['_nodedef']['actions'])) {
-     * $result['_node']->actions[$subres['_nodedef']['name']] = $subres['_nodedef']['actions'];
-     * }
-     * } </action> </node>
-
-     */
-    public function matchNodeParser($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $this->Parser___START($result, $previous);
-        // Start 'Parser' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'Parser' min '1' max '1'
-            $this->parser->addBacktrace(array('Header', $result));
-            $subres = $this->parser->matchRule($result, 'Header');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Header', $subres));
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '1' max '1'
-            if ('<pegparser' == substr($this->parser->source, $this->parser->pos, 10)) {
-                $this->parser->pos += 10;
-                $result['_text'] .= '<pegparser';
-                $this->parser->successLiteral('<pegparser');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('<pegparser');
-                $valid = false;
-            }
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '1' max '1'
-            $this->parser->addBacktrace(array('Name', $result));
-            $subres = $this->parser->matchRule($result, 'Name');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Name', $subres));
-                $result['_text'] .= $subres['_text'];
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '1' max '1'
-            if ('>' == substr($this->parser->source, $this->parser->pos, 1)) {
-                $this->parser->pos += 1;
-                $result['_text'] .= '>';
-                $this->parser->successLiteral('>');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('>');
-                $valid = false;
-            }
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' tag 'attr' min '0' max 'null'
-            $iteration8 = 0;
-            do {
-                $this->parser->addBacktrace(array('Attribute', $result));
-                $subres = $this->parser->matchRule($result, 'Attribute');
-                $remove = array_pop($this->parser->backtrace);
-                if ($subres) {
-                    $this->parser->successNode(array('Attribute', $subres));
-                    $result['_text'] .= $subres['_text'];
-                    $this->Parser_attr($result, $subres);
-                    $valid = true;
-                } else {
-                    $valid = false;
-                    $this->parser->failNode($remove);
-                }
-                $iteration8 = $valid ? ($iteration8 + 1) : $iteration8;
-                if (!$valid && $iteration8 >= 0) {
-                    $valid = true;
-                    break;
-                }
-                if (!$valid) {
-                    break;
-                }
-            } while (true);
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' tag 'node' min '0' max 'null'
-            $iteration9 = 0;
-            do {
-                $this->parser->addBacktrace(array('Node', $result));
-                $subres = $this->parser->matchRule($result, 'Node');
-                $remove = array_pop($this->parser->backtrace);
-                if ($subres) {
-                    $this->parser->successNode(array('Node', $subres));
-                    $result['_text'] .= $subres['_text'];
-                    $this->Parser_node($result, $subres);
-                    $valid = true;
-                } else {
-                    $valid = false;
-                    $this->parser->failNode($remove);
-                }
-                $iteration9 = $valid ? ($iteration9 + 1) : $iteration9;
-                if (!$valid && $iteration9 >= 0) {
-                    $valid = true;
-                    break;
-                }
-                if (!$valid) {
-                    break;
-                }
-            } while (true);
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '1' max '1'
-            if ('</pegparser>' == substr($this->parser->source, $this->parser->pos, 12)) {
-                $this->parser->pos += 12;
-                $result['_text'] .= '</pegparser>';
-                $this->parser->successLiteral('</pegparser>');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('</pegparser>');
-                $valid = false;
-            }
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Parser' min '0' max '1'
-            $this->parser->addBacktrace(array('End', $result));
-            $subres = $this->parser->matchRule($result, 'End');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('End', $subres));
-                $result['_text'] .= $subres['_text'];
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            $valid = true;
-            // End 'Parser'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'Parser'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function Parser___START(&$result, $previous)
-    {
-        $result['_node'] = new ParserCompiler ($this, null);
-    }
-
-    public function Parser_attr(&$result, $subres)
-    {
-        if (!isset($result['_attr'])) {
-            $result['_attr'] = array();
-        }
-        $result['_attr'] = array_merge($result['_attr'], $subres['_attr']);
-    }
-
-    public function Parser_node(&$result, $subres)
-    {
-        $subres['_nodedef']['rule']['_name'] = $subres['_nodedef']['name'];
-        ksort($subres['_nodedef']['rule']);
-        $result['_node']->nodes[$subres['_nodedef']['name']] = $subres['_nodedef']['rule'];
-        $result['_node']->comments[$subres['_nodedef']['name']] = $subres['comment'];
-        if (isset($subres['_attr'])) {
-            $result['_node']->attributes[$subres['_nodedef']['name']] = $subres['_attr'];
-        }
-        if (isset($subres['_nodedef']['actions'])) {
-            $result['_node']->actions[$subres['_nodedef']['name']] = $subres['_nodedef']['actions'];
-        }
-    }
-
-    /**
-     * Parser rules and action for node 'Attribute'
-     *  Rule:
-     * <node Attribute> <rule>  .._? '<attribute>' attr:attr '</attribute>' .._? </rule>  <action attr> {
-     * $result['_attr'] = $subres['_attr'];
-     * } </action> </node>
-
-     */
-    public function matchNodeAttribute($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Attribute' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'Attribute' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Attribute'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Attribute' min '1' max '1'
-            if ('<attribute>' == substr($this->parser->source, $this->parser->pos, 11)) {
-                $this->parser->pos += 11;
-                $result['_text'] .= '<attribute>';
-                $this->parser->successLiteral('<attribute>');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('<attribute>');
-                $valid = false;
-            }
-            // End 'Attribute'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Attribute' tag 'attr' min '1' max '1'
-            $this->parser->addBacktrace(array('attr', $result));
-            $subres = $this->parser->matchRule($result, 'attr');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('attr', $subres));
-                $result['_text'] .= $subres['_text'];
-                $this->Attribute_attr($result, $subres);
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'Attribute'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Attribute' min '1' max '1'
-            if ('</attribute>' == substr($this->parser->source, $this->parser->pos, 12)) {
-                $this->parser->pos += 12;
-                $result['_text'] .= '</attribute>';
-                $this->parser->successLiteral('</attribute>');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('</attribute>');
-                $valid = false;
-            }
-            // End 'Attribute'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Attribute' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Attribute'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'Attribute'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function Attribute_attr(&$result, $subres)
-    {
-        $result['_attr'] = $subres['_attr'];
-    }
-
-    /**
-     * Parser rules and action for node 'Node'
-     *  Rule:
-     * <node Node> <rule>  .._? /\s*\<(?<type>(node|token))\s+(?<nodename>[a-zA-Z_0-9]+)\>/ attr:Attribute* rule:Rule .act:Action* /<\/(node|token)>/ .._? </rule>  <action type> {
-     * $result['_nodedef']['rule']['_attr'] = array('_nodetype' => $subres['_matchres']['type']);
-     * } </action>  <action nodename> {
-     * $result['nodename'] = $subres['_matchres']['nodename'];
-     * $result['_nodedef']['name'] = $result['nodename'];
-     * unset($subres['_matchres']);
-     * } </action>  <action attr> {
-     * $result['_nodedef']['rule']['_attr'] = array_merge($result['_nodedef']['rule']['_attr'], $subres['_attr']);
-     * } </action>  <action rule> {
-     * $subres['_rule']['_name'] = $result['nodename'];
-     * $result['_nodedef']['rule'] = array_merge($result['_nodedef']['rule'], $subres['_rule']);
-     * } </action>  <action act> {
-     * if (!isset($result['_nodedef']['actions'])) {
-     * $result['_nodedef']['actions'] = array();
-     * }
-     * $index = count($result['_nodedef']['actions']);
-     * $result['_nodedef']['actions'][$index]['funcname'] = $subres['_matchres']['funcname'];
-     * $result['_nodedef']['actions'][$index]['code'] = $subres['code'];
-     * if (isset($subres['_matchres']['argument'])) {
-     * $result['_nodedef']['actions'][$index]['argument'] = $subres['_matchres']['argument'];
-     * }
-     * unset($subres['_matchres']);
-     * } </action>  <action _start> {
-     * $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) -1);
-     * $regexp .= '\s*\<(node|token)\s+[a-zA-Z_]+\>[\s\S]*?\<\/(node|token)\>[\s\S]*?[\n]/';
-     * if (preg_match($regexp, $this->source, $match, 0, $this->pos )) {
-     * $result['comment'] = $match[0];
-     * }
-     * } </action>  <action _finish> {
-     * ksort($result['_nodedef']['rule']);
-     * } </action> </node>
-
-     */
-    public function matchNodeNode($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $this->Node___START($result, $previous);
-        // Start 'Node' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'Node' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Node'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Node' min '1' max '1'
-            $regexp = "/\\s*\\<(?<type>(node|token))\\s+(?<nodename>[a-zA-Z_0-9]+)\\>/";
-            $pos = $this->parser->pos;
-            if (isset($this->parser->regexpCache['Node5'][$pos])) {
-                $subres = $this->parser->regexpCache['Node5'][$pos];
-            } else {
-                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                    if (strlen($match[0][0]) != 0) {
-                        $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                        foreach ($match as $n => $v) {
-                            if (is_string($n) && !empty($v[0])) {
-                                $subres['_matchres'][$n] = $v[0];
-                            }
-                        }
-                        if ($subres['_startpos'] != $pos) {
-                            $this->parser->regexpCache['Node5'][$subres['_startpos']] = $subres;
-                            $this->parser->regexpCache['Node5'][$pos] = false;
-                            $subres = false;
-                        }
-                    } else {
-                        $this->parser->regexpCache['Node5'][$pos] = false;
-                        $subres = false;
-                    }
-                } else {
-                    $this->parser->regexpCache['Node5'][$pos] = false;
-                    $subres = false;
-                }
-            }
-            if ($subres) {
-                $subres['_lineno'] = $this->parser->line;
-                $this->parser->pos = $subres['_endpos'];
-                $this->parser->line += substr_count($subres['_text'], "\n");
-                $subres['_tag'] = false;
-                $subres['_name'] = 'Node';
-                if (isset($subres['_matchres']['type'])) {
-                    $this->Node_type($result, $subres);
-                    unset($subres['_matchres']['type']);
-                }
-                if (isset($subres['_matchres']['nodename'])) {
-                    $this->Node_nodename($result, $subres);
-                    unset($subres['_matchres']['nodename']);
-                }
-                $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            if ($valid) {
-                $result['_text'] .= $subres['_text'];
-            }
-            // End 'Node'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Node' tag 'attr' min '0' max 'null'
-            $iteration5 = 0;
-            do {
-                $this->parser->addBacktrace(array('Attribute', $result));
-                $subres = $this->parser->matchRule($result, 'Attribute');
-                $remove = array_pop($this->parser->backtrace);
-                if ($subres) {
-                    $this->parser->successNode(array('Attribute', $subres));
-                    $result['_text'] .= $subres['_text'];
-                    $this->Node_attr($result, $subres);
-                    $valid = true;
-                } else {
-                    $valid = false;
-                    $this->parser->failNode($remove);
-                }
-                $iteration5 = $valid ? ($iteration5 + 1) : $iteration5;
-                if (!$valid && $iteration5 >= 0) {
-                    $valid = true;
-                    break;
-                }
-                if (!$valid) {
-                    break;
-                }
-            } while (true);
-            // End 'Node'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Node' tag 'rule' min '1' max '1'
-            $this->parser->addBacktrace(array('Rule', $result));
-            $subres = $this->parser->matchRule($result, 'Rule');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Rule', $subres));
-                $result['_text'] .= $subres['_text'];
-                $this->Node_rule($result, $subres);
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'Node'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Node' tag 'act' min '0' max 'null'
-            $iteration7 = 0;
-            do {
-                $this->parser->addBacktrace(array('Action', $result));
-                $subres = $this->parser->matchRule($result, 'Action');
-                $remove = array_pop($this->parser->backtrace);
-                if ($subres) {
-                    $this->parser->successNode(array('Action', $subres));
-                    $this->Node_act($result, $subres);
-                    $valid = true;
-                } else {
-                    $valid = false;
-                    $this->parser->failNode($remove);
-                }
-                $iteration7 = $valid ? ($iteration7 + 1) : $iteration7;
-                if (!$valid && $iteration7 >= 0) {
-                    $valid = true;
-                    break;
-                }
-                if (!$valid) {
-                    break;
-                }
-            } while (true);
-            // End 'Node'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Node' min '1' max '1'
-            $regexp = "/<\\/(node|token)>/";
-            $pos = $this->parser->pos;
-            if (isset($this->parser->regexpCache['Node10'][$pos])) {
-                $subres = $this->parser->regexpCache['Node10'][$pos];
-            } else {
-                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                    $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                    if ($subres['_startpos'] != $pos) {
-                        $this->parser->regexpCache['Node10'][$subres['_startpos']] = $subres;
-                        $this->parser->regexpCache['Node10'][$pos] = false;
-                        $subres = false;
-                    }
-                } else {
-                    $this->parser->regexpCache['Node10'][$pos] = false;
-                    $subres = false;
-                }
-            }
-            if ($subres) {
-                $subres['_lineno'] = $this->parser->line;
-                $this->parser->pos = $subres['_endpos'];
-                $this->parser->line += substr_count($subres['_text'], "\n");
-                $subres['_tag'] = false;
-                $subres['_name'] = 'Node';
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            if ($valid) {
-                $result['_text'] .= $subres['_text'];
-            }
-            // End 'Node'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Node' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Node'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'Node'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-            $this->Node___FINISH($result);
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function Node_type(&$result, $subres)
-    {
-        $result['_nodedef']['rule']['_attr'] = array('_nodetype' => $subres['_matchres']['type']);
-    }
-
-    public function Node_nodename(&$result, $subres)
-    {
-        $result['nodename'] = $subres['_matchres']['nodename'];
-        $result['_nodedef']['name'] = $result['nodename'];
-        unset($subres['_matchres']);
-    }
-
-    public function Node_attr(&$result, $subres)
-    {
-        $result['_nodedef']['rule']['_attr'] = array_merge($result['_nodedef']['rule']['_attr'], $subres['_attr']);
-    }
-
-    public function Node_rule(&$result, $subres)
-    {
-        $subres['_rule']['_name'] = $result['nodename'];
-        $result['_nodedef']['rule'] = array_merge($result['_nodedef']['rule'], $subres['_rule']);
-    }
-
-    public function Node_act(&$result, $subres)
-    {
-        if (!isset($result['_nodedef']['actions'])) {
-            $result['_nodedef']['actions'] = array();
-        }
-        $index = count($result['_nodedef']['actions']);
-        $result['_nodedef']['actions'][$index]['funcname'] = $subres['_matchres']['funcname'];
-        $result['_nodedef']['actions'][$index]['code'] = $subres['code'];
-        if (isset($subres['_matchres']['argument'])) {
-            $result['_nodedef']['actions'][$index]['argument'] = $subres['_matchres']['argument'];
-        }
-        unset($subres['_matchres']);
-    }
-
-    public function Node___START(&$result, $previous)
-    {
-        $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) - 1);
-        $regexp .= '\s*\<(node|token)\s+[a-zA-Z_]+\>[\s\S]*?\<\/(node|token)\>[\s\S]*?[\n]/';
-        if (preg_match($regexp, $this->source, $match, 0, $this->pos)) {
-            $result['comment'] = $match[0];
-        }
-    }
-
-    public function Node___FINISH(&$result)
-    {
-        ksort($result['_nodedef']['rule']);
-    }
-
-    /**
-     * Parser rules and action for node 'Rule'
-     *  Rule:
-     * <node Rule> <rule>  .._? '<rule>' .._? seq:Sequence .._? '</rule>' .._? </rule>  <action seq> {
-     * $result['_rule'] = $subres['_rule'];
-     * } </action> </node>
-
-     */
-    public function matchNodeRule($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Rule' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'Rule' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Rule'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Rule' min '1' max '1'
-            if ('<rule>' == substr($this->parser->source, $this->parser->pos, 6)) {
-                $this->parser->pos += 6;
-                $result['_text'] .= '<rule>';
-                $this->parser->successLiteral('<rule>');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('<rule>');
-                $valid = false;
-            }
-            // End 'Rule'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Rule' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Rule'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Rule' tag 'seq' min '1' max '1'
-            $this->parser->addBacktrace(array('Sequence', $result));
-            $subres = $this->parser->matchRule($result, 'Sequence');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Sequence', $subres));
-                $result['_text'] .= $subres['_text'];
-                $this->Rule_seq($result, $subres);
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'Rule'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Rule' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Rule'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Rule' min '1' max '1'
-            if ('</rule>' == substr($this->parser->source, $this->parser->pos, 7)) {
-                $this->parser->pos += 7;
-                $result['_text'] .= '</rule>';
-                $this->parser->successLiteral('</rule>');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('</rule>');
-                $valid = false;
-            }
-            // End 'Rule'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Rule' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Rule'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'Rule'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function Rule_seq(&$result, $subres)
-    {
-        $result['_rule'] = $subres['_rule'];
-    }
-
-    /**
-     * Parser rules and action for node 'Action'
-     *  Rule:
-     * <node Action> <rule>  .._? /\<action\s+(?<funcname>\w+)(\((?<argument>\w+)\))?\>/ .._? code:/(\{(?:(?>[^{}]+|(?R))*)?\})/ .._? '</action>' .._? </rule>  <action code> {
-     * $result['code'] = $subres['_text'];
-     * } </action> </node>
-
-     */
-    public function matchNodeAction($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Action' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'Action' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Action'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Action' min '1' max '1'
-            $regexp = "/\\<action\\s+(?<funcname>\\w+)(\\((?<argument>\\w+)\\))?\\>/";
-            $pos = $this->parser->pos;
-            if (isset($this->parser->regexpCache['Action5'][$pos])) {
-                $subres = $this->parser->regexpCache['Action5'][$pos];
-            } else {
-                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                    if (strlen($match[0][0]) != 0) {
-                        $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                        foreach ($match as $n => $v) {
-                            if (is_string($n) && !empty($v[0])) {
-                                $subres['_matchres'][$n] = $v[0];
-                            }
-                        }
-                        if ($subres['_startpos'] != $pos) {
-                            $this->parser->regexpCache['Action5'][$subres['_startpos']] = $subres;
-                            $this->parser->regexpCache['Action5'][$pos] = false;
-                            $subres = false;
-                        }
-                    } else {
-                        $this->parser->regexpCache['Action5'][$pos] = false;
-                        $subres = false;
-                    }
-                } else {
-                    $this->parser->regexpCache['Action5'][$pos] = false;
-                    $subres = false;
-                }
-            }
-            if ($subres) {
-                $subres['_lineno'] = $this->parser->line;
-                $this->parser->pos = $subres['_endpos'];
-                $this->parser->line += substr_count($subres['_text'], "\n");
-                $subres['_tag'] = false;
-                $subres['_name'] = 'Action';
-                $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            if ($valid) {
-                $result['_text'] .= $subres['_text'];
-            }
-            // End 'Action'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Action' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Action'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Action' tag 'code' min '1' max '1'
-            $regexp = "/(\\{(?:(?>[^{}]+|(?R))*)?\\})/";
-            $pos = $this->parser->pos;
-            if (isset($this->parser->regexpCache['Action8'][$pos])) {
-                $subres = $this->parser->regexpCache['Action8'][$pos];
-            } else {
-                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                    $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                    if ($subres['_startpos'] != $pos) {
-                        $this->parser->regexpCache['Action8'][$subres['_startpos']] = $subres;
-                        $this->parser->regexpCache['Action8'][$pos] = false;
-                        $subres = false;
-                    }
-                } else {
-                    $this->parser->regexpCache['Action8'][$pos] = false;
-                    $subres = false;
-                }
-            }
-            if ($subres) {
-                $subres['_lineno'] = $this->parser->line;
-                $this->parser->pos = $subres['_endpos'];
-                $this->parser->line += substr_count($subres['_text'], "\n");
-                $subres['_tag'] = 'code';
-                $subres['_name'] = 'Action';
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            if ($valid) {
-                $result['_text'] .= $subres['_text'];
-                $this->Action_code($result, $subres);
-            }
-            // End 'Action'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Action' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Action'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Action' min '1' max '1'
-            if ('</action>' == substr($this->parser->source, $this->parser->pos, 9)) {
-                $this->parser->pos += 9;
-                $result['_text'] .= '</action>';
-                $this->parser->successLiteral('</action>');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('</action>');
-                $valid = false;
-            }
-            // End 'Action'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Action' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-            }
-            $valid = true;
-            // End 'Action'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'Action'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function Action_code(&$result, $subres)
-    {
-        $result['code'] = $subres['_text'];
-    }
-
-    /**
-     * Parser rules and action for node 'PHP'
-     *  Rule:
-     * <node PHP> <rule>  /.[\n\t ]* / .b:/(\{|\}|[^\n\}\{]+)* / </rule>  <action b> {
-     * $result['_text'] = trim($subres['_text']);
-     * } </action> </node>
-
-     */
-    public function matchNodePHP($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'PHP' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'PHP' min '1' max '1'
-            $regexp = "/.[\\n\\t ]* /";
-            $pos = $this->parser->pos;
-            if (isset($this->parser->regexpCache['PHP4'][$pos])) {
-                $subres = $this->parser->regexpCache['PHP4'][$pos];
-            } else {
-                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                    $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                    if ($subres['_startpos'] != $pos) {
-                        $this->parser->regexpCache['PHP4'][$subres['_startpos']] = $subres;
-                        $this->parser->regexpCache['PHP4'][$pos] = false;
-                        $subres = false;
-                    }
-                } else {
-                    $this->parser->regexpCache['PHP4'][$pos] = false;
-                    $subres = false;
-                }
-            }
-            if ($subres) {
-                $subres['_lineno'] = $this->parser->line;
-                $this->parser->pos = $subres['_endpos'];
-                $this->parser->line += substr_count($subres['_text'], "\n");
-                $subres['_tag'] = false;
-                $subres['_name'] = 'PHP';
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            if ($valid) {
-                $result['_text'] .= $subres['_text'];
-            }
-            // End 'PHP'
-            if (!$valid) {
-                break;
-            }
-            // Start 'PHP' tag 'b' min '1' max '1'
-            $regexp = "/(\\{|\\}|[^\\n\\}\\{]+)* /";
-            $pos = $this->parser->pos;
-            if (isset($this->parser->regexpCache['PHP6'][$pos])) {
-                $subres = $this->parser->regexpCache['PHP6'][$pos];
-            } else {
-                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                    $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                    if ($subres['_startpos'] != $pos) {
-                        $this->parser->regexpCache['PHP6'][$subres['_startpos']] = $subres;
-                        $this->parser->regexpCache['PHP6'][$pos] = false;
-                        $subres = false;
-                    }
-                } else {
-                    $this->parser->regexpCache['PHP6'][$pos] = false;
-                    $subres = false;
-                }
-            }
-            if ($subres) {
-                $subres['_lineno'] = $this->parser->line;
-                $this->parser->pos = $subres['_endpos'];
-                $this->parser->line += substr_count($subres['_text'], "\n");
-                $subres['_tag'] = 'b';
-                $subres['_name'] = 'PHP';
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            if ($valid) {
-                $this->PHP_b($result, $subres);
-            }
-            // End 'PHP'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'PHP'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function PHP_b(&$result, $subres)
-    {
-        $result['_text'] = trim($subres['_text']);
-    }
-
-    /**
-     * Parser rules and action for node 'Arguments'
-     *  Rule:
-     * <node Arguments> <rule>  '(' attr:Name (  '=' value:Name | value:Arguments )? (  ',' attr:Name (  '=' value:Name | value:Arguments )? )* ')' </rule> </node>
-
-     */
-    public function matchNodeArguments($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Arguments' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'Arguments' min '1' max '1'
-            if ('(' == substr($this->parser->source, $this->parser->pos, 1)) {
-                $this->parser->pos += 1;
-                $result['_text'] .= '(';
-                $this->parser->successLiteral('(');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral('(');
-                $valid = false;
-            }
-            // End 'Arguments'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Arguments' tag 'attr' min '1' max '1'
-            $this->parser->addBacktrace(array('Name', $result));
-            $subres = $this->parser->matchRule($result, 'Name');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Name', $subres));
-                $result['_text'] .= $subres['_text'];
-                if (!isset($result['attr'])) {
-                    $result['attr'] = $subres;
-                } else {
-                    if (!is_array($result['attr'])) {
-                        $result['attr'] = array($result['attr']);
-                    }
-                    $result['attr'][] = $subres;
-                }
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'Arguments'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Arguments' min '0' max '1'
-            // start sequence
-            $backup5 = $result;
-            $pos5 = $this->parser->pos;
-            $line5 = $this->parser->line;
-            do {
-                // Start 'Arguments' min '1' max '1'
-                if ('=' == substr($this->parser->source, $this->parser->pos, 1)) {
-                    $this->parser->pos += 1;
-                    $result['_text'] .= '=';
-                    $this->parser->successLiteral('=');
-                    $valid = true;
-                } else {
-                    $this->parser->failLiteral('=');
-                    $valid = false;
-                }
-                // End 'Arguments'
-                if (!$valid) {
-                    break;
-                }
-                // Start 'Arguments' min '1' max '1'
-                // start option
-                do {
-                    // Start 'Arguments' tag 'value' min '1' max '1'
-                    $this->parser->addBacktrace(array('Name', $result));
-                    $subres = $this->parser->matchRule($result, 'Name');
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('Name', $subres));
-                        $result['_text'] .= $subres['_text'];
-                        if (!isset($result['value'])) {
-                            $result['value'] = $subres;
-                        } else {
-                            if (!is_array($result['value'])) {
-                                $result['value'] = array($result['value']);
-                            }
-                            $result['value'][] = $subres;
-                        }
-                        $valid = true;
-                    } else {
-                        $valid = false;
-                        $this->parser->failNode($remove);
-                    }
-                    // End 'Arguments'
-                    if ($valid) {
-                        break;
-                    }
-                    // Start 'Arguments' tag 'value' min '1' max '1'
-                    $this->parser->addBacktrace(array('Arguments', $result));
-                    $subres = $this->parser->matchRule($result, 'Arguments');
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('Arguments', $subres));
-                        $result['_text'] .= $subres['_text'];
-                        if (!isset($result['value'])) {
-                            $result['value'] = $subres;
-                        } else {
-                            if (!is_array($result['value'])) {
-                                $result['value'] = array($result['value']);
-                            }
-                            $result['value'][] = $subres;
-                        }
-                        $valid = true;
-                    } else {
-                        $valid = false;
-                        $this->parser->failNode($remove);
-                    }
-                    // End 'Arguments'
-                    if ($valid) {
-                        break;
-                    }
-                    break;
-                } while (true);
-                // end option
-                // End 'Arguments'
-                if (!$valid) {
-                    break;
-                }
-                break;
-            } while (true);
-            if (!$valid) {
-                $this->parser->pos = $pos5;
-                $this->parser->line = $line5;
-                $result = $backup5;
-            }
-            unset($backup5);
-            // end sequence
-            $valid = true;
-            // End 'Arguments'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Arguments' min '0' max 'null'
-            $iteration10 = 0;
-            do {
-                // start sequence
-                $backup11 = $result;
-                $pos11 = $this->parser->pos;
-                $line11 = $this->parser->line;
-                do {
-                    // Start 'Arguments' min '1' max '1'
-                    if (',' == substr($this->parser->source, $this->parser->pos, 1)) {
-                        $this->parser->pos += 1;
-                        $result['_text'] .= ',';
-                        $this->parser->successLiteral(',');
-                        $valid = true;
-                    } else {
-                        $this->parser->failLiteral(',');
-                        $valid = false;
-                    }
-                    // End 'Arguments'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'Arguments' tag 'attr' min '1' max '1'
-                    $this->parser->addBacktrace(array('Name', $result));
-                    $subres = $this->parser->matchRule($result, 'Name');
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('Name', $subres));
-                        $result['_text'] .= $subres['_text'];
-                        if (!isset($result['attr'])) {
-                            $result['attr'] = $subres;
-                        } else {
-                            if (!is_array($result['attr'])) {
-                                $result['attr'] = array($result['attr']);
-                            }
-                            $result['attr'][] = $subres;
-                        }
-                        $valid = true;
-                    } else {
-                        $valid = false;
-                        $this->parser->failNode($remove);
-                    }
-                    // End 'Arguments'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'Arguments' min '0' max '1'
-                    // start sequence
-                    $backup15 = $result;
-                    $pos15 = $this->parser->pos;
-                    $line15 = $this->parser->line;
-                    do {
-                        // Start 'Arguments' min '1' max '1'
-                        if ('=' == substr($this->parser->source, $this->parser->pos, 1)) {
-                            $this->parser->pos += 1;
-                            $result['_text'] .= '=';
-                            $this->parser->successLiteral('=');
-                            $valid = true;
-                        } else {
-                            $this->parser->failLiteral('=');
-                            $valid = false;
-                        }
-                        // End 'Arguments'
-                        if (!$valid) {
-                            break;
-                        }
-                        // Start 'Arguments' min '1' max '1'
-                        // start option
-                        do {
-                            // Start 'Arguments' tag 'value' min '1' max '1'
-                            $this->parser->addBacktrace(array('Name', $result));
-                            $subres = $this->parser->matchRule($result, 'Name');
-                            $remove = array_pop($this->parser->backtrace);
-                            if ($subres) {
-                                $this->parser->successNode(array('Name', $subres));
-                                $result['_text'] .= $subres['_text'];
-                                if (!isset($result['value'])) {
-                                    $result['value'] = $subres;
-                                } else {
-                                    if (!is_array($result['value'])) {
-                                        $result['value'] = array($result['value']);
-                                    }
-                                    $result['value'][] = $subres;
-                                }
-                                $valid = true;
-                            } else {
-                                $valid = false;
-                                $this->parser->failNode($remove);
-                            }
-                            // End 'Arguments'
-                            if ($valid) {
-                                break;
-                            }
-                            // Start 'Arguments' tag 'value' min '1' max '1'
-                            $this->parser->addBacktrace(array('Arguments', $result));
-                            $subres = $this->parser->matchRule($result, 'Arguments');
-                            $remove = array_pop($this->parser->backtrace);
-                            if ($subres) {
-                                $this->parser->successNode(array('Arguments', $subres));
-                                $result['_text'] .= $subres['_text'];
-                                if (!isset($result['value'])) {
-                                    $result['value'] = $subres;
-                                } else {
-                                    if (!is_array($result['value'])) {
-                                        $result['value'] = array($result['value']);
-                                    }
-                                    $result['value'][] = $subres;
-                                }
-                                $valid = true;
-                            } else {
-                                $valid = false;
-                                $this->parser->failNode($remove);
-                            }
-                            // End 'Arguments'
-                            if ($valid) {
-                                break;
-                            }
-                            break;
-                        } while (true);
-                        // end option
-                        // End 'Arguments'
-                        if (!$valid) {
-                            break;
-                        }
-                        break;
-                    } while (true);
-                    if (!$valid) {
-                        $this->parser->pos = $pos15;
-                        $this->parser->line = $line15;
-                        $result = $backup15;
-                    }
-                    unset($backup15);
-                    // end sequence
-                    $valid = true;
-                    // End 'Arguments'
-                    if (!$valid) {
-                        break;
-                    }
-                    break;
-                } while (true);
-                if (!$valid) {
-                    $this->parser->pos = $pos11;
-                    $this->parser->line = $line11;
-                    $result = $backup11;
-                }
-                unset($backup11);
-                // end sequence
-                $iteration10 = $valid ? ($iteration10 + 1) : $iteration10;
-                if (!$valid && $iteration10 >= 0) {
-                    $valid = true;
-                    break;
-                }
-                if (!$valid) {
-                    break;
-                }
-            } while (true);
-            // End 'Arguments'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Arguments' min '1' max '1'
-            if (')' == substr($this->parser->source, $this->parser->pos, 1)) {
-                $this->parser->pos += 1;
-                $result['_text'] .= ')';
-                $this->parser->successLiteral(')');
-                $valid = true;
-            } else {
-                $this->parser->failLiteral(')');
-                $valid = false;
-            }
-            // End 'Arguments'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'Arguments'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    /**
-     * Parser rules and action for node 'Option'
-     *  Rule:
-     * <node Option> <rule>  _? result:RuleToken (  _? '|' _? option:RuleToken )* </rule>  <action result> {
-     * $result['_rule'] = $subres['_rule'];
-     * } </action>  <action option> {
-     * ksort($subres['_rule']);
-     * if(isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'option') {
-     * ksort($result['_rule']);
-     * $r = $result['_rule'];
-     * $result['_rule'] = array('_type' => 'option', '_param' => array($r, $subres['_rule']));
-     * } else {
-     * $result['_rule']['_param'][] = $subres['_rule'];
-     * }
-     * } </action> </node>
-
-     */
-    public function matchNodeOption($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Option' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'Option' min '1' max '1'
-            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                $this->parser->pos += strlen($match[0]);
-                $this->parser->line += substr_count($match[0], "\n");
-                $result['_text'] .= ' ';
-            }
-            $valid = true;
-            // End 'Option'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Option' tag 'result' min '1' max '1'
-            $this->parser->addBacktrace(array('RuleToken', $result));
-            $subres = $this->parser->matchRule($result, 'RuleToken');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('RuleToken', $subres));
-                $result['_text'] .= $subres['_text'];
-                $this->Option_result($result, $subres);
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'Option'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Option' min '0' max 'null'
-            $iteration4 = 0;
-            do {
-                // start sequence
-                $backup5 = $result;
-                $pos5 = $this->parser->pos;
-                $line5 = $this->parser->line;
-                do {
-                    // Start 'Option' min '1' max '1'
-                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                        $this->parser->pos += strlen($match[0]);
-                        $this->parser->line += substr_count($match[0], "\n");
-                        $result['_text'] .= ' ';
-                    }
-                    $valid = true;
-                    // End 'Option'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'Option' min '1' max '1'
-                    if ('|' == substr($this->parser->source, $this->parser->pos, 1)) {
-                        $this->parser->pos += 1;
-                        $result['_text'] .= '|';
-                        $this->parser->successLiteral('|');
-                        $valid = true;
-                    } else {
-                        $this->parser->failLiteral('|');
-                        $valid = false;
-                    }
-                    // End 'Option'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'Option' min '1' max '1'
-                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                        $this->parser->pos += strlen($match[0]);
-                        $this->parser->line += substr_count($match[0], "\n");
-                        $result['_text'] .= ' ';
-                    }
-                    $valid = true;
-                    // End 'Option'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'Option' tag 'option' min '1' max '1'
-                    $this->parser->addBacktrace(array('RuleToken', $result));
-                    $subres = $this->parser->matchRule($result, 'RuleToken');
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('RuleToken', $subres));
-                        $result['_text'] .= $subres['_text'];
-                        $this->Option_option($result, $subres);
-                        $valid = true;
-                    } else {
-                        $valid = false;
-                        $this->parser->failNode($remove);
-                    }
-                    // End 'Option'
-                    if (!$valid) {
-                        break;
-                    }
-                    break;
-                } while (true);
-                if (!$valid) {
-                    $this->parser->pos = $pos5;
-                    $this->parser->line = $line5;
-                    $result = $backup5;
-                }
-                unset($backup5);
-                // end sequence
-                $iteration4 = $valid ? ($iteration4 + 1) : $iteration4;
-                if (!$valid && $iteration4 >= 0) {
-                    $valid = true;
-                    break;
-                }
-                if (!$valid) {
-                    break;
-                }
-            } while (true);
-            // End 'Option'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'Option'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function Option_result(&$result, $subres)
-    {
-        $result['_rule'] = $subres['_rule'];
-    }
-
-    public function Option_option(&$result, $subres)
-    {
-        ksort($subres['_rule']);
-        if (isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'option') {
-            ksort($result['_rule']);
-            $r = $result['_rule'];
-            $result['_rule'] = array('_type' => 'option', '_param' => array($r, $subres['_rule']));
-        } else {
-            $result['_rule']['_param'][] = $subres['_rule'];
-        }
-    }
-
-    /**
-     * Parser rules and action for node 'Sequence'
-     *  Rule:
-     * <node Sequence> <rule>  result:Option sequence:Option* </rule>  <action result> {
-     * $result['_rule'] = $subres['_rule'];
-     * } </action>  <action sequence> {
-     * ksort($subres['_rule']);
-     * if(isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'sequence') {
-     * ksort($result['_rule']);
-     * $r = $result['_rule'];
-     * $result['_rule'] = array('_type' => 'sequence', '_param' => array($r, $subres['_rule']));
-     * } else {
-     * $result['_rule']['_param'][] = $subres['_rule'];
-     * }
-     * } </action> </node>
-
-     */
-    public function matchNodeSequence($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        // Start 'Sequence' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'Sequence' tag 'result' min '1' max '1'
-            $this->parser->addBacktrace(array('Option', $result));
-            $subres = $this->parser->matchRule($result, 'Option');
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Option', $subres));
-                $result['_text'] .= $subres['_text'];
-                $this->Sequence_result($result, $subres);
-                $valid = true;
-            } else {
-                $valid = false;
-                $this->parser->failNode($remove);
-            }
-            // End 'Sequence'
-            if (!$valid) {
-                break;
-            }
-            // Start 'Sequence' tag 'sequence' min '0' max 'null'
-            $iteration3 = 0;
-            do {
-                $this->parser->addBacktrace(array('Option', $result));
-                $subres = $this->parser->matchRule($result, 'Option');
-                $remove = array_pop($this->parser->backtrace);
-                if ($subres) {
-                    $this->parser->successNode(array('Option', $subres));
-                    $result['_text'] .= $subres['_text'];
-                    $this->Sequence_sequence($result, $subres);
-                    $valid = true;
-                } else {
-                    $valid = false;
-                    $this->parser->failNode($remove);
-                }
-                $iteration3 = $valid ? ($iteration3 + 1) : $iteration3;
-                if (!$valid && $iteration3 >= 0) {
-                    $valid = true;
-                    break;
-                }
-                if (!$valid) {
-                    break;
-                }
-            } while (true);
-            // End 'Sequence'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'Sequence'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function Sequence_result(&$result, $subres)
-    {
-        $result['_rule'] = $subres['_rule'];
-    }
-
-    public function Sequence_sequence(&$result, $subres)
-    {
-        ksort($subres['_rule']);
-        if (isset($result['_rule']['_type']) && $result['_rule']['_type'] != 'sequence') {
-            ksort($result['_rule']);
-            $r = $result['_rule'];
-            $result['_rule'] = array('_type' => 'sequence', '_param' => array($r, $subres['_rule']));
-        } else {
-            $result['_rule']['_param'][] = $subres['_rule'];
-        }
-    }
-
-    /**
-     * Parser rules and action for node 'RuleToken'
-     *  Rule:
-     * <node RuleToken> <rule>  /((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/? (  /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<osp>_\?)|(?<wsp>_))|(?<node>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | (  '(' .._? seq:Sequence .._? ')' ) ) /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/? </rule>  <action _start> {
-     * $result['_rule'] = array();
-     * } </action>  <action seq> {
-     * $result['_rule'] = array_merge ($result['_rule'], $subres['_rule']);
-     * } </action>  <action _finish> {
-     * $result['_rule']['_tagcomment'] = $result['_text'];
-     * $mr = $result['_matchres'];
-     * if (isset($mr['osp']) && !empty($mr['osp'])) {
-     * $result['_rule']['_type'] = 'whitespace';
-     * $result['_rule']['_param'] = true;
-     * }
-     * if (isset($mr['wsp']) && !empty($mr['wsp'])) {
-     * $result['_rule']['_type'] = 'whitespace';
-     * $result['_rule']['_param'] = false;
-     * }
-     * if (isset($mr['node']) && !empty($mr['node'])) {
-     * $result['_rule']['_type'] = 'recurse';
-     * $result['_rule']['_param'] = $mr['node'];
-     * }
-     * if (isset($mr['expression']) && !empty($mr['expression'])) {
-     * $result['_rule']['_type'] = 'expression';
-     * $result['_rule']['_param'] = $mr['expression'];
-     * }
-     * if (isset($mr['literal']) && !empty($mr['literal'])) {
-     * $result['_rule']['_type'] = 'literal';
-     * $result['_rule']['_param'] = trim($mr['literal'],"'\"");
-     * }
-     * if (isset($mr['rx']) && !empty($mr['rx'])) {
-     * $result['_rule']['_type'] = 'rx';
-     * $result['_rule']['_param'] = $mr['rx'];
-     * }
-     * if (isset($mr['silent']) && !empty($mr['silent'])) {
-     * $result['_rule']['_silent'] = strlen($mr['silent']);
-     * }
-     * if (isset($mr['pla']) && !empty($mr['pla'])) {
-     * $result['_rule']['_pla'] = true;
-     * }
-     * if (isset($mr['nla']) && !empty($mr['nla'])) {
-     * $result['_rule']['_nla'] = true;
-     * }
-     * if (isset($mr['tag']) && !empty($mr['tag'])) {
-     * $result['_rule']['_tag'] =$mr['tag'];
-     * }
-     * if (isset($mr['quest']) && !empty($mr['quest'])) {
-     * $result['_rule']['_min'] = 0;
-     * } elseif (isset($mr['any']) && !empty($mr['any'])) {
-     * $result['_rule']['_min'] = 0;
-     * $result['_rule']['_max'] = null;
-     * } elseif (isset($mr['must']) && !empty($mr['must'])) {
-     * $result['_rule']['_max'] = null;
-     * } else {
-     * if (isset($mr['min']) && !empty($mr['min'])) {
-     * $result['_rule']['_min'] = $mr['min'];
-     * $result['_rule']['_max'] = null;
-     * }
-     * if (isset($mr['max']) && !empty($mr['max'])) {
-     * $result['_rule']['_max'] = $mr['max'];
-     * }
-     * }
-     * $result['_matchres'] = array();
-     * } </action> </node>
-
-     */
-    public function matchNodeRuleToken($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $this->RuleToken___START($result, $previous);
-        // Start 'RuleToken' min '1' max '1'
-        // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        do {
-            // Start 'RuleToken' min '0' max '1'
-            $regexp = "/((?<silent>\\.+)|(?<pla>&)|(?<nla>\\!))?((?<tag>\\w+):)?/";
-            $pos = $this->parser->pos;
-            if (isset($this->parser->regexpCache['RuleToken4'][$pos])) {
-                $subres = $this->parser->regexpCache['RuleToken4'][$pos];
-            } else {
-                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                    if (strlen($match[0][0]) != 0) {
-                        $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                        foreach ($match as $n => $v) {
-                            if (is_string($n) && !empty($v[0])) {
-                                $subres['_matchres'][$n] = $v[0];
-                            }
-                        }
-                        if ($subres['_startpos'] != $pos) {
-                            $this->parser->regexpCache['RuleToken4'][$subres['_startpos']] = $subres;
-                            $this->parser->regexpCache['RuleToken4'][$pos] = false;
-                            $subres = false;
-                        }
-                    } else {
-                        $this->parser->regexpCache['RuleToken4'][$pos] = false;
-                        $subres = false;
-                    }
-                } else {
-                    $this->parser->regexpCache['RuleToken4'][$pos] = false;
-                    $subres = false;
-                }
-            }
-            if ($subres) {
-                $subres['_lineno'] = $this->parser->line;
-                $this->parser->pos = $subres['_endpos'];
-                $this->parser->line += substr_count($subres['_text'], "\n");
-                $subres['_tag'] = false;
-                $subres['_name'] = 'RuleToken';
-                $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            if ($valid) {
-                $result['_text'] .= $subres['_text'];
-            }
-            $valid = true;
-            // End 'RuleToken'
-            if (!$valid) {
-                break;
-            }
-            // Start 'RuleToken' min '1' max '1'
-            // start option
-            do {
-                // Start 'RuleToken' min '1' max '1'
-                $regexp = "/(?<rx>\\G(\\/|~|@|%|§)(((\\\\\\\\)*\\\\\\2)|.*?(?=(\\\\|\\2)))*\\2)|((?<osp>_\\?)|(?<wsp>_))|(?<node>\\w+)|(?<literal>(\"[^\"]*\")|('[^']*'))|(\\$(?<expression>\\w+))/";
-                $pos = $this->parser->pos;
-                if (isset($this->parser->regexpCache['RuleToken7'][$pos])) {
-                    $subres = $this->parser->regexpCache['RuleToken7'][$pos];
-                } else {
-                    if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                        if (strlen($match[0][0]) != 0) {
-                            $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                            foreach ($match as $n => $v) {
-                                if (is_string($n) && !empty($v[0])) {
-                                    $subres['_matchres'][$n] = $v[0];
-                                }
-                            }
-                            if ($subres['_startpos'] != $pos) {
-                                $this->parser->regexpCache['RuleToken7'][$subres['_startpos']] = $subres;
-                                $this->parser->regexpCache['RuleToken7'][$pos] = false;
-                                $subres = false;
-                            }
-                        } else {
-                            $this->parser->regexpCache['RuleToken7'][$pos] = false;
-                            $subres = false;
-                        }
-                    } else {
-                        $this->parser->regexpCache['RuleToken7'][$pos] = false;
-                        $subres = false;
-                    }
-                }
-                if ($subres) {
-                    $subres['_lineno'] = $this->parser->line;
-                    $this->parser->pos = $subres['_endpos'];
-                    $this->parser->line += substr_count($subres['_text'], "\n");
-                    $subres['_tag'] = false;
-                    $subres['_name'] = 'RuleToken';
-                    $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
-                    $valid = true;
-                } else {
-                    $valid = false;
-                }
-                if ($valid) {
-                    $result['_text'] .= $subres['_text'];
-                }
-                // End 'RuleToken'
-                if ($valid) {
-                    break;
-                }
-                // Start 'RuleToken' min '1' max '1'
-                // start sequence
-                $backup8 = $result;
-                $pos8 = $this->parser->pos;
-                $line8 = $this->parser->line;
-                do {
-                    // Start 'RuleToken' min '1' max '1'
-                    if ('(' == substr($this->parser->source, $this->parser->pos, 1)) {
-                        $this->parser->pos += 1;
-                        $result['_text'] .= '(';
-                        $this->parser->successLiteral('(');
-                        $valid = true;
-                    } else {
-                        $this->parser->failLiteral('(');
-                        $valid = false;
-                    }
-                    // End 'RuleToken'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'RuleToken' min '1' max '1'
-                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                        $this->parser->pos += strlen($match[0]);
-                        $this->parser->line += substr_count($match[0], "\n");
-                    }
-                    $valid = true;
-                    // End 'RuleToken'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'RuleToken' tag 'seq' min '1' max '1'
-                    $this->parser->addBacktrace(array('Sequence', $result));
-                    $subres = $this->parser->matchRule($result, 'Sequence');
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('Sequence', $subres));
-                        $result['_text'] .= $subres['_text'];
-                        $this->RuleToken_seq($result, $subres);
-                        $valid = true;
-                    } else {
-                        $valid = false;
-                        $this->parser->failNode($remove);
-                    }
-                    // End 'RuleToken'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'RuleToken' min '1' max '1'
-                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $match, 0, $this->parser->pos)) {
-                        $this->parser->pos += strlen($match[0]);
-                        $this->parser->line += substr_count($match[0], "\n");
-                    }
-                    $valid = true;
-                    // End 'RuleToken'
-                    if (!$valid) {
-                        break;
-                    }
-                    // Start 'RuleToken' min '1' max '1'
-                    if (')' == substr($this->parser->source, $this->parser->pos, 1)) {
-                        $this->parser->pos += 1;
-                        $result['_text'] .= ')';
-                        $this->parser->successLiteral(')');
-                        $valid = true;
-                    } else {
-                        $this->parser->failLiteral(')');
-                        $valid = false;
-                    }
-                    // End 'RuleToken'
-                    if (!$valid) {
-                        break;
-                    }
-                    break;
-                } while (true);
-                if (!$valid) {
-                    $this->parser->pos = $pos8;
-                    $this->parser->line = $line8;
-                    $result = $backup8;
-                }
-                unset($backup8);
-                // end sequence
-                // End 'RuleToken'
-                if ($valid) {
-                    break;
-                }
-                break;
-            } while (true);
-            // end option
-            // End 'RuleToken'
-            if (!$valid) {
-                break;
-            }
-            // Start 'RuleToken' min '0' max '1'
-            $regexp = "/((?<quest>\\?)|(?<any>\\*)|(?<must>\\+?)|(\\{(?<min>\\d+)?,(?<max>\\d+)?\\}))?/";
-            $pos = $this->parser->pos;
-            if (isset($this->parser->regexpCache['RuleToken16'][$pos])) {
-                $subres = $this->parser->regexpCache['RuleToken16'][$pos];
-            } else {
-                if (preg_match($regexp . 'Sxs', $this->parser->source, $match, PREG_OFFSET_CAPTURE, $pos)) {
-                    if (strlen($match[0][0]) != 0) {
-                        $subres = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]), '_matchres' => array());
-                        foreach ($match as $n => $v) {
-                            if (is_string($n) && !empty($v[0])) {
-                                $subres['_matchres'][$n] = $v[0];
-                            }
-                        }
-                        if ($subres['_startpos'] != $pos) {
-                            $this->parser->regexpCache['RuleToken16'][$subres['_startpos']] = $subres;
-                            $this->parser->regexpCache['RuleToken16'][$pos] = false;
-                            $subres = false;
-                        }
-                    } else {
-                        $this->parser->regexpCache['RuleToken16'][$pos] = false;
-                        $subres = false;
-                    }
-                } else {
-                    $this->parser->regexpCache['RuleToken16'][$pos] = false;
-                    $subres = false;
-                }
-            }
-            if ($subres) {
-                $subres['_lineno'] = $this->parser->line;
-                $this->parser->pos = $subres['_endpos'];
-                $this->parser->line += substr_count($subres['_text'], "\n");
-                $subres['_tag'] = false;
-                $subres['_name'] = 'RuleToken';
-                $result['_matchres'] = array_merge($result['_matchres'], $subres['_matchres']);
-                $valid = true;
-            } else {
-                $valid = false;
-            }
-            if ($valid) {
-                $result['_text'] .= $subres['_text'];
-            }
-            $valid = true;
-            // End 'RuleToken'
-            if (!$valid) {
-                break;
-            }
-            break;
-        } while (true);
-        if (!$valid) {
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        }
-        unset($backup1);
-        // end sequence
-        // End 'RuleToken'
-        if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
-            $this->RuleToken___FINISH($result);
-        }
-        if (!$valid) {
-            $result = false;
-        }
-        return $result;
-    }
-
-    public function RuleToken___START(&$result, $previous)
-    {
-        $result['_rule'] = array();
-    }
-
-    public function RuleToken_seq(&$result, $subres)
-    {
-        $result['_rule'] = array_merge($result['_rule'], $subres['_rule']);
-    }
-
-    public function RuleToken___FINISH(&$result)
-    {
-        $result['_rule']['_tagcomment'] = $result['_text'];
-        $mr = $result['_matchres'];
-        if (isset($mr['osp']) && !empty($mr['osp'])) {
-            $result['_rule']['_type'] = 'whitespace';
-            $result['_rule']['_param'] = true;
-        }
-        if (isset($mr['wsp']) && !empty($mr['wsp'])) {
-            $result['_rule']['_type'] = 'whitespace';
-            $result['_rule']['_param'] = false;
-        }
-        if (isset($mr['node']) && !empty($mr['node'])) {
-            $result['_rule']['_type'] = 'recurse';
-            $result['_rule']['_param'] = $mr['node'];
-        }
-        if (isset($mr['expression']) && !empty($mr['expression'])) {
-            $result['_rule']['_type'] = 'expression';
-            $result['_rule']['_param'] = $mr['expression'];
-        }
-        if (isset($mr['literal']) && !empty($mr['literal'])) {
-            $result['_rule']['_type'] = 'literal';
-            $result['_rule']['_param'] = trim($mr['literal'], "'\"");
-        }
-        if (isset($mr['rx']) && !empty($mr['rx'])) {
-            $result['_rule']['_type'] = 'rx';
-            $result['_rule']['_param'] = $mr['rx'];
-        }
-        if (isset($mr['silent']) && !empty($mr['silent'])) {
-            $result['_rule']['_silent'] = strlen($mr['silent']);
-        }
-        if (isset($mr['pla']) && !empty($mr['pla'])) {
-            $result['_rule']['_pla'] = true;
-        }
-        if (isset($mr['nla']) && !empty($mr['nla'])) {
-            $result['_rule']['_nla'] = true;
-        }
-        if (isset($mr['tag']) && !empty($mr['tag'])) {
-            $result['_rule']['_tag'] = $mr['tag'];
-        }
-        if (isset($mr['quest']) && !empty($mr['quest'])) {
-            $result['_rule']['_min'] = 0;
-        } elseif (isset($mr['any']) && !empty($mr['any'])) {
-            $result['_rule']['_min'] = 0;
-            $result['_rule']['_max'] = null;
-        } elseif (isset($mr['must']) && !empty($mr['must'])) {
-            $result['_rule']['_max'] = null;
-        } else {
-            if (isset($mr['min']) && !empty($mr['min'])) {
-                $result['_rule']['_min'] = $mr['min'];
-                $result['_rule']['_max'] = null;
-            }
-            if (isset($mr['max']) && !empty($mr['max'])) {
-                $result['_rule']['_max'] = $mr['max'];
-            }
-        }
-        $result['_matchres'] = array();
-    }
-
-    /**
-     * Parser rules and action for node 'File'
-     *  Rule:
-     * <node File> <rule>  (  .Text .Parser* )* </rule>  <action _start> {
-     * $result['_nodes']= array();
-     * } </action>  <action _all> {
-     * if (isset($subres['_node'])) {
-     * $result['_nodes'][] = $subres['_node'];
-     * }
-     * } </action> </node>
-
-     */
-    public function matchNodeFile($previous)
-    {
-        $result = $this->parser->resultDefault;
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $this->File___START($result, $previous);
-        // Start 'File' min '0' max 'null'
+     * 
+     * 
+     *             <node Root>
+     *                 <rule>(.text:Text .parser:Parser*)*</rule>
+     *                 <action _start>
+     *                     {
+     *                         $nodeRes['_node']= new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Root;
+     *                     }
+     *                 </action>
+     *                 <action text>
+     *                     {
+     *                         if (isset($matchRes['_node'])) {
+     *                             $nodeRes['_node']->addNode($matchRes['_node']);
+     *                         }
+     *                     }
+     *                 </action>
+     *                 <action parser>
+     *                     {
+     *                         if ($this->asArray) {
+     * 
+     *                         } else {
+     *                             if (isset($matchRes['_node'])) {
+     *                                 $nodeRes['_node']->addNode($matchRes['_node']);
+     *                             }
+     *                         }
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeRoot($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        if ($trace) {
+            
+        }
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->Root_START($nodeRes, $previous);
+        /*
+         * Start rule: (.text:Text .parser:Parser*)*
+         *       min: 0 max: null
+         */
         $iteration0 = 0;
         do {
             // start sequence
-            $backup1 = $result;
+            $backup1 = $nodeRes;
             $pos1 = $this->parser->pos;
             $line1 = $this->parser->line;
+            $error1 = $error;
+            if ($trace) {
+                $this->parser->addBacktrace(array('_s1_', ''));
+            }
             do {
-                // Start 'File' min '1' max '1'
-                $this->parser->addBacktrace(array('Text', $result));
-                $subres = $this->parser->matchRule($result, 'Text');
-                $remove = array_pop($this->parser->backtrace);
-                if ($subres) {
-                    $this->parser->successNode(array('Text', $subres));
-                    $this->File___ALL($result, $subres);
+                $error = array();
+                /*
+                 * Start rule: .text:Text
+                 *       tag: 'text'
+                 *       min: 1 max: 1
+                 */
+                if ($trace) {
+                    $this->parser->addBacktrace(array('Text', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'Text', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('Text',  $matchRes['_text']));
+                    }
+                    $this->Root_MATCH_text($nodeRes, $matchRes);
                     $valid = true;
                 } else {
                     $valid = false;
-                    $this->parser->failNode($remove);
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
                 }
-                // End 'File'
+                /*
+                 * End rule: .text:Text
+                 */
                 if (!$valid) {
+                    $this->parser->matchError($error1, 'SequenceElement', $error);
+                    $error = $error1;
                     break;
                 }
-                // Start 'File' min '0' max 'null'
+                $error = array();
+                /*
+                 * Start rule: .parser:Parser*
+                 *       tag: 'parser'
+                 *       min: 0 max: null
+                 */
                 $iteration3 = 0;
                 do {
-                    $this->parser->addBacktrace(array('Parser', $result));
-                    $subres = $this->parser->matchRule($result, 'Parser');
-                    $remove = array_pop($this->parser->backtrace);
-                    if ($subres) {
-                        $this->parser->successNode(array('Parser', $subres));
-                        $this->File___ALL($result, $subres);
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('Parser', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'Parser', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('Parser',  $matchRes['_text']));
+                        }
+                        $this->Root_MATCH_parser($nodeRes, $matchRes);
                         $valid = true;
                     } else {
                         $valid = false;
-                        $this->parser->failNode($remove);
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
                     }
                     $iteration3 = $valid ? ($iteration3 + 1) : $iteration3;
                     if (!$valid && $iteration3 >= 0) {
                         $valid = true;
                         break;
                     }
-                    if (!$valid) {
-                        break;
-                    }
+                    if (!$valid) break;
                 } while (true);
-                // End 'File'
+                /*
+                 * End rule: .parser:Parser*
+                 */
                 if (!$valid) {
+                    $this->parser->matchError($error1, 'SequenceElement', $error);
+                    $error = $error1;
                     break;
                 }
                 break;
             } while (true);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
             if (!$valid) {
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
                 $this->parser->pos = $pos1;
                 $this->parser->line = $line1;
-                $result = $backup1;
+                $nodeRes = $backup1;
+            } elseif ($trace) {
+                $this->parser->successNode($remove);
             }
+            $error = $error1;
             unset($backup1);
             // end sequence
             $iteration0 = $valid ? ($iteration0 + 1) : $iteration0;
@@ -3071,32 +259,4186 @@ class Generator extends Parser
                 $valid = true;
                 break;
             }
-            if (!$valid) {
-                break;
-            }
+            if (!$valid) break;
         } while (true);
-        // End 'File'
+        /*
+         * End rule: (.text:Text .parser:Parser*)*
+         */
         if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
         }
         if (!$valid) {
-            $result = false;
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Root');
         }
-        return $result;
+        return $nodeRes;
     }
 
-    public function File___START(&$result, $previous)
+
+    public function Root_START (&$nodeRes, $previous)
     {
-        $result['_nodes'] = array();
+        $nodeRes['_node']= new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Root;
     }
 
-    public function File___ALL(&$result, $subres)
+
+
+    public function Root_MATCH_text (&$nodeRes, $matchRes)
     {
-        if (isset($subres['_node'])) {
-            $result['_nodes'][] = $subres['_node'];
+        if (isset($matchRes['_node']))        {
+            $nodeRes['_node']->addNode($matchRes['_node']);
         }
     }
+
+
+
+    public function Root_MATCH_parser (&$nodeRes, $matchRes)
+    {
+        if ($this->asArray)        {
+        }
+        else        {
+            if (isset($matchRes['_node']))            {
+                $nodeRes['_node']->addNode($matchRes['_node']);
+            }
+        }
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Text'
+     *
+     *  Rule:
+     * <node Text>
+     *                 <rule>/([\S\s]+(?=([^\S\r\n]\/\*!\*)))|[\S\s]+/</rule>
+     *                 <action _start>
+     *                     {
+     *                         $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Text ($this, null);
+     *                     }
+     *                 </action>
+     *                 <action _all>
+     *                     {
+     *                         $nodeRes['_node']->addText($matchRes['_text']);
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeText($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->Text_START($nodeRes, $previous);
+        /*
+         * Start rule: /([\S\s]+(?=([^\S\r\n]\/\*!\*)))|[\S\s]+/
+         *       min: 1 max: 1
+         */
+        $regexp = "/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Rx_Text1'][$pos])) {
+            $matchRes = $this->parser->regexpCache['Rx_Text1'][$pos];
+        } else {
+            if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                if ($matchRes['_startpos'] != $pos) {
+                    $this->parser->regexpCache['Rx_Text1'][$matchRes['_startpos']] = $matchRes;
+                    $this->parser->regexpCache['Rx_Text1'][$pos] = false;
+                    $matchRes = false;
+                }
+            } else {
+                $this->parser->regexpCache['Rx_Text1'][$pos] = false;
+                $matchRes = false;
+            }
+        }
+        if ($matchRes) {
+            $matchRes['_lineno'] = $this->parser->line;
+            $this->parser->pos = $matchRes['_endpos'];
+            $this->parser->line += substr_count($matchRes['_text'], "\n");
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $this->Text_ALL($nodeRes, $matchRes);
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if (!$valid) {
+            $this->parser->matchError($error, 'rx', "/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/");
+        }
+        /*
+         * End rule: /([\S\s]+(?=([^\S\r\n]\/\*!\*)))|[\S\s]+/
+         */
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Text');
+        }
+        return $nodeRes;
+    }
+
+
+    public function Text_START (&$nodeRes, $previous)
+    {
+        $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Text ($this, null);
+    }
+
+
+
+    public function Text_ALL (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->addText($matchRes['_text']);
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Parser'
+     *
+     *  Rule:
+     * <node Parser>
+     *                 <rule>..Header .._? '<pegparser' _ name:Name '>' attr:Attribute* node:Node* .._? '</pegparser>' .._? End?</rule>
+     *                 <action _start>
+     *                     {
+     *                             $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\PegParser;
+     *                         }
+     *                 </action>
+     *                 <action name>
+     *                     {
+     *                             $nodeRes['_node']->setName($matchRes['_text']);
+     *                         }
+     *                 </action>
+     *                 <action attr>
+     *                     {
+     *                             $nodeRes['_node']->addAttribute($matchRes['_node']);
+     *                         }
+     *                 </action>
+     *                 <action node>
+     *                     {
+     *                             $nodeRes['_node']->addNode($matchRes['_node']);
+     *                         }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeParser($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->Parser_START($nodeRes, $previous);
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: ..Header
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $this->parser->addBacktrace(array('Header', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Header', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('Header',  $matchRes['_text']));
+                }
+                if(!isset($nodeRes['Header'])) {
+                    $nodeRes['Header'] = $matchRes;
+                } else {
+                    if (!is_array($nodeRes['Header'])) {
+                        $nodeRes['Header'] = array($nodeRes['Header']);
+                    }
+                    $nodeRes['Header'][] = $matchRes;
+                }
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            /*
+             * End rule: ..Header
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: '<pegparser'
+             *       min: 1 max: 1
+             */
+            if ('<pegparser' == substr($this->parser->source, $this->parser->pos, 10)) {
+                $this->parser->pos += 10;
+                $nodeRes['_text'] .= '<pegparser';
+                if ($trace) {
+                    $this->parser->successNode(array('\'<pegparser\'', '<pegparser'));
+                }
+                $valid = true;
+            } else {
+                $this->parser->matchError($error, 'literal', '<pegparser');
+                if ($trace) {
+                    $this->parser->failNode(array('\'<pegparser\'',  ''));
+                }
+                $valid = false;
+            }
+            /*
+             * End rule: '<pegparser'
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: _
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                    $nodeRes['_text'] .= ' ';
+                    $valid = true;
+                } else {
+                    $valid = false;
+                }
+            } else {
+                $valid = false;
+            }
+            if ($valid) {
+                if ($trace) {
+                    $this->parser->successNode(array("' '",  ' '));
+                }
+            } else {
+                if ($trace) {
+                    $this->parser->failNode(array("' '",  ''));
+                }
+            }
+            /*
+             * End rule: _
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: name:Name
+             *       tag: 'name'
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $this->parser->addBacktrace(array('Name', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Name', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('Name',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->Parser_MATCH_name($nodeRes, $matchRes);
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            /*
+             * End rule: name:Name
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: '>'
+             *       min: 1 max: 1
+             */
+            if ('>' == substr($this->parser->source, $this->parser->pos, 1)) {
+                $this->parser->pos += 1;
+                $nodeRes['_text'] .= '>';
+                if ($trace) {
+                    $this->parser->successNode(array('\'>\'', '>'));
+                }
+                $valid = true;
+            } else {
+                $this->parser->matchError($error, 'literal', '>');
+                if ($trace) {
+                    $this->parser->failNode(array('\'>\'',  ''));
+                }
+                $valid = false;
+            }
+            /*
+             * End rule: '>'
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: attr:Attribute*
+             *       tag: 'attr'
+             *       min: 0 max: null
+             */
+            $iteration7 = 0;
+            do {
+                if ($trace) {
+                    $this->parser->addBacktrace(array('Attribute', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'Attribute', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('Attribute',  $matchRes['_text']));
+                    }
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    $this->Parser_MATCH_attr($nodeRes, $matchRes);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                $iteration7 = $valid ? ($iteration7 + 1) : $iteration7;
+                if (!$valid && $iteration7 >= 0) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) break;
+            } while (true);
+            /*
+             * End rule: attr:Attribute*
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: node:Node*
+             *       tag: 'node'
+             *       min: 0 max: null
+             */
+            $iteration8 = 0;
+            do {
+                if ($trace) {
+                    $this->parser->addBacktrace(array('Node', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'Node', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('Node',  $matchRes['_text']));
+                    }
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    $this->Parser_MATCH_node($nodeRes, $matchRes);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                $iteration8 = $valid ? ($iteration8 + 1) : $iteration8;
+                if (!$valid && $iteration8 >= 0) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) break;
+            } while (true);
+            /*
+             * End rule: node:Node*
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: '</pegparser>'
+             *       min: 1 max: 1
+             */
+            if ('</pegparser>' == substr($this->parser->source, $this->parser->pos, 12)) {
+                $this->parser->pos += 12;
+                $nodeRes['_text'] .= '</pegparser>';
+                if ($trace) {
+                    $this->parser->successNode(array('\'</pegparser>\'', '</pegparser>'));
+                }
+                $valid = true;
+            } else {
+                $this->parser->matchError($error, 'literal', '</pegparser>');
+                if ($trace) {
+                    $this->parser->failNode(array('\'</pegparser>\'',  ''));
+                }
+                $valid = false;
+            }
+            /*
+             * End rule: '</pegparser>'
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: End?
+             *       min: 0 max: 1
+             */
+            $error = array();
+            if ($trace) {
+                $this->parser->addBacktrace(array('End', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'End', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('End',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                if(!isset($nodeRes['End'])) {
+                    $nodeRes['End'] = $matchRes;
+                } else {
+                    if (!is_array($nodeRes['End'])) {
+                        $nodeRes['End'] = array($nodeRes['End']);
+                    }
+                    $nodeRes['End'][] = $matchRes;
+                }
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            if (!$valid) {
+                $this->parser->logOption($errorResult, 'End', $error);
+            }
+            $valid = true;
+            /*
+             * End rule: End?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Parser');
+        }
+        return $nodeRes;
+    }
+
+
+    public function Parser_START (&$nodeRes, $previous)
+    {
+        $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\PegParser;
+    }
+
+
+
+    public function Parser_MATCH_name (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setName($matchRes['_text']);
+    }
+
+
+
+    public function Parser_MATCH_attr (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->addAttribute($matchRes['_node']);
+    }
+
+
+
+    public function Parser_MATCH_node (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->addNode($matchRes['_node']);
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Name'
+     *
+     *  Rule:
+     * <node Name>
+     *                 <rule>/\w+/</rule>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeName($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        /*
+         * Start rule: /\w+/
+         *       min: 1 max: 1
+         */
+        $regexp = "/\\w+/";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Rx_Name1'][$pos])) {
+            $matchRes = $this->parser->regexpCache['Rx_Name1'][$pos];
+        } else {
+            if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                if ($matchRes['_startpos'] != $pos) {
+                    $this->parser->regexpCache['Rx_Name1'][$matchRes['_startpos']] = $matchRes;
+                    $this->parser->regexpCache['Rx_Name1'][$pos] = false;
+                    $matchRes = false;
+                }
+            } else {
+                $this->parser->regexpCache['Rx_Name1'][$pos] = false;
+                $matchRes = false;
+            }
+        }
+        if ($matchRes) {
+            $matchRes['_lineno'] = $this->parser->line;
+            $this->parser->pos = $matchRes['_endpos'];
+            $this->parser->line += substr_count($matchRes['_text'], "\n");
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if (!$valid) {
+            $this->parser->matchError($error, 'rx', "/\\w+/");
+        }
+        /*
+         * End rule: /\w+/
+         */
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Name');
+        }
+        return $nodeRes;
+    }
+    /**
+     *
+     * Parser rules and action for node 'Header'
+     *
+     *  Rule:
+     * <node Header>
+     *                 <rule>/\s*\/\*!\* /</rule>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeHeader($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        /*
+         * Start rule: /\s*\/\*!\* /
+         *       min: 1 max: 1
+         */
+        $regexp = "/\\s*\\/\\*!\\* /";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Rx_Header1'][$pos])) {
+            $matchRes = $this->parser->regexpCache['Rx_Header1'][$pos];
+        } else {
+            if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                if ($matchRes['_startpos'] != $pos) {
+                    $this->parser->regexpCache['Rx_Header1'][$matchRes['_startpos']] = $matchRes;
+                    $this->parser->regexpCache['Rx_Header1'][$pos] = false;
+                    $matchRes = false;
+                }
+            } else {
+                $this->parser->regexpCache['Rx_Header1'][$pos] = false;
+                $matchRes = false;
+            }
+        }
+        if ($matchRes) {
+            $matchRes['_lineno'] = $this->parser->line;
+            $this->parser->pos = $matchRes['_endpos'];
+            $this->parser->line += substr_count($matchRes['_text'], "\n");
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if (!$valid) {
+            $this->parser->matchError($error, 'rx', "/\\s*\\/\\*!\\* /");
+        }
+        /*
+         * End rule: /\s*\/\*!\* /
+         */
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Header');
+        }
+        return $nodeRes;
+    }
+    /**
+     *
+     * Parser rules and action for node 'End'
+     *
+     *  Rule:
+     * <node End>
+     *                 <rule>./\s*\*\//</rule>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeEnd($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        /*
+         * Start rule: ./\s*\*\//
+         *       min: 1 max: 1
+         */
+        $regexp = "/\\s*\\*\\//";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Rx_End1'][$pos])) {
+            $matchRes = $this->parser->regexpCache['Rx_End1'][$pos];
+        } else {
+            if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                if ($matchRes['_startpos'] != $pos) {
+                    $this->parser->regexpCache['Rx_End1'][$matchRes['_startpos']] = $matchRes;
+                    $this->parser->regexpCache['Rx_End1'][$pos] = false;
+                    $matchRes = false;
+                }
+            } else {
+                $this->parser->regexpCache['Rx_End1'][$pos] = false;
+                $matchRes = false;
+            }
+        }
+        if ($matchRes) {
+            $matchRes['_lineno'] = $this->parser->line;
+            $this->parser->pos = $matchRes['_endpos'];
+            $this->parser->line += substr_count($matchRes['_text'], "\n");
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if (!$valid) {
+            $this->parser->matchError($error, 'rx', "/\\s*\\*\\//");
+        }
+        /*
+         * End rule: ./\s*\*\//
+         */
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'End');
+        }
+        return $nodeRes;
+    }
+    /**
+     *
+     * Parser rules and action for node 'Comment'
+     *
+     *  Rule:
+     * <node Comment>
+     *                 <rule>/[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))* /</rule>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeComment($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        /*
+         * Start rule: /[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))* /
+         *       min: 1 max: 1
+         */
+        $regexp = "/[\\s\\t]*(([#][^\\r\\n]*)?([\\r\\n]+[\\s\\t]*))* /";
+        $pos = $this->parser->pos;
+        if (isset($this->parser->regexpCache['Rx_Comment1'][$pos])) {
+            $matchRes = $this->parser->regexpCache['Rx_Comment1'][$pos];
+        } else {
+            if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                if ($matchRes['_startpos'] != $pos) {
+                    $this->parser->regexpCache['Rx_Comment1'][$matchRes['_startpos']] = $matchRes;
+                    $this->parser->regexpCache['Rx_Comment1'][$pos] = false;
+                    $matchRes = false;
+                }
+            } else {
+                $this->parser->regexpCache['Rx_Comment1'][$pos] = false;
+                $matchRes = false;
+            }
+        }
+        if ($matchRes) {
+            $matchRes['_lineno'] = $this->parser->line;
+            $this->parser->pos = $matchRes['_endpos'];
+            $this->parser->line += substr_count($matchRes['_text'], "\n");
+            $nodeRes['_text'] .= $matchRes['_text'];
+            $valid = true;
+        } else {
+            $valid = false;
+        }
+        if (!$valid) {
+            $this->parser->matchError($error, 'rx', "/[\\s\\t]*(([#][^\\r\\n]*)?([\\r\\n]+[\\s\\t]*))* /");
+        }
+        /*
+         * End rule: /[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))* /
+         */
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Comment');
+        }
+        return $nodeRes;
+    }
+    /**
+     *
+     * Parser rules and action for node 'AttrValue'
+     *
+     *  Rule:
+     * <node AttrValue>
+     *                 <rule> .._? ( /(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/ | ( '(' sub:AttrEntry ( ',' sub:AttrEntry )* ')' ) )</rule>
+     *                 <action sub>
+     *                     {
+     *                         if(!isset($nodeRes['value'])) {
+     *                             $nodeRes['value'] = $matchRes['value'];
+     *                         } else {
+     *                             if (!is_array($nodeRes['value'])) {
+     *                                 $nodeRes['value'] = array($nodeRes['value']);
+     *                             }
+     *                             $nodeRes['value'] = array_merge($nodeRes['value'],$matchRes['value']);
+     *                         }
+     *                     }
+     *                 </action>
+     *                 <action _finish>
+     *                     {
+     *                         $mr = $nodeRes['_pregMatch'];
+     *                         if (isset($mr['v1']) && !empty($mr['v1'])) {
+     *                             $nodeRes['value'] = trim($mr['v1'], "'\"");
+     *                         }
+     *                         if (isset($mr['true']) && !empty($mr['true'])) {
+     *                             $nodeRes['value'] = true;
+     *                         }
+     *                         if (isset($mr['false']) && !empty($mr['false'])) {
+     *                             $nodeRes['value'] = false;
+     *                         }
+     *                         if (isset($mr['null']) && !empty($mr['null'])) {
+     *                             $nodeRes['value'] = null;
+     *                         }
+     *                         $nodeRes['_pregMatch'] = array();
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeAttrValue($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: (/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/ | ('(' sub:AttrEntry (',' sub:AttrEntry)* ')'))
+             *       min: 1 max: 1
+             */
+            // start option
+            $error3 = $error;
+            $errorOption3 =array();
+            if ($trace) {
+                $this->parser->addBacktrace(array('_o3_', ''));
+            }
+            do {
+                $error = array();
+                array_pop($this->parser->backtrace);
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_o3:1_', ''));
+                }
+                /*
+                 * Start rule: /(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/
+                 *       min: 1 max: 1
+                 */
+                $regexp = "/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|(\"[^\"]*\")|\\d+|\\w+))/";
+                $pos = $this->parser->pos;
+                if (isset($this->parser->regexpCache['Rx_AttrValue5'][$pos])) {
+                    $matchRes = $this->parser->regexpCache['Rx_AttrValue5'][$pos];
+                } else {
+                    if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                        if (strlen($pregMatch[0][0]) != 0) {
+                            $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                            foreach ($pregMatch as $n => $v) {
+                                if (is_string($n) && strlen($v[0])) {
+                                    $matchRes['_pregMatch'][$n] = $v[0];
+                                }
+                            }
+                            if ($matchRes['_startpos'] != $pos) {
+                                $this->parser->regexpCache['Rx_AttrValue5'][$matchRes['_startpos']] = $matchRes;
+                                $this->parser->regexpCache['Rx_AttrValue5'][$pos] = false;
+                                $matchRes = false;
+                            }
+                        } else {
+                            $this->parser->regexpCache['Rx_AttrValue5'][$pos] = false;
+                            $matchRes = false;
+                        }
+                    } else {
+                        $this->parser->regexpCache['Rx_AttrValue5'][$pos] = false;
+                        $matchRes = false;
+                    }
+                }
+                if ($matchRes) {
+                    $matchRes['_lineno'] = $this->parser->line;
+                    $this->parser->pos = $matchRes['_endpos'];
+                    $this->parser->line += substr_count($matchRes['_text'], "\n");
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                }
+                if (!$valid) {
+                    $this->parser->matchError($error, 'rx', "/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|(\"[^\"]*\")|\\d+|\\w+))/");
+                }
+                /*
+                 * End rule: /(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/
+                 */
+                if ($valid) {
+                    if ($trace) {
+                        $this->parser->successNode(array_pop($this->parser->backtrace));
+                    }
+                    $error = $error3;
+                    break;
+                } else {
+                    $this->parser->logOption($errorOption3, '', $error);
+                }
+                $error = array();
+                array_pop($this->parser->backtrace);
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_o3:2_', ''));
+                }
+                /*
+                 * Start rule: ('(' sub:AttrEntry (',' sub:AttrEntry)* ')')
+                 *       min: 1 max: 1
+                 */
+                // start sequence
+                $backup7 = $nodeRes;
+                $pos7 = $this->parser->pos;
+                $line7 = $this->parser->line;
+                $error7 = $error;
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_s7_', ''));
+                }
+                do {
+                    $error = array();
+                    /*
+                     * Start rule: '('
+                     *       min: 1 max: 1
+                     */
+                    if ('(' == substr($this->parser->source, $this->parser->pos, 1)) {
+                        $this->parser->pos += 1;
+                        $nodeRes['_text'] .= '(';
+                        if ($trace) {
+                            $this->parser->successNode(array('\'(\'', '('));
+                        }
+                        $valid = true;
+                    } else {
+                        $this->parser->matchError($error, 'literal', '(');
+                        if ($trace) {
+                            $this->parser->failNode(array('\'(\'',  ''));
+                        }
+                        $valid = false;
+                    }
+                    /*
+                     * End rule: '('
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error7, 'SequenceElement', $error);
+                        $error = $error7;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: sub:AttrEntry
+                     *       tag: 'sub'
+                     *       min: 1 max: 1
+                     */
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('AttrEntry', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'AttrEntry', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('AttrEntry',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->AttrValue_MATCH_sub($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    /*
+                     * End rule: sub:AttrEntry
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error7, 'SequenceElement', $error);
+                        $error = $error7;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: (',' sub:AttrEntry)*
+                     *       min: 0 max: null
+                     */
+                    $iteration10 = 0;
+                    do {
+                        // start sequence
+                        $backup11 = $nodeRes;
+                        $pos11 = $this->parser->pos;
+                        $line11 = $this->parser->line;
+                        $error11 = $error;
+                        if ($trace) {
+                            $this->parser->addBacktrace(array('_s11_', ''));
+                        }
+                        do {
+                            $error = array();
+                            /*
+                             * Start rule: ','
+                             *       min: 1 max: 1
+                             */
+                            if (',' == substr($this->parser->source, $this->parser->pos, 1)) {
+                                $this->parser->pos += 1;
+                                $nodeRes['_text'] .= ',';
+                                if ($trace) {
+                                    $this->parser->successNode(array('\',\'', ','));
+                                }
+                                $valid = true;
+                            } else {
+                                $this->parser->matchError($error, 'literal', ',');
+                                if ($trace) {
+                                    $this->parser->failNode(array('\',\'',  ''));
+                                }
+                                $valid = false;
+                            }
+                            /*
+                             * End rule: ','
+                             */
+                            if (!$valid) {
+                                $this->parser->matchError($error11, 'SequenceElement', $error);
+                                $error = $error11;
+                                break;
+                            }
+                            $error = array();
+                            /*
+                             * Start rule: sub:AttrEntry
+                             *       tag: 'sub'
+                             *       min: 1 max: 1
+                             */
+                            if ($trace) {
+                                $this->parser->addBacktrace(array('AttrEntry', ''));
+                            }
+                            $matchRes = $this->parser->matchRule($nodeRes, 'AttrEntry', $error);
+                            if ($trace) {
+                                $remove = array_pop($this->parser->backtrace);
+                            }
+                            if ($matchRes) {
+                                if ($trace) {
+                                    $this->parser->successNode(array('AttrEntry',  $matchRes['_text']));
+                                }
+                                $nodeRes['_text'] .= $matchRes['_text'];
+                                $this->AttrValue_MATCH_sub($nodeRes, $matchRes);
+                                $valid = true;
+                            } else {
+                                $valid = false;
+                                if ($trace) {
+                                    $this->parser->failNode($remove);
+                                }
+                            }
+                            /*
+                             * End rule: sub:AttrEntry
+                             */
+                            if (!$valid) {
+                                $this->parser->matchError($error11, 'SequenceElement', $error);
+                                $error = $error11;
+                                break;
+                            }
+                            break;
+                        } while (true);
+                        if ($trace) {
+                            $remove = array_pop($this->parser->backtrace);
+                        }
+                        if (!$valid) {
+                            if ($trace) {
+                                $this->parser->failNode($remove);
+                            }
+                            $this->parser->pos = $pos11;
+                            $this->parser->line = $line11;
+                            $nodeRes = $backup11;
+                        } elseif ($trace) {
+                            $this->parser->successNode($remove);
+                        }
+                        $error = $error11;
+                        unset($backup11);
+                        // end sequence
+                        $iteration10 = $valid ? ($iteration10 + 1) : $iteration10;
+                        if (!$valid && $iteration10 >= 0) {
+                            $valid = true;
+                            break;
+                        }
+                        if (!$valid) break;
+                    } while (true);
+                    /*
+                     * End rule: (',' sub:AttrEntry)*
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error7, 'SequenceElement', $error);
+                        $error = $error7;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: ')'
+                     *       min: 1 max: 1
+                     */
+                    if (')' == substr($this->parser->source, $this->parser->pos, 1)) {
+                        $this->parser->pos += 1;
+                        $nodeRes['_text'] .= ')';
+                        if ($trace) {
+                            $this->parser->successNode(array('\')\'', ')'));
+                        }
+                        $valid = true;
+                    } else {
+                        $this->parser->matchError($error, 'literal', ')');
+                        if ($trace) {
+                            $this->parser->failNode(array('\')\'',  ''));
+                        }
+                        $valid = false;
+                    }
+                    /*
+                     * End rule: ')'
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error7, 'SequenceElement', $error);
+                        $error = $error7;
+                        break;
+                    }
+                    break;
+                } while (true);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if (!$valid) {
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                    $this->parser->pos = $pos7;
+                    $this->parser->line = $line7;
+                    $nodeRes = $backup7;
+                } elseif ($trace) {
+                    $this->parser->successNode($remove);
+                }
+                $error = $error7;
+                unset($backup7);
+                // end sequence
+                /*
+                 * End rule: ('(' sub:AttrEntry (',' sub:AttrEntry)* ')')
+                 */
+                if ($valid) {
+                    if ($trace) {
+                        $this->parser->successNode(array_pop($this->parser->backtrace));
+                    }
+                    $error = $error3;
+                    break;
+                } else {
+                    $this->parser->logOption($errorOption3, 'Sequence', $error);
+                }
+                $error = $error3;
+                array_pop($this->parser->backtrace);
+                break;
+            } while (true);
+            // end option
+            /*
+             * End rule: (/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/ | ('(' sub:AttrEntry (',' sub:AttrEntry)* ')'))
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+            $this->AttrValue_FINISH($nodeRes);
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'AttrValue');
+        }
+        return $nodeRes;
+    }
+
+
+    public function AttrValue_MATCH_sub (&$nodeRes, $matchRes)
+    {
+        if(!isset($nodeRes['value']))        {
+            $nodeRes['value'] = $matchRes['value'];
+        }
+        else        {
+            if (!is_array($nodeRes['value']))            {
+                $nodeRes['value'] = array($nodeRes['value']);
+            }
+            $nodeRes['value'] = array_merge($nodeRes['value'],$matchRes['value']);
+        }
+    }
+
+
+
+    public function AttrValue_FINISH (&$nodeRes)
+    {
+        $mr = $nodeRes['_pregMatch'];
+        if (isset($mr['v1']) && !empty($mr['v1']))        {
+            $nodeRes['value'] = trim($mr['v1'], "'\"");
+        }
+        if (isset($mr['true']) && !empty($mr['true']))        {
+            $nodeRes['value'] = true;
+        }
+        if (isset($mr['false']) && !empty($mr['false']))        {
+            $nodeRes['value'] = false;
+        }
+        if (isset($mr['null']) && !empty($mr['null']))        {
+            $nodeRes['value'] = null;
+        }
+        $nodeRes['_pregMatch'] = array();
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'AttrEntry'
+     *
+     *  Rule:
+     * <node AttrEntry>
+     *                 <rule> .._? key:Name .._? ( '=' .._? val:AttrValue)? </rule>
+     *                 <action key>
+     *                 {
+     *                     $nodeRes['key'] = $matchRes['_text'];
+     *                     $nodeRes['value'] = array($nodeRes['key'] => true);
+     *                 }
+     *                 </action>
+     *                 <action val>
+     *                 {
+     *                     $nodeRes['value'][$nodeRes['key']] = $matchRes['value'];
+     *                 }
+     *                 </action>
+     *              </node>
+     * 
+     *
+    */
+    public function matchNodeAttrEntry($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: key:Name
+             *       tag: 'key'
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $this->parser->addBacktrace(array('Name', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Name', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('Name',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->AttrEntry_MATCH_key($nodeRes, $matchRes);
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            /*
+             * End rule: key:Name
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: ('=' .._? val:AttrValue)?
+             *       min: 0 max: 1
+             */
+            $error = array();
+            // start sequence
+            $backup5 = $nodeRes;
+            $pos5 = $this->parser->pos;
+            $line5 = $this->parser->line;
+            $error5 = $error;
+            if ($trace) {
+                $this->parser->addBacktrace(array('_s5_', ''));
+            }
+            do {
+                $error = array();
+                /*
+                 * Start rule: '='
+                 *       min: 1 max: 1
+                 */
+                if ('=' == substr($this->parser->source, $this->parser->pos, 1)) {
+                    $this->parser->pos += 1;
+                    $nodeRes['_text'] .= '=';
+                    if ($trace) {
+                        $this->parser->successNode(array('\'=\'', '='));
+                    }
+                    $valid = true;
+                } else {
+                    $this->parser->matchError($error, 'literal', '=');
+                    if ($trace) {
+                        $this->parser->failNode(array('\'=\'',  ''));
+                    }
+                    $valid = false;
+                }
+                /*
+                 * End rule: '='
+                 */
+                if (!$valid) {
+                    $this->parser->matchError($error5, 'SequenceElement', $error);
+                    $error = $error5;
+                    break;
+                }
+                $error = array();
+                /*
+                 * Start rule: .._?
+                 *       min: 1 max: 1
+                 */
+                if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                    if (!empty($pregMatch[0])) {
+                        $this->parser->pos += strlen($pregMatch[0]);
+                        $this->parser->line += substr_count($pregMatch[0], "\n");
+                    }
+                }
+                if ($trace) {
+                    $this->parser->successNode(array("' '",  $pregMatch[0]));
+                }
+                $valid = true;
+                /*
+                 * End rule: .._?
+                 */
+                if (!$valid) {
+                    $this->parser->matchError($error5, 'SequenceElement', $error);
+                    $error = $error5;
+                    break;
+                }
+                $error = array();
+                /*
+                 * Start rule: val:AttrValue
+                 *       tag: 'val'
+                 *       min: 1 max: 1
+                 */
+                if ($trace) {
+                    $this->parser->addBacktrace(array('AttrValue', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'AttrValue', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('AttrValue',  $matchRes['_text']));
+                    }
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    $this->AttrEntry_MATCH_val($nodeRes, $matchRes);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                /*
+                 * End rule: val:AttrValue
+                 */
+                if (!$valid) {
+                    $this->parser->matchError($error5, 'SequenceElement', $error);
+                    $error = $error5;
+                    break;
+                }
+                break;
+            } while (true);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if (!$valid) {
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+                $this->parser->pos = $pos5;
+                $this->parser->line = $line5;
+                $nodeRes = $backup5;
+            } elseif ($trace) {
+                $this->parser->successNode($remove);
+            }
+            $error = $error5;
+            unset($backup5);
+            // end sequence
+            if (!$valid) {
+                $this->parser->logOption($errorResult, 'Sequence', $error);
+            }
+            $valid = true;
+            /*
+             * End rule: ('=' .._? val:AttrValue)?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'AttrEntry');
+        }
+        return $nodeRes;
+    }
+
+
+    public function AttrEntry_MATCH_key (&$nodeRes, $matchRes)
+    {
+        $nodeRes['key'] = $matchRes['_text'];
+        $nodeRes['value'] = array($nodeRes['key'] => true);
+    }
+
+
+
+    public function AttrEntry_MATCH_val (&$nodeRes, $matchRes)
+    {
+        $nodeRes['value'][$nodeRes['key']] = $matchRes['value'];
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Attribute'
+     *
+     *  Rule:
+     * <node Attribute>
+     *                 <attribute>importNode</attribute>
+     *                 <rule>.._? '<attribute>' attr:AttrEntry (',' attr:AttrEntry)* '</attribute>' .._?</rule>
+     *                 <action _start>
+     *                     {
+     *                         $nodeRes['_previousNode'] = $previous['_node'];
+     *                     }
+     *                 </action>
+     *                 <action attr>
+     *                     {
+     *                         $nodeRes['_previousNode']->addAttribute($matchRes['value']);
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeAttribute($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->Attribute_START($nodeRes, $previous);
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: '<attribute>'
+             *       min: 1 max: 1
+             */
+            if ('<attribute>' == substr($this->parser->source, $this->parser->pos, 11)) {
+                $this->parser->pos += 11;
+                $nodeRes['_text'] .= '<attribute>';
+                if ($trace) {
+                    $this->parser->successNode(array('\'<attribute>\'', '<attribute>'));
+                }
+                $valid = true;
+            } else {
+                $this->parser->matchError($error, 'literal', '<attribute>');
+                if ($trace) {
+                    $this->parser->failNode(array('\'<attribute>\'',  ''));
+                }
+                $valid = false;
+            }
+            /*
+             * End rule: '<attribute>'
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: attr:AttrEntry
+             *       tag: 'attr'
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $this->parser->addBacktrace(array('AttrEntry', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'AttrEntry', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('AttrEntry',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->Attribute_MATCH_attr($nodeRes, $matchRes);
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            /*
+             * End rule: attr:AttrEntry
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: (',' attr:AttrEntry)*
+             *       min: 0 max: null
+             */
+            $iteration4 = 0;
+            do {
+                // start sequence
+                $backup5 = $nodeRes;
+                $pos5 = $this->parser->pos;
+                $line5 = $this->parser->line;
+                $error5 = $error;
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_s5_', ''));
+                }
+                do {
+                    $error = array();
+                    /*
+                     * Start rule: ','
+                     *       min: 1 max: 1
+                     */
+                    if (',' == substr($this->parser->source, $this->parser->pos, 1)) {
+                        $this->parser->pos += 1;
+                        $nodeRes['_text'] .= ',';
+                        if ($trace) {
+                            $this->parser->successNode(array('\',\'', ','));
+                        }
+                        $valid = true;
+                    } else {
+                        $this->parser->matchError($error, 'literal', ',');
+                        if ($trace) {
+                            $this->parser->failNode(array('\',\'',  ''));
+                        }
+                        $valid = false;
+                    }
+                    /*
+                     * End rule: ','
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error5, 'SequenceElement', $error);
+                        $error = $error5;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: attr:AttrEntry
+                     *       tag: 'attr'
+                     *       min: 1 max: 1
+                     */
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('AttrEntry', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'AttrEntry', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('AttrEntry',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->Attribute_MATCH_attr($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    /*
+                     * End rule: attr:AttrEntry
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error5, 'SequenceElement', $error);
+                        $error = $error5;
+                        break;
+                    }
+                    break;
+                } while (true);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if (!$valid) {
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                    $this->parser->pos = $pos5;
+                    $this->parser->line = $line5;
+                    $nodeRes = $backup5;
+                } elseif ($trace) {
+                    $this->parser->successNode($remove);
+                }
+                $error = $error5;
+                unset($backup5);
+                // end sequence
+                $iteration4 = $valid ? ($iteration4 + 1) : $iteration4;
+                if (!$valid && $iteration4 >= 0) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) break;
+            } while (true);
+            /*
+             * End rule: (',' attr:AttrEntry)*
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: '</attribute>'
+             *       min: 1 max: 1
+             */
+            if ('</attribute>' == substr($this->parser->source, $this->parser->pos, 12)) {
+                $this->parser->pos += 12;
+                $nodeRes['_text'] .= '</attribute>';
+                if ($trace) {
+                    $this->parser->successNode(array('\'</attribute>\'', '</attribute>'));
+                }
+                $valid = true;
+            } else {
+                $this->parser->matchError($error, 'literal', '</attribute>');
+                if ($trace) {
+                    $this->parser->failNode(array('\'</attribute>\'',  ''));
+                }
+                $valid = false;
+            }
+            /*
+             * End rule: '</attribute>'
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Attribute');
+        }
+        return $nodeRes;
+    }
+
+
+    public function Attribute_START (&$nodeRes, $previous)
+    {
+        $nodeRes['_previousNode'] = $previous['_node'];
+    }
+
+
+
+    public function Attribute_MATCH_attr (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_previousNode']->addAttribute($matchRes['value']);
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Node'
+     *
+     *  Rule:
+     * <node Node>
+     *                 <rule>.._?  instance:/\s*\<(?<type>(node|token))\s+(?<nodeName>[a-zA-Z_0-9]+)\>/  Attribute* Rule .Action* /<\/(node|token)>/ .._?</rule>
+     *                 <action _start>
+     *                     {
+     *                         $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Node;
+     *                         $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) -1);
+     *                         $regexp .= '\s*\<(node|token)\s+[a-zA-Z_]+\>[\s\S]*?\<\/(node|token)\>[\s\S]*?[\n]/';
+     *                         if (preg_match($regexp, $this->source, $match, 0, $this->pos )) {
+     *                             $nodeRes['definition'] = $match[0];
+     *                         }
+     *                     }
+     *                 </action>
+     *                 <action instance>
+     *                     {
+     *                         $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Node;
+     *                         $nodeRes['_node']->setDefinition($nodeRes['definition']);
+     *                     }
+     *                 </action>
+     *                 <action type>
+     *                  {
+     *                         $nodeRes['_node']->setType($matchRes['_pregMatch']['type']);
+     *                  }
+     *                 </action>
+     *                 <action nodeName>
+     *                     {
+     *                         $nodeRes['_node']->setName($matchRes['_pregMatch']['nodeName']);
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeNode($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->Node_START($nodeRes, $previous);
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: instance:/\s*\<(?<type>(node|token))\s+(?<nodeName>[a-zA-Z_0-9]+)\>/
+             *       tag: 'instance'
+             *       min: 1 max: 1
+             */
+            $regexp = "/\\s*\\<(?<type>(node|token))\\s+(?<nodeName>[a-zA-Z_0-9]+)\\>/";
+            $pos = $this->parser->pos;
+            if (isset($this->parser->regexpCache['Rx_Node3'][$pos])) {
+                $matchRes = $this->parser->regexpCache['Rx_Node3'][$pos];
+            } else {
+                if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                    if (strlen($pregMatch[0][0]) != 0) {
+                        $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                        foreach ($pregMatch as $n => $v) {
+                            if (is_string($n) && strlen($v[0])) {
+                                $matchRes['_pregMatch'][$n] = $v[0];
+                            }
+                        }
+                        if ($matchRes['_startpos'] != $pos) {
+                            $this->parser->regexpCache['Rx_Node3'][$matchRes['_startpos']] = $matchRes;
+                            $this->parser->regexpCache['Rx_Node3'][$pos] = false;
+                            $matchRes = false;
+                        }
+                    } else {
+                        $this->parser->regexpCache['Rx_Node3'][$pos] = false;
+                        $matchRes = false;
+                    }
+                } else {
+                    $this->parser->regexpCache['Rx_Node3'][$pos] = false;
+                    $matchRes = false;
+                }
+            }
+            if ($matchRes) {
+                $matchRes['_lineno'] = $this->parser->line;
+                $this->parser->pos = $matchRes['_endpos'];
+                $this->parser->line += substr_count($matchRes['_text'], "\n");
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->Node_MATCH_instance($nodeRes, $matchRes);
+                if (isset($matchRes['_pregMatch']['type'])) {
+                    $this->Node_MATCH_type($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['type']);
+                }
+                if (isset($matchRes['_pregMatch']['nodeName'])) {
+                    $this->Node_MATCH_nodeName($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['nodeName']);
+                }
+                $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            if (!$valid) {
+                $this->parser->matchError($error, 'rx', "/\\s*\\<(?<type>(node|token))\\s+(?<nodeName>[a-zA-Z_0-9]+)\\>/");
+            }
+            /*
+             * End rule: instance:/\s*\<(?<type>(node|token))\s+(?<nodeName>[a-zA-Z_0-9]+)\>/
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: Attribute*
+             *       min: 0 max: null
+             */
+            $iteration4 = 0;
+            do {
+                if ($trace) {
+                    $this->parser->addBacktrace(array('Attribute', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'Attribute', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('Attribute',  $matchRes['_text']));
+                    }
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    if(!isset($nodeRes['Attribute'])) {
+                        $nodeRes['Attribute'] = $matchRes;
+                    } else {
+                        if (!is_array($nodeRes['Attribute'])) {
+                            $nodeRes['Attribute'] = array($nodeRes['Attribute']);
+                        }
+                        $nodeRes['Attribute'][] = $matchRes;
+                    }
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                $iteration4 = $valid ? ($iteration4 + 1) : $iteration4;
+                if (!$valid && $iteration4 >= 0) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) break;
+            } while (true);
+            /*
+             * End rule: Attribute*
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: Rule
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $this->parser->addBacktrace(array('Rule', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Rule', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('Rule',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                if(!isset($nodeRes['Rule'])) {
+                    $nodeRes['Rule'] = $matchRes;
+                } else {
+                    if (!is_array($nodeRes['Rule'])) {
+                        $nodeRes['Rule'] = array($nodeRes['Rule']);
+                    }
+                    $nodeRes['Rule'][] = $matchRes;
+                }
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            /*
+             * End rule: Rule
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .Action*
+             *       min: 0 max: null
+             */
+            $iteration6 = 0;
+            do {
+                if ($trace) {
+                    $this->parser->addBacktrace(array('Action', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'Action', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('Action',  $matchRes['_text']));
+                    }
+                    if(!isset($nodeRes['Action'])) {
+                        $nodeRes['Action'] = $matchRes;
+                    } else {
+                        if (!is_array($nodeRes['Action'])) {
+                            $nodeRes['Action'] = array($nodeRes['Action']);
+                        }
+                        $nodeRes['Action'][] = $matchRes;
+                    }
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                $iteration6 = $valid ? ($iteration6 + 1) : $iteration6;
+                if (!$valid && $iteration6 >= 0) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) break;
+            } while (true);
+            /*
+             * End rule: .Action*
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: /<\/(node|token)>/
+             *       min: 1 max: 1
+             */
+            $regexp = "/<\\/(node|token)>/";
+            $pos = $this->parser->pos;
+            if (isset($this->parser->regexpCache['Rx_Node8'][$pos])) {
+                $matchRes = $this->parser->regexpCache['Rx_Node8'][$pos];
+            } else {
+                if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                    $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                    if ($matchRes['_startpos'] != $pos) {
+                        $this->parser->regexpCache['Rx_Node8'][$matchRes['_startpos']] = $matchRes;
+                        $this->parser->regexpCache['Rx_Node8'][$pos] = false;
+                        $matchRes = false;
+                    }
+                } else {
+                    $this->parser->regexpCache['Rx_Node8'][$pos] = false;
+                    $matchRes = false;
+                }
+            }
+            if ($matchRes) {
+                $matchRes['_lineno'] = $this->parser->line;
+                $this->parser->pos = $matchRes['_endpos'];
+                $this->parser->line += substr_count($matchRes['_text'], "\n");
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            if (!$valid) {
+                $this->parser->matchError($error, 'rx', "/<\\/(node|token)>/");
+            }
+            /*
+             * End rule: /<\/(node|token)>/
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Node');
+        }
+        return $nodeRes;
+    }
+
+
+    public function Node_START (&$nodeRes, $previous)
+    {
+        $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Node;
+        $regexp = substr($this->parser->whitespacePattern, 0, strlen($this->parser->whitespacePattern) -1);
+        $regexp .= '\s*\<(node|token)\s+[a-zA-Z_]+\>[\s\S]*?\<\/(node|token)\>[\s\S]*?[\n]/';
+        if (preg_match($regexp, $this->source, $match, 0, $this->pos ))        {
+            $nodeRes['definition'] = $match[0];
+        }
+    }
+
+
+
+    public function Node_MATCH_instance (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Node;
+        $nodeRes['_node']->setDefinition($nodeRes['definition']);
+    }
+
+
+
+    public function Node_MATCH_type (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setType($matchRes['_pregMatch']['type']);
+    }
+
+
+
+    public function Node_MATCH_nodeName (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setName($matchRes['_pregMatch']['nodeName']);
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Rule'
+     *
+     *  Rule:
+     * <node Rule>
+     *                 <attribute>importNode</attribute>
+     *                 <rule>.._? '<rule>' .._? seq:Sequence .._? '</rule>' .._?</rule>
+     *                 <action _start>
+     *                     {
+     *                         $nodeRes['_previousNode'] = $previous['_node'];
+     *                     }
+     *                 </action>
+     *                 <action seq>
+     *                     {
+     *                         $nodeRes['_previousNode']->setRule($matchRes['_node']);
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeRule($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->Rule_START($nodeRes, $previous);
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: '<rule>'
+             *       min: 1 max: 1
+             */
+            if ('<rule>' == substr($this->parser->source, $this->parser->pos, 6)) {
+                $this->parser->pos += 6;
+                $nodeRes['_text'] .= '<rule>';
+                if ($trace) {
+                    $this->parser->successNode(array('\'<rule>\'', '<rule>'));
+                }
+                $valid = true;
+            } else {
+                $this->parser->matchError($error, 'literal', '<rule>');
+                if ($trace) {
+                    $this->parser->failNode(array('\'<rule>\'',  ''));
+                }
+                $valid = false;
+            }
+            /*
+             * End rule: '<rule>'
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: seq:Sequence
+             *       tag: 'seq'
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $this->parser->addBacktrace(array('Sequence', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Sequence', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('Sequence',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->Rule_MATCH_seq($nodeRes, $matchRes);
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            /*
+             * End rule: seq:Sequence
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: '</rule>'
+             *       min: 1 max: 1
+             */
+            if ('</rule>' == substr($this->parser->source, $this->parser->pos, 7)) {
+                $this->parser->pos += 7;
+                $nodeRes['_text'] .= '</rule>';
+                if ($trace) {
+                    $this->parser->successNode(array('\'</rule>\'', '</rule>'));
+                }
+                $valid = true;
+            } else {
+                $this->parser->matchError($error, 'literal', '</rule>');
+                if ($trace) {
+                    $this->parser->failNode(array('\'</rule>\'',  ''));
+                }
+                $valid = false;
+            }
+            /*
+             * End rule: '</rule>'
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Rule');
+        }
+        return $nodeRes;
+    }
+
+
+    public function Rule_START (&$nodeRes, $previous)
+    {
+        $nodeRes['_previousNode'] = $previous['_node'];
+    }
+
+
+
+    public function Rule_MATCH_seq (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_previousNode']->setRule($matchRes['_node']);
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Action'
+     *
+     *  Rule:
+     * <node Action>
+     *                 <attribute>importNode</attribute>
+     *                 <rule>.._? instance:/\<action\s+(?<actionName>\w+)(\((?<argument>\w+)\))?\>/ .._? code:/(\{(?:(?>[^{}]+|(?R))*)?\})/ .._? '</action>' .._?</rule>
+     *                 <action _start>
+     *                     {
+     *                         $nodeRes['_previousNode'] = $previous['_node'];
+     *                     }
+     *                 </action>
+     *                 <action instance>
+     *                     {
+     *                         $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Action;
+     *                     }
+     *                 </action>
+     *                 <action actionName>
+     *                     {
+     *                         $nodeRes['_node']->setName($matchRes['_pregMatch']['actionName']);
+     *                     }
+     *                 </action>
+     *                 <action argument>
+     *                     {
+     *                         $nodeRes['_node']->setArgument($matchRes['_pregMatch']['argument']);
+     *                     }
+     *                 </action>
+     *                 <action code>
+     *                     {
+     *                         $nodeRes['_node']->setCode($matchRes['_text']);
+     *                     }
+     *                 </action>
+     *                 <action _finish>
+     *                     {
+     *                         $nodeRes['_previousNode']->addAction($nodeRes['_node']);
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeAction($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->Action_START($nodeRes, $previous);
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: instance:/\<action\s+(?<actionName>\w+)(\((?<argument>\w+)\))?\>/
+             *       tag: 'instance'
+             *       min: 1 max: 1
+             */
+            $regexp = "/\\<action\\s+(?<actionName>\\w+)(\\((?<argument>\\w+)\\))?\\>/";
+            $pos = $this->parser->pos;
+            if (isset($this->parser->regexpCache['Rx_Action3'][$pos])) {
+                $matchRes = $this->parser->regexpCache['Rx_Action3'][$pos];
+            } else {
+                if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                    if (strlen($pregMatch[0][0]) != 0) {
+                        $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                        foreach ($pregMatch as $n => $v) {
+                            if (is_string($n) && strlen($v[0])) {
+                                $matchRes['_pregMatch'][$n] = $v[0];
+                            }
+                        }
+                        if ($matchRes['_startpos'] != $pos) {
+                            $this->parser->regexpCache['Rx_Action3'][$matchRes['_startpos']] = $matchRes;
+                            $this->parser->regexpCache['Rx_Action3'][$pos] = false;
+                            $matchRes = false;
+                        }
+                    } else {
+                        $this->parser->regexpCache['Rx_Action3'][$pos] = false;
+                        $matchRes = false;
+                    }
+                } else {
+                    $this->parser->regexpCache['Rx_Action3'][$pos] = false;
+                    $matchRes = false;
+                }
+            }
+            if ($matchRes) {
+                $matchRes['_lineno'] = $this->parser->line;
+                $this->parser->pos = $matchRes['_endpos'];
+                $this->parser->line += substr_count($matchRes['_text'], "\n");
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->Action_MATCH_instance($nodeRes, $matchRes);
+                if (isset($matchRes['_pregMatch']['actionName'])) {
+                    $this->Action_MATCH_actionName($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['actionName']);
+                }
+                if (isset($matchRes['_pregMatch']['argument'])) {
+                    $this->Action_MATCH_argument($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['argument']);
+                }
+                $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            if (!$valid) {
+                $this->parser->matchError($error, 'rx', "/\\<action\\s+(?<actionName>\\w+)(\\((?<argument>\\w+)\\))?\\>/");
+            }
+            /*
+             * End rule: instance:/\<action\s+(?<actionName>\w+)(\((?<argument>\w+)\))?\>/
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: code:/(\{(?:(?>[^{}]+|(?R))*)?\})/
+             *       tag: 'code'
+             *       min: 1 max: 1
+             */
+            $regexp = "/(\\{(?:(?>[^{}]+|(?R))*)?\\})/";
+            $pos = $this->parser->pos;
+            if (isset($this->parser->regexpCache['Rx_Action6'][$pos])) {
+                $matchRes = $this->parser->regexpCache['Rx_Action6'][$pos];
+            } else {
+                if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                    $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                    if ($matchRes['_startpos'] != $pos) {
+                        $this->parser->regexpCache['Rx_Action6'][$matchRes['_startpos']] = $matchRes;
+                        $this->parser->regexpCache['Rx_Action6'][$pos] = false;
+                        $matchRes = false;
+                    }
+                } else {
+                    $this->parser->regexpCache['Rx_Action6'][$pos] = false;
+                    $matchRes = false;
+                }
+            }
+            if ($matchRes) {
+                $matchRes['_lineno'] = $this->parser->line;
+                $this->parser->pos = $matchRes['_endpos'];
+                $this->parser->line += substr_count($matchRes['_text'], "\n");
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->Action_MATCH_code($nodeRes, $matchRes);
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            if (!$valid) {
+                $this->parser->matchError($error, 'rx', "/(\\{(?:(?>[^{}]+|(?R))*)?\\})/");
+            }
+            /*
+             * End rule: code:/(\{(?:(?>[^{}]+|(?R))*)?\})/
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: '</action>'
+             *       min: 1 max: 1
+             */
+            if ('</action>' == substr($this->parser->source, $this->parser->pos, 9)) {
+                $this->parser->pos += 9;
+                $nodeRes['_text'] .= '</action>';
+                if ($trace) {
+                    $this->parser->successNode(array('\'</action>\'', '</action>'));
+                }
+                $valid = true;
+            } else {
+                $this->parser->matchError($error, 'literal', '</action>');
+                if ($trace) {
+                    $this->parser->failNode(array('\'</action>\'',  ''));
+                }
+                $valid = false;
+            }
+            /*
+             * End rule: '</action>'
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: .._?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: .._?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+            $this->Action_FINISH($nodeRes);
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Action');
+        }
+        return $nodeRes;
+    }
+
+
+    public function Action_START (&$nodeRes, $previous)
+    {
+        $nodeRes['_previousNode'] = $previous['_node'];
+    }
+
+
+
+    public function Action_MATCH_instance (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Action;
+    }
+
+
+
+    public function Action_MATCH_actionName (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setName($matchRes['_pregMatch']['actionName']);
+    }
+
+
+
+    public function Action_MATCH_argument (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setArgument($matchRes['_pregMatch']['argument']);
+    }
+
+
+
+    public function Action_MATCH_code (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setCode($matchRes['_text']);
+    }
+
+
+
+    public function Action_FINISH (&$nodeRes)
+    {
+        $nodeRes['_previousNode']->addAction($nodeRes['_node']);
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Option'
+     *
+     *  Rule:
+     * <node Option>
+     *                 <rule> _? token:RuleToken ( _? '|' _? token:RuleToken)*</rule>
+     *                 <action token>
+     *                     {
+     *                         $nodeRes['optionNodes'][] = $matchRes['_node'];
+     *                     }
+     *                 </action>
+     *                 <action _finish>
+     *                     {
+     *                         if (count($nodeRes['optionNodes']) == 1) {
+     *                            $nodeRes['_node'] = $nodeRes['optionNodes'][0];
+     *                         } else {
+     *                            $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Option;
+     *                            $nodeRes['_node']->addOptionNodes($nodeRes['optionNodes']);
+     *                         }
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeOption($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: _?
+             *       min: 1 max: 1
+             */
+            if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                if (!empty($pregMatch[0])) {
+                    $this->parser->pos += strlen($pregMatch[0]);
+                    $this->parser->line += substr_count($pregMatch[0], "\n");
+                    $nodeRes['_text'] .= ' ';
+                }
+            }
+            if ($trace) {
+                $this->parser->successNode(array("' '",  $pregMatch[0]));
+            }
+            $valid = true;
+            /*
+             * End rule: _?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: token:RuleToken
+             *       tag: 'token'
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $this->parser->addBacktrace(array('RuleToken', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'RuleToken', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('RuleToken',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->Option_MATCH_token($nodeRes, $matchRes);
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            /*
+             * End rule: token:RuleToken
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: (_? '|' _? token:RuleToken)*
+             *       min: 0 max: null
+             */
+            $iteration3 = 0;
+            do {
+                // start sequence
+                $backup4 = $nodeRes;
+                $pos4 = $this->parser->pos;
+                $line4 = $this->parser->line;
+                $error4 = $error;
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_s4_', ''));
+                }
+                do {
+                    $error = array();
+                    /*
+                     * Start rule: _?
+                     *       min: 1 max: 1
+                     */
+                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                        if (!empty($pregMatch[0])) {
+                            $this->parser->pos += strlen($pregMatch[0]);
+                            $this->parser->line += substr_count($pregMatch[0], "\n");
+                            $nodeRes['_text'] .= ' ';
+                        }
+                    }
+                    if ($trace) {
+                        $this->parser->successNode(array("' '",  $pregMatch[0]));
+                    }
+                    $valid = true;
+                    /*
+                     * End rule: _?
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error4, 'SequenceElement', $error);
+                        $error = $error4;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: '|'
+                     *       min: 1 max: 1
+                     */
+                    if ('|' == substr($this->parser->source, $this->parser->pos, 1)) {
+                        $this->parser->pos += 1;
+                        $nodeRes['_text'] .= '|';
+                        if ($trace) {
+                            $this->parser->successNode(array('\'|\'', '|'));
+                        }
+                        $valid = true;
+                    } else {
+                        $this->parser->matchError($error, 'literal', '|');
+                        if ($trace) {
+                            $this->parser->failNode(array('\'|\'',  ''));
+                        }
+                        $valid = false;
+                    }
+                    /*
+                     * End rule: '|'
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error4, 'SequenceElement', $error);
+                        $error = $error4;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: _?
+                     *       min: 1 max: 1
+                     */
+                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                        if (!empty($pregMatch[0])) {
+                            $this->parser->pos += strlen($pregMatch[0]);
+                            $this->parser->line += substr_count($pregMatch[0], "\n");
+                            $nodeRes['_text'] .= ' ';
+                        }
+                    }
+                    if ($trace) {
+                        $this->parser->successNode(array("' '",  $pregMatch[0]));
+                    }
+                    $valid = true;
+                    /*
+                     * End rule: _?
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error4, 'SequenceElement', $error);
+                        $error = $error4;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: token:RuleToken
+                     *       tag: 'token'
+                     *       min: 1 max: 1
+                     */
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('RuleToken', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'RuleToken', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('RuleToken',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->Option_MATCH_token($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    /*
+                     * End rule: token:RuleToken
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error4, 'SequenceElement', $error);
+                        $error = $error4;
+                        break;
+                    }
+                    break;
+                } while (true);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if (!$valid) {
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                    $this->parser->pos = $pos4;
+                    $this->parser->line = $line4;
+                    $nodeRes = $backup4;
+                } elseif ($trace) {
+                    $this->parser->successNode($remove);
+                }
+                $error = $error4;
+                unset($backup4);
+                // end sequence
+                $iteration3 = $valid ? ($iteration3 + 1) : $iteration3;
+                if (!$valid && $iteration3 >= 0) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) break;
+            } while (true);
+            /*
+             * End rule: (_? '|' _? token:RuleToken)*
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+            $this->Option_FINISH($nodeRes);
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Option');
+        }
+        return $nodeRes;
+    }
+
+
+    public function Option_MATCH_token (&$nodeRes, $matchRes)
+    {
+        $nodeRes['optionNodes'][] = $matchRes['_node'];
+    }
+
+
+
+    public function Option_FINISH (&$nodeRes)
+    {
+        if (count($nodeRes['optionNodes']) == 1)        {
+            $nodeRes['_node'] = $nodeRes['optionNodes'][0];
+        }
+        else        {
+            $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Option;
+            $nodeRes['_node']->addOptionNodes($nodeRes['optionNodes']);
+        }
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'Sequence'
+     *
+     *  Rule:
+     * <node Sequence>
+     *                 <rule>token:Option  token:Option*</rule>
+     *                 <action token>
+     *                     {
+     *                         $nodeRes['sequenceNodes'][] = $matchRes['_node'];
+     *                     }
+     *                 </action>
+     *                 <action _finish>
+     *                     {
+     *                         if (count($nodeRes['sequenceNodes']) == 1) {
+     *                            $nodeRes['_node'] = $nodeRes['sequenceNodes'][0];
+     *                         } else {
+     *                            $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Sequence;
+     *                            $nodeRes['_node']->addSequenceNodes($nodeRes['sequenceNodes']);
+     *                         }
+     *                     }
+     *                 </action>
+     *              </node>
+     * 
+     *
+    */
+    public function matchNodeSequence($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: token:Option
+             *       tag: 'token'
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $this->parser->addBacktrace(array('Option', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Option', $error);
+            if ($trace) {
+                $remove = array_pop($this->parser->backtrace);
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $this->parser->successNode(array('Option',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                $this->Sequence_MATCH_token($nodeRes, $matchRes);
+                $valid = true;
+            } else {
+                $valid = false;
+                if ($trace) {
+                    $this->parser->failNode($remove);
+                }
+            }
+            /*
+             * End rule: token:Option
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: token:Option*
+             *       tag: 'token'
+             *       min: 0 max: null
+             */
+            $iteration2 = 0;
+            do {
+                if ($trace) {
+                    $this->parser->addBacktrace(array('Option', ''));
+                }
+                $matchRes = $this->parser->matchRule($nodeRes, 'Option', $error);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if ($matchRes) {
+                    if ($trace) {
+                        $this->parser->successNode(array('Option',  $matchRes['_text']));
+                    }
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    $this->Sequence_MATCH_token($nodeRes, $matchRes);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                }
+                $iteration2 = $valid ? ($iteration2 + 1) : $iteration2;
+                if (!$valid && $iteration2 >= 0) {
+                    $valid = true;
+                    break;
+                }
+                if (!$valid) break;
+            } while (true);
+            /*
+             * End rule: token:Option*
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+            $this->Sequence_FINISH($nodeRes);
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'Sequence');
+        }
+        return $nodeRes;
+    }
+
+
+    public function Sequence_MATCH_token (&$nodeRes, $matchRes)
+    {
+        $nodeRes['sequenceNodes'][] = $matchRes['_node'];
+    }
+
+
+
+    public function Sequence_FINISH (&$nodeRes)
+    {
+        if (count($nodeRes['sequenceNodes']) == 1)        {
+            $nodeRes['_node'] = $nodeRes['sequenceNodes'][0];
+        }
+        else        {
+            $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Sequence;
+            $nodeRes['_node']->addSequenceNodes($nodeRes['sequenceNodes']);
+        }
+    }
+
+    /**
+     *
+     * Parser rules and action for node 'RuleToken'
+     *
+     *  Rule:
+     * <node RuleToken>
+     *                 <rule>/((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/? ( /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<wsp>_)(?<wspOptional>\?)?)|(?<matchToken>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | ('(' .._? seq:Sequence .._? ')')) /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/?</rule>
+     *                 <action _start>
+     *                     {
+     *                         if (!isset($nodeRes['_node'])) {
+     *                             $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Token;
+     *                         }
+     *                     }
+     *                </action>
+     *                <action silent>
+     *                     {
+     *                         $nodeRes['_node']->setSilent(strlen($matchRes['_pregMatch']['silent']));
+     *                     }
+     *                </action>
+     *                <action pla>
+     *                     {
+     *                             $nodeRes['_node']->setPla();
+     *                             $nodeRes['_node']->setSilent(1);
+     *                         }
+     *                </action>
+     *                <action nla>
+     *                     {
+     *                             $nodeRes['_node']->setNla();
+     *                             $nodeRes['_node']->setSilent(1);
+     *                         }
+     *                </action>
+     *                <action tag>
+     *                     {
+     *                             $nodeRes['_node']->setTag($matchRes['_pregMatch']['tag']);
+     *                         }
+     *                </action>
+     *                <action rx>
+     *                     {
+     *                             $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\RegExpr($matchRes['_pregMatch']['rx']));
+     *                         }
+     *                </action>
+     *                <action wsp>
+     *                     {
+     *                             $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\WhiteSpace(isset($matchRes['_pregMatch']['wspOptional']) ? true : false));
+     *                         }
+     *                </action>
+     *                <action matchToken>
+     *                     {
+     *                             $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\MatchToken($matchRes['_pregMatch']['matchToken']));
+     *                     }
+     *                </action>
+     *                <action literal>
+     *                     {
+     *                         $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Literal($matchRes['_pregMatch']['literal']));
+     *                     }
+     *                </action>
+     *                <action expression>
+     *                     {
+     *                         $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Expression($matchRes['_pregMatch']['expression']));
+     *                     }
+     *                </action>
+     *                <action seq>
+     *                     {
+     *                         $nodeRes['_node']->setRuleToken($matchRes['_node']);
+     *                     }
+     *                </action>
+     *                <action quest>
+     *                     {
+     *                         $nodeRes['_node']->setMin(0);
+     *                     }
+     *                </action>
+     *                <action any>
+     *                     {
+     *                         $nodeRes['_node']->setMin(0);
+     *                         $nodeRes['_node']->setMax(null);
+     *                     }
+     *                </action>
+     *                <action must>
+     *                     {
+     *                         $nodeRes['_node']->setMax(null);
+     *                     }
+     *                </action>
+     *                <action min>
+     *                     {
+     *                         $nodeRes['_node']->setMin($matchRes['_pregMatch']['min']);
+     *                         if (isset($matchRes['_pregMatch']['max'])) {
+     *                             $nodeRes['_node']->setMax($matchRes['_pregMatch']['max']);
+     *                             unset($matchRes['_pregMatch']['max']);
+     *                         } else {
+     *                             $nodeRes['_node']->setMax($matchRes['_pregMatch']['max']);
+     *                         }
+     *                     }
+     *                </action>
+     *                <action max>
+     *                     {
+     *                         $nodeRes['_node']->setMax($matchRes['_pregMatch']['max']);
+     *                     }
+     *                </action>
+     *                <action _finish>
+     *                     {
+     *                         $nodeRes['_node']->setRuleText($nodeRes['_text']);
+     *                         $nodeRes['_pregMatch'] = array();
+     *                     }
+     *                 </action>
+     *             </node>
+     * 
+     *
+    */
+    public function matchNodeRuleToken($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        $nodeRes = $this->parser->resultDefault;
+        $error = array();
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->RuleToken_START($nodeRes, $previous);
+        // start sequence
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $this->parser->addBacktrace(array('_s0_', ''));
+        }
+        do {
+            $error = array();
+            /*
+             * Start rule: /((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/?
+             *       min: 0 max: 1
+             */
+            $error = array();
+            $regexp = "/((?<silent>\\.+)|(?<pla>&)|(?<nla>\\!))?((?<tag>\\w+):)?/";
+            $pos = $this->parser->pos;
+            if (isset($this->parser->regexpCache['Rx_RuleToken2'][$pos])) {
+                $matchRes = $this->parser->regexpCache['Rx_RuleToken2'][$pos];
+            } else {
+                if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                    if (strlen($pregMatch[0][0]) != 0) {
+                        $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                        foreach ($pregMatch as $n => $v) {
+                            if (is_string($n) && strlen($v[0])) {
+                                $matchRes['_pregMatch'][$n] = $v[0];
+                            }
+                        }
+                        if ($matchRes['_startpos'] != $pos) {
+                            $this->parser->regexpCache['Rx_RuleToken2'][$matchRes['_startpos']] = $matchRes;
+                            $this->parser->regexpCache['Rx_RuleToken2'][$pos] = false;
+                            $matchRes = false;
+                        }
+                    } else {
+                        $this->parser->regexpCache['Rx_RuleToken2'][$pos] = false;
+                        $matchRes = false;
+                    }
+                } else {
+                    $this->parser->regexpCache['Rx_RuleToken2'][$pos] = false;
+                    $matchRes = false;
+                }
+            }
+            if ($matchRes) {
+                $matchRes['_lineno'] = $this->parser->line;
+                $this->parser->pos = $matchRes['_endpos'];
+                $this->parser->line += substr_count($matchRes['_text'], "\n");
+                $nodeRes['_text'] .= $matchRes['_text'];
+                if (isset($matchRes['_pregMatch']['silent'])) {
+                    $this->RuleToken_MATCH_silent($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['silent']);
+                }
+                if (isset($matchRes['_pregMatch']['pla'])) {
+                    $this->RuleToken_MATCH_pla($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['pla']);
+                }
+                if (isset($matchRes['_pregMatch']['nla'])) {
+                    $this->RuleToken_MATCH_nla($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['nla']);
+                }
+                if (isset($matchRes['_pregMatch']['tag'])) {
+                    $this->RuleToken_MATCH_tag($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['tag']);
+                }
+                $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            if (!$valid) {
+                $this->parser->matchError($error, 'rx', "/((?<silent>\\.+)|(?<pla>&)|(?<nla>\\!))?((?<tag>\\w+):)?/");
+            }
+            if (!$valid) {
+                $this->parser->logOption($errorResult, '', $error);
+            }
+            $valid = true;
+            /*
+             * End rule: /((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: (/(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<wsp>_)(?<wspOptional>\?)?)|(?<matchToken>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | ('(' .._? seq:Sequence .._? ')'))
+             *       min: 1 max: 1
+             */
+            // start option
+            $error4 = $error;
+            $errorOption4 =array();
+            if ($trace) {
+                $this->parser->addBacktrace(array('_o4_', ''));
+            }
+            do {
+                $error = array();
+                array_pop($this->parser->backtrace);
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_o4:1_', ''));
+                }
+                /*
+                 * Start rule: /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<wsp>_)(?<wspOptional>\?)?)|(?<matchToken>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/
+                 *       min: 1 max: 1
+                 */
+                $regexp = "/(?<rx>\\G(\\/|~|@|%|§)(((\\\\\\\\)*\\\\\\2)|.*?(?=(\\\\|\\2)))*\\2)|((?<wsp>_)(?<wspOptional>\\?)?)|(?<matchToken>\\w+)|(?<literal>(\"[^\"]*\")|('[^']*'))|(\\$(?<expression>\\w+))/";
+                $pos = $this->parser->pos;
+                if (isset($this->parser->regexpCache['Rx_RuleToken6'][$pos])) {
+                    $matchRes = $this->parser->regexpCache['Rx_RuleToken6'][$pos];
+                } else {
+                    if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                        if (strlen($pregMatch[0][0]) != 0) {
+                            $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                            foreach ($pregMatch as $n => $v) {
+                                if (is_string($n) && strlen($v[0])) {
+                                    $matchRes['_pregMatch'][$n] = $v[0];
+                                }
+                            }
+                            if ($matchRes['_startpos'] != $pos) {
+                                $this->parser->regexpCache['Rx_RuleToken6'][$matchRes['_startpos']] = $matchRes;
+                                $this->parser->regexpCache['Rx_RuleToken6'][$pos] = false;
+                                $matchRes = false;
+                            }
+                        } else {
+                            $this->parser->regexpCache['Rx_RuleToken6'][$pos] = false;
+                            $matchRes = false;
+                        }
+                    } else {
+                        $this->parser->regexpCache['Rx_RuleToken6'][$pos] = false;
+                        $matchRes = false;
+                    }
+                }
+                if ($matchRes) {
+                    $matchRes['_lineno'] = $this->parser->line;
+                    $this->parser->pos = $matchRes['_endpos'];
+                    $this->parser->line += substr_count($matchRes['_text'], "\n");
+                    $nodeRes['_text'] .= $matchRes['_text'];
+                    if (isset($matchRes['_pregMatch']['rx'])) {
+                        $this->RuleToken_MATCH_rx($nodeRes, $matchRes);
+                        unset($matchRes['_pregMatch']['rx']);
+                    }
+                    if (isset($matchRes['_pregMatch']['wsp'])) {
+                        $this->RuleToken_MATCH_wsp($nodeRes, $matchRes);
+                        unset($matchRes['_pregMatch']['wsp']);
+                    }
+                    if (isset($matchRes['_pregMatch']['matchToken'])) {
+                        $this->RuleToken_MATCH_matchToken($nodeRes, $matchRes);
+                        unset($matchRes['_pregMatch']['matchToken']);
+                    }
+                    if (isset($matchRes['_pregMatch']['literal'])) {
+                        $this->RuleToken_MATCH_literal($nodeRes, $matchRes);
+                        unset($matchRes['_pregMatch']['literal']);
+                    }
+                    if (isset($matchRes['_pregMatch']['expression'])) {
+                        $this->RuleToken_MATCH_expression($nodeRes, $matchRes);
+                        unset($matchRes['_pregMatch']['expression']);
+                    }
+                    $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+                    $valid = true;
+                } else {
+                    $valid = false;
+                }
+                if (!$valid) {
+                    $this->parser->matchError($error, 'rx', "/(?<rx>\\G(\\/|~|@|%|§)(((\\\\\\\\)*\\\\\\2)|.*?(?=(\\\\|\\2)))*\\2)|((?<wsp>_)(?<wspOptional>\\?)?)|(?<matchToken>\\w+)|(?<literal>(\"[^\"]*\")|('[^']*'))|(\\$(?<expression>\\w+))/");
+                }
+                /*
+                 * End rule: /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<wsp>_)(?<wspOptional>\?)?)|(?<matchToken>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/
+                 */
+                if ($valid) {
+                    if ($trace) {
+                        $this->parser->successNode(array_pop($this->parser->backtrace));
+                    }
+                    $error = $error4;
+                    break;
+                } else {
+                    $this->parser->logOption($errorOption4, '', $error);
+                }
+                $error = array();
+                array_pop($this->parser->backtrace);
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_o4:2_', ''));
+                }
+                /*
+                 * Start rule: ('(' .._? seq:Sequence .._? ')')
+                 *       min: 1 max: 1
+                 */
+                // start sequence
+                $backup8 = $nodeRes;
+                $pos8 = $this->parser->pos;
+                $line8 = $this->parser->line;
+                $error8 = $error;
+                if ($trace) {
+                    $this->parser->addBacktrace(array('_s8_', ''));
+                }
+                do {
+                    $error = array();
+                    /*
+                     * Start rule: '('
+                     *       min: 1 max: 1
+                     */
+                    if ('(' == substr($this->parser->source, $this->parser->pos, 1)) {
+                        $this->parser->pos += 1;
+                        $nodeRes['_text'] .= '(';
+                        if ($trace) {
+                            $this->parser->successNode(array('\'(\'', '('));
+                        }
+                        $valid = true;
+                    } else {
+                        $this->parser->matchError($error, 'literal', '(');
+                        if ($trace) {
+                            $this->parser->failNode(array('\'(\'',  ''));
+                        }
+                        $valid = false;
+                    }
+                    /*
+                     * End rule: '('
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error8, 'SequenceElement', $error);
+                        $error = $error8;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: .._?
+                     *       min: 1 max: 1
+                     */
+                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                        if (!empty($pregMatch[0])) {
+                            $this->parser->pos += strlen($pregMatch[0]);
+                            $this->parser->line += substr_count($pregMatch[0], "\n");
+                        }
+                    }
+                    if ($trace) {
+                        $this->parser->successNode(array("' '",  $pregMatch[0]));
+                    }
+                    $valid = true;
+                    /*
+                     * End rule: .._?
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error8, 'SequenceElement', $error);
+                        $error = $error8;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: seq:Sequence
+                     *       tag: 'seq'
+                     *       min: 1 max: 1
+                     */
+                    if ($trace) {
+                        $this->parser->addBacktrace(array('Sequence', ''));
+                    }
+                    $matchRes = $this->parser->matchRule($nodeRes, 'Sequence', $error);
+                    if ($trace) {
+                        $remove = array_pop($this->parser->backtrace);
+                    }
+                    if ($matchRes) {
+                        if ($trace) {
+                            $this->parser->successNode(array('Sequence',  $matchRes['_text']));
+                        }
+                        $nodeRes['_text'] .= $matchRes['_text'];
+                        $this->RuleToken_MATCH_seq($nodeRes, $matchRes);
+                        $valid = true;
+                    } else {
+                        $valid = false;
+                        if ($trace) {
+                            $this->parser->failNode($remove);
+                        }
+                    }
+                    /*
+                     * End rule: seq:Sequence
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error8, 'SequenceElement', $error);
+                        $error = $error8;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: .._?
+                     *       min: 1 max: 1
+                     */
+                    if (preg_match($this->parser->whitespacePattern, $this->parser->source, $pregMatch, 0, $this->parser->pos)) {
+                        if (!empty($pregMatch[0])) {
+                            $this->parser->pos += strlen($pregMatch[0]);
+                            $this->parser->line += substr_count($pregMatch[0], "\n");
+                        }
+                    }
+                    if ($trace) {
+                        $this->parser->successNode(array("' '",  $pregMatch[0]));
+                    }
+                    $valid = true;
+                    /*
+                     * End rule: .._?
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error8, 'SequenceElement', $error);
+                        $error = $error8;
+                        break;
+                    }
+                    $error = array();
+                    /*
+                     * Start rule: ')'
+                     *       min: 1 max: 1
+                     */
+                    if (')' == substr($this->parser->source, $this->parser->pos, 1)) {
+                        $this->parser->pos += 1;
+                        $nodeRes['_text'] .= ')';
+                        if ($trace) {
+                            $this->parser->successNode(array('\')\'', ')'));
+                        }
+                        $valid = true;
+                    } else {
+                        $this->parser->matchError($error, 'literal', ')');
+                        if ($trace) {
+                            $this->parser->failNode(array('\')\'',  ''));
+                        }
+                        $valid = false;
+                    }
+                    /*
+                     * End rule: ')'
+                     */
+                    if (!$valid) {
+                        $this->parser->matchError($error8, 'SequenceElement', $error);
+                        $error = $error8;
+                        break;
+                    }
+                    break;
+                } while (true);
+                if ($trace) {
+                    $remove = array_pop($this->parser->backtrace);
+                }
+                if (!$valid) {
+                    if ($trace) {
+                        $this->parser->failNode($remove);
+                    }
+                    $this->parser->pos = $pos8;
+                    $this->parser->line = $line8;
+                    $nodeRes = $backup8;
+                } elseif ($trace) {
+                    $this->parser->successNode($remove);
+                }
+                $error = $error8;
+                unset($backup8);
+                // end sequence
+                /*
+                 * End rule: ('(' .._? seq:Sequence .._? ')')
+                 */
+                if ($valid) {
+                    if ($trace) {
+                        $this->parser->successNode(array_pop($this->parser->backtrace));
+                    }
+                    $error = $error4;
+                    break;
+                } else {
+                    $this->parser->logOption($errorOption4, 'Sequence', $error);
+                }
+                $error = $error4;
+                array_pop($this->parser->backtrace);
+                break;
+            } while (true);
+            // end option
+            /*
+             * End rule: (/(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<wsp>_)(?<wspOptional>\?)?)|(?<matchToken>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | ('(' .._? seq:Sequence .._? ')'))
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            $error = array();
+            /*
+             * Start rule: /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/?
+             *       min: 0 max: 1
+             */
+            $error = array();
+            $regexp = "/((?<quest>\\?)|(?<any>\\*)|(?<must>\\+?)|(\\{(?<min>\\d+)?,(?<max>\\d+)?\\}))?/";
+            $pos = $this->parser->pos;
+            if (isset($this->parser->regexpCache['Rx_RuleToken15'][$pos])) {
+                $matchRes = $this->parser->regexpCache['Rx_RuleToken15'][$pos];
+            } else {
+                if (preg_match($regexp . 'Sxs', $this->parser->source, $pregMatch, PREG_OFFSET_CAPTURE, $pos) && strlen($pregMatch[0][0])) {
+                    if (strlen($pregMatch[0][0]) != 0) {
+                        $matchRes = array('_silent' => 0, '_text' => $pregMatch[0][0], '_startpos' => $pregMatch[0][1], '_endpos' => $pregMatch[0][1] + strlen($pregMatch[0][0]), '_pregMatch' => array());
+                        foreach ($pregMatch as $n => $v) {
+                            if (is_string($n) && strlen($v[0])) {
+                                $matchRes['_pregMatch'][$n] = $v[0];
+                            }
+                        }
+                        if ($matchRes['_startpos'] != $pos) {
+                            $this->parser->regexpCache['Rx_RuleToken15'][$matchRes['_startpos']] = $matchRes;
+                            $this->parser->regexpCache['Rx_RuleToken15'][$pos] = false;
+                            $matchRes = false;
+                        }
+                    } else {
+                        $this->parser->regexpCache['Rx_RuleToken15'][$pos] = false;
+                        $matchRes = false;
+                    }
+                } else {
+                    $this->parser->regexpCache['Rx_RuleToken15'][$pos] = false;
+                    $matchRes = false;
+                }
+            }
+            if ($matchRes) {
+                $matchRes['_lineno'] = $this->parser->line;
+                $this->parser->pos = $matchRes['_endpos'];
+                $this->parser->line += substr_count($matchRes['_text'], "\n");
+                $nodeRes['_text'] .= $matchRes['_text'];
+                if (isset($matchRes['_pregMatch']['quest'])) {
+                    $this->RuleToken_MATCH_quest($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['quest']);
+                }
+                if (isset($matchRes['_pregMatch']['any'])) {
+                    $this->RuleToken_MATCH_any($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['any']);
+                }
+                if (isset($matchRes['_pregMatch']['must'])) {
+                    $this->RuleToken_MATCH_must($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['must']);
+                }
+                if (isset($matchRes['_pregMatch']['min'])) {
+                    $this->RuleToken_MATCH_min($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['min']);
+                }
+                if (isset($matchRes['_pregMatch']['max'])) {
+                    $this->RuleToken_MATCH_max($nodeRes, $matchRes);
+                    unset($matchRes['_pregMatch']['max']);
+                }
+                $nodeRes['_pregMatch'] = array_merge($nodeRes['_pregMatch'], $matchRes['_pregMatch']);
+                $valid = true;
+            } else {
+                $valid = false;
+            }
+            if (!$valid) {
+                $this->parser->matchError($error, 'rx', "/((?<quest>\\?)|(?<any>\\*)|(?<must>\\+?)|(\\{(?<min>\\d+)?,(?<max>\\d+)?\\}))?/");
+            }
+            if (!$valid) {
+                $this->parser->logOption($errorResult, '', $error);
+            }
+            $valid = true;
+            /*
+             * End rule: /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/?
+             */
+            if (!$valid) {
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
+                break;
+            }
+            break;
+        } while (true);
+        if ($trace) {
+            $remove = array_pop($this->parser->backtrace);
+        }
+        if (!$valid) {
+            if ($trace) {
+                $this->parser->failNode($remove);
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $this->parser->successNode($remove);
+        }
+        $error = $error0;
+        unset($backup0);
+        // end sequence
+        if ($valid) {
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
+            $this->RuleToken_FINISH($nodeRes);
+        }
+        if (!$valid) {
+            $nodeRes = false;
+            $this->parser->matchError($errorResult, 'token', $error, 'RuleToken');
+        }
+        return $nodeRes;
+    }
+
+
+    public function RuleToken_START (&$nodeRes, $previous)
+    {
+        if (!isset($nodeRes['_node']))        {
+            $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Token;
+        }
+    }
+
+
+
+    public function RuleToken_MATCH_silent (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setSilent(strlen($matchRes['_pregMatch']['silent']));
+    }
+
+
+
+    public function RuleToken_MATCH_pla (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setPla();
+        $nodeRes['_node']->setSilent(1);
+    }
+
+
+
+    public function RuleToken_MATCH_nla (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setNla();
+        $nodeRes['_node']->setSilent(1);
+    }
+
+
+
+    public function RuleToken_MATCH_tag (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setTag($matchRes['_pregMatch']['tag']);
+    }
+
+
+
+    public function RuleToken_MATCH_rx (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\RegExpr($matchRes['_pregMatch']['rx']));
+    }
+
+
+
+    public function RuleToken_MATCH_wsp (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\WhiteSpace(isset($matchRes['_pregMatch']['wspOptional']) ? true : false));
+    }
+
+
+
+    public function RuleToken_MATCH_matchToken (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\MatchToken($matchRes['_pregMatch']['matchToken']));
+    }
+
+
+
+    public function RuleToken_MATCH_literal (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Literal($matchRes['_pregMatch']['literal']));
+    }
+
+
+
+    public function RuleToken_MATCH_expression (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setRuleToken(new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Expression($matchRes['_pregMatch']['expression']));
+    }
+
+
+
+    public function RuleToken_MATCH_seq (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setRuleToken($matchRes['_node']);
+    }
+
+
+
+    public function RuleToken_MATCH_quest (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setMin(0);
+    }
+
+
+
+    public function RuleToken_MATCH_any (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setMin(0);
+        $nodeRes['_node']->setMax(null);
+    }
+
+
+
+    public function RuleToken_MATCH_must (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setMax(null);
+    }
+
+
+
+    public function RuleToken_MATCH_min (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setMin($matchRes['_pregMatch']['min']);
+        if (isset($matchRes['_pregMatch']['max']))        {
+            $nodeRes['_node']->setMax($matchRes['_pregMatch']['max']);
+            unset($matchRes['_pregMatch']['max']);
+        }
+        else        {
+            $nodeRes['_node']->setMax($matchRes['_pregMatch']['max']);
+        }
+    }
+
+
+
+    public function RuleToken_MATCH_max (&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->setMax($matchRes['_pregMatch']['max']);
+    }
+
+
+
+    public function RuleToken_FINISH (&$nodeRes)
+    {
+        $nodeRes['_node']->setRuleText($nodeRes['_text']);
+        $nodeRes['_pregMatch'] = array();
+    }
+
+
 
     /**
      * Constructor
@@ -3108,19 +4450,12 @@ class Generator extends Parser
     {
         $this->parser = $this;
         $this->context = $context;
-        if (isset($this->rules)) {
-            foreach ($this->rules as $name => $rule) {
-                $this->rulePegParserArray[$name] = $this;
+         if (isset($this->ruleMethods)) {
+            foreach ($this->ruleMethods as $name => $method) {
+                $this->ruleCallbackArray[$name] = array($this, $method);
             }
         }
-        if (isset($this->matchMethods)) {
-            foreach ($this->matchMethods as $name => $rule) {
-                $this->rulePegParserArray[$name] = $this;
-            }
-        }
-        if ($this->trace) {
-            $this->traceFile = fopen('php://output', 'w');
-        }
+        $this->trace = true;
     }
 
     /**
@@ -3131,8 +4466,8 @@ class Generator extends Parser
      */
     public function getRuleAsArray($ruleName)
     {
-        if (isset($this->rules[$ruleName])) {
-            $rule = $this->rules[$ruleName];
+        if (isset($this->ruleArray[$ruleName])) {
+            $rule = $this->ruleArray[$ruleName];
             $rule['_ruleParser'] = $this;
         } else {
             throw new NoRule($ruleName, 0, $this->context);
@@ -3161,11 +4496,13 @@ class Generator extends Parser
     public function compile($string)
     {
         $this->setSource($string);
-        $result = $this->parser->parse('File');
-        $output = '';
-        foreach ($result['_nodes'] as $node) {
-            $output .= $node->compile($this->filename, $this->filetime);
-        }
+        $nodeRes = $this->parser->parse('Root');
+        $root = $nodeRes['_node'];
+        $root->setFilename($this->filename);
+        $root->setFiletime($this->filetime);
+        //$root->compileParserRuleArray();
+        $root->compileParser();
+        $output = $root->getFormatted();
         return $output;
     }
 
@@ -3179,14 +4516,19 @@ class Generator extends Parser
         file_put_contents($outfile, $string);
     }
 
+    /**
+     * @param $string
+     *
+     * @return string
+     */
     public function compileDynamic($string)
     {
         $this->setSource($string);
         if (preg_match("/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/", $this->parser->source, $match)) {
             $this->parser->pos += strlen($match[1]);
             $this->parser->line += substr_count($match[1], "\n");
-            $result = $this->parser->parse('Parser');
-            return $result['_node']->nodes;
+            $nodeRes = $this->parser->parse('Parser');
+            return $nodeRes['_node']->nodes;
         }
         return '';
     }

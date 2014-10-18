@@ -122,7 +122,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Insert extends Smarty_Compiler_Code_P
         // call insert
         if (isset($_assign)) {
             if ($compiler->context->smarty->caching) {
-                $this->precompiled .= str_repeat(' ', $this->indentation * 4);
+                $this->preCompiled .= str_repeat(' ', $this->indentation * 4);
 
                 $this->raw(str_repeat(' ', $this->indentation * 4))
                      ->raw("\$tmp_p = var_export({$_params}, true);")

@@ -1,0 +1,1461 @@
+<?php
+namespace Smarty\Tool\Parser\Peg\InternalTool;
+
+Use Smarty\Template\Context;
+Use Smarty\Compiler;
+Use Smarty\Parser;
+use Smarty\Parser\Peg\Generator\Compiler\Nodes\ParserCompiler;
+use Smarty\Parser\Peg\Generator\Compiler\Nodes\Text;
+
+/**
+ * Class RuleRoot;
+ *
+ * @package Smarty\Nodes\Template
+ */
+class ParserGenerator extends Parser
+{
+    /**
+     * @var null|Generator
+     */
+    public $parser = null;
+
+    /**
+     * @var string
+     */
+    public $filename = '';
+
+    /**
+     * @var null|Generator
+     */
+    public $context = null;
+    /**
+     * @var string
+     */
+    public $filetime = '';
+
+    /**
+     * @var string
+     */
+    public $whitespacePattern = '/[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))*/';
+
+    public $rules = array(
+        "attrvalue" => array(
+            "_name"    => "attrvalue",
+            "_param"   => array(
+                0 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                1 => array(
+                    "_param" => array(
+                        0 => array(
+                            "_param" => "/(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|(\"[^\"]*\")|\\d+|\\w+))/",
+                            "_type"  => "rx"
+                        ),
+                        1 => array(
+                            "_param" => array(
+                                0 => array(
+                                    "_param" => "(",
+                                    "_type"  => "literal"
+                                ),
+                                1 => array(
+                                    "_param" => "attr",
+                                    "_tag"   => "sub",
+                                    "_type"  => "token"
+                                ),
+                                2 => array(
+                                    "_param" => ")",
+                                    "_type"  => "literal"
+                                )
+                            ),
+                            "_type"  => "sequence"
+                        )
+                    ),
+                    "_type"  => "option"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_match"  => array(
+                    "sub" => array(
+                        "attrvalue_sub" => true
+                    )
+                ),
+                "_finish" => array(
+                    "attrvalue___FINISH" => true
+                )
+            )
+        ),
+        "attrentry" => array(
+            "_name"    => "attrentry",
+            "_param"   => array(
+                0 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                1 => array(
+                    "_param" => "Name",
+                    "_tag"   => "key",
+                    "_type"  => "token"
+                ),
+                2 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                3 => array(
+                    "_min"   => 0,
+                    "_param" => array(
+                        0 => array(
+                            "_param" => "=",
+                            "_type"  => "literal"
+                        ),
+                        1 => array(
+                            "_param"  => true,
+                            "_silent" => 2,
+                            "_type"   => "whitespace"
+                        ),
+                        2 => array(
+                            "_param" => "attrvalue",
+                            "_tag"   => "val",
+                            "_type"  => "token"
+                        )
+                    ),
+                    "_type"  => "sequence"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_match" => array(
+                    "key" => array(
+                        "attrentry_key" => true
+                    ),
+                    "val" => array(
+                        "attrentry_val" => true
+                    )
+                )
+            )
+        ),
+        "attr"      => array(
+            "_name"    => "attr",
+            "_param"   => array(
+                0 => array(
+                    "_param" => "attrentry",
+                    "_type"  => "token"
+                ),
+                1 => array(
+                    "_max"   => null,
+                    "_min"   => 0,
+                    "_param" => array(
+                        0 => array(
+                            "_param" => ",",
+                            "_type"  => "literal"
+                        ),
+                        1 => array(
+                            "_param" => "attrentry",
+                            "_type"  => "token"
+                        )
+                    ),
+                    "_type"  => "sequence"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_all" => array(
+                    "attr___ALL" => true
+                )
+            )
+        ),
+        "Name"      => array(
+            "_name"  => "Name",
+            "_param" => "/\\w+/",
+            "_type"  => "rx"
+        ),
+        "Header"    => array(
+            "_name"  => "Header",
+            "_param" => "/\\s*\\/\\*!\\* /",
+            "_type"  => "rx"
+        ),
+        "End"       => array(
+            "_name"   => "End",
+            "_param"  => "/\\s*\\*\\//",
+            "_silent" => 1,
+            "_type"   => "rx"
+        ),
+        "Comment"   => array(
+            "_name"  => "Comment",
+            "_param" => "/[\\s\\t]*(([#][^\\r\\n]*)?([\\r\\n]+[\\s\\t]*))* /",
+            "_type"  => "rx"
+        ),
+        "Text"      => array(
+            "_name"    => "Text",
+            "_param"   => "/([\\S\\s]+(?=([^\\S\\r\\n]\\/\\*!\\*)))|[\\S\\s]+/",
+            "_type"    => "rx",
+            "_actions" => array(
+                "_start" => array(
+                    "Text___START" => true
+                ),
+                "_all"   => array(
+                    "Text___ALL" => true
+                )
+            )
+        ),
+        "Parser"    => array(
+            "_name"    => "Parser",
+            "_param"   => array(
+                0  => array(
+                    "_silent" => 2,
+                    "_param"  => "Header",
+                    "_type"   => "token"
+                ),
+                1  => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                2  => array(
+                    "_param" => "<pegparser",
+                    "_type"  => "literal"
+                ),
+                3  => array(
+                    "_param" => false,
+                    "_type"  => "whitespace"
+                ),
+                4  => array(
+                    "_param" => "Name",
+                    "_type"  => "token"
+                ),
+                5  => array(
+                    "_param" => ">",
+                    "_type"  => "literal"
+                ),
+                6  => array(
+                    "_max"   => null,
+                    "_min"   => 0,
+                    "_param" => "Attribute",
+                    "_type"  => "token"
+                ),
+                7  => array(
+                    "_max"   => null,
+                    "_min"   => 0,
+                    "_param" => "Node",
+                    "_type"  => "token"
+                ),
+                8  => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                9  => array(
+                    "_param" => "</pegparser>",
+                    "_type"  => "literal"
+                ),
+                10 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                11 => array(
+                    "_min"   => 0,
+                    "_param" => "End",
+                    "_type"  => "token"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_start"  => array(
+                    "Parser___START" => true
+                ),
+                "_match"  => array(
+                    "Attribute" => array(
+                        "Parser_Attribute" => true
+                    ),
+                    "Node"      => array(
+                        "Parser_Node" => true
+                    )
+                ),
+                "_finish" => array(
+                    "Parser___FINISH" => true
+                )
+            )
+        ),
+        "Attribute" => array(
+            "_name"    => "Attribute",
+            "_param"   => array(
+                0 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                1 => array(
+                    "_param" => "<attribute>",
+                    "_type"  => "literal"
+                ),
+                2 => array(
+                    "_param" => "attr",
+                    "_type"  => "token"
+                ),
+                3 => array(
+                    "_param" => "</attribute>",
+                    "_type"  => "literal"
+                ),
+                4 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_match"  => array(
+                    "attr" => array(
+                        "Attribute_attr" => true
+                    )
+                ),
+                "_finish" => array(
+                    "Attribute___FINISH" => true
+                )
+            )
+        ),
+        "Node"      => array(
+            "_name"    => "Node",
+            "_param"   => array(
+                0 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                1 => array(
+                    "_param" => "/\\s*\\<node\\s+(?<nodename>\\w+)\\>/",
+                    "_type"  => "rx"
+                ),
+                2 => array(
+                    "_max"   => null,
+                    "_min"   => 0,
+                    "_param" => "Attribute",
+                    "_type"  => "token"
+                ),
+                3 => array(
+                    "_param" => "Rule",
+                    "_type"  => "token"
+                ),
+                4 => array(
+                    "_max"    => null,
+                    "_min"    => 0,
+                    "_silent" => 1,
+                    "_param"  => "Action",
+                    "_type"   => "token"
+                ),
+                5 => array(
+                    "_param" => "</node>",
+                    "_type"  => "literal"
+                ),
+                6 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_start"  => array(
+                    "Node___START" => true
+                ),
+                "_match"  => array(
+                    "Rule"      => array(
+                        "Node_Rule" => true
+                    ),
+                    "Action"    => array(
+                        "Node_Action" => true
+                    ),
+                    "nodename"  => array(
+                        "Node_nodename" => true
+                    ),
+                    "Attribute" => array(
+                        "Node_Attribute" => true
+                    )
+                ),
+                "_finish" => array(
+                    "Node___FINISH" => true
+                )
+            )
+        ),
+        "Rule"      => array(
+            "_name"    => "Rule",
+            "_param"   => array(
+                0 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                1 => array(
+                    "_param" => "<rule>",
+                    "_type"  => "literal"
+                ),
+                2 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                3 => array(
+                    "_param" => "Sequence",
+                    "_type"  => "token"
+                ),
+                4 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                5 => array(
+                    "_param" => "</rule>",
+                    "_type"  => "literal"
+                ),
+                6 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_match"  => array(
+                    "Sequence" => array(
+                        "Rule_Sequence" => true
+                    )
+                ),
+                "_finish" => array(
+                    "Rule___FINISH" => true
+                )
+            )
+        ),
+        "Action"    => array(
+            "_name"    => "Action",
+            "_param"   => array(
+                0 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                1 => array(
+                    "_param" => "/\\<action\\s+(?<funcname>\\w+)(\\((?<argument>\\w+)\\))?\\>/",
+                    "_type"  => "rx"
+                ),
+                2 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                3 => array(
+                    "_param" => "/(\\{(?:(?>[^{}]+|(?R))*)?\\})/",
+                    "_tag"   => "code",
+                    "_type"  => "rx"
+                ),
+                4 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                ),
+                5 => array(
+                    "_param" => "</action>",
+                    "_type"  => "literal"
+                ),
+                6 => array(
+                    "_param"  => true,
+                    "_silent" => 2,
+                    "_type"   => "whitespace"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_match"  => array(
+                    "code" => array(
+                        "Action_code" => true
+                    )
+                ),
+                "_finish" => array(
+                    "Action___FINISH" => true
+                )
+            )
+        ),
+        "PHP"       => array(
+            "_name"    => "PHP",
+            "_param"   => array(
+                0 => array(
+                    "_param" => "/.[\\n\\t ]* /",
+                    "_type"  => "rx"
+                ),
+                1 => array(
+                    "_param"  => "/(\\{|\\}|[^\\n\\}\\{]+)* /",
+                    "_silent" => 1,
+                    "_tag"    => "b",
+                    "_type"   => "rx"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_match" => array(
+                    "b" => array(
+                        "PHP_b" => true
+                    )
+                )
+            )
+        ),
+        "Arguments" => array(
+            "_name"    => "Arguments",
+            "_param"   => array(
+                0 => array(
+                    "_param" => "(",
+                    "_type"  => "literal"
+                ),
+                1 => array(
+                    "_param" => "Name",
+                    "_tag"   => "attr",
+                    "_type"  => "token"
+                ),
+                2 => array(
+                    "_min"   => 0,
+                    "_param" => array(
+                        0 => array(
+                            "_param" => "=",
+                            "_type"  => "literal"
+                        ),
+                        1 => array(
+                            "_param" => array(
+                                0 => array(
+                                    "_param" => "Name",
+                                    "_tag"   => "value",
+                                    "_type"  => "token"
+                                ),
+                                1 => array(
+                                    "_param" => "Arguments",
+                                    "_tag"   => "value",
+                                    "_type"  => "token"
+                                )
+                            ),
+                            "_type"  => "option"
+                        )
+                    ),
+                    "_type"  => "sequence"
+                ),
+                3 => array(
+                    "_max"   => null,
+                    "_min"   => 0,
+                    "_param" => array(
+                        0 => array(
+                            "_param" => ",",
+                            "_type"  => "literal"
+                        ),
+                        1 => array(
+                            "_param" => "Name",
+                            "_tag"   => "attr",
+                            "_type"  => "token"
+                        ),
+                        2 => array(
+                            "_min"   => 0,
+                            "_param" => array(
+                                0 => array(
+                                    "_param" => "=",
+                                    "_type"  => "literal"
+                                ),
+                                1 => array(
+                                    "_param" => array(
+                                        0 => array(
+                                            "_param" => "Name",
+                                            "_tag"   => "value",
+                                            "_type"  => "token"
+                                        ),
+                                        1 => array(
+                                            "_param" => "Arguments",
+                                            "_tag"   => "value",
+                                            "_type"  => "token"
+                                        )
+                                    ),
+                                    "_type"  => "option"
+                                )
+                            ),
+                            "_type"  => "sequence"
+                        )
+                    ),
+                    "_type"  => "sequence"
+                ),
+                4 => array(
+                    "_param" => ")",
+                    "_type"  => "literal"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_finish" => array(
+                    "Arguments___FINISH" => true
+                )
+            )
+        ),
+        "Option"    => array(
+            "_name"    => "Option",
+            "_param"   => array(
+                0 => array(
+                    "_param" => true,
+                    "_type"  => "whitespace"
+                ),
+                1 => array(
+                    "_param" => "Token",
+                    "_tag"   => "result",
+                    "_type"  => "token"
+                ),
+                2 => array(
+                    "_max"   => null,
+                    "_min"   => 0,
+                    "_param" => array(
+                        0 => array(
+                            "_param" => true,
+                            "_type"  => "whitespace"
+                        ),
+                        1 => array(
+                            "_param" => "|",
+                            "_type"  => "literal"
+                        ),
+                        2 => array(
+                            "_param" => true,
+                            "_type"  => "whitespace"
+                        ),
+                        3 => array(
+                            "_param" => "Token",
+                            "_tag"   => "option",
+                            "_type"  => "token"
+                        )
+                    ),
+                    "_type"  => "sequence"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_match"  => array(
+                    "result" => array(
+                        "Option_result" => true
+                    ),
+                    "option" => array(
+                        "Option_option" => true
+                    )
+                ),
+                "_finish" => array(
+                    "Option___FINISH" => true
+                )
+            )
+        ),
+        "Sequence"  => array(
+            "_name"    => "Sequence",
+            "_param"   => array(
+                0 => array(
+                    "_param" => "Option",
+                    "_tag"   => "result",
+                    "_type"  => "token"
+                ),
+                1 => array(
+                    "_max"   => null,
+                    "_min"   => 0,
+                    "_param" => "Option",
+                    "_tag"   => "sequence",
+                    "_type"  => "token"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_match"  => array(
+                    "result"   => array(
+                        "Sequence_result" => true
+                    ),
+                    "sequence" => array(
+                        "Sequence_sequence" => true
+                    )
+                ),
+                "_finish" => array(
+                    "Sequence___FINISH" => true
+                )
+            )
+        ),
+        "Token"     => array(
+            "_name"    => "Token",
+            "_param"   => array(
+                0 => array(
+                    "_param" => "/((?<silent>\\.+)|(?<pla>&)|(?<nla>\\!))?((?<tag>\\w+):)?/",
+                    "_type"  => "rx",
+                    "_min"   => 0
+                ),
+                1 => array(
+                    "_param" => array(
+                        0 => array(
+                            "_param" => "/(?<rx>\\G(\\/|~|@|%|§)(((\\\\\\\\)*\\\\\\2)|.*?(?=(\\\\|\\2)))*\\2)|((?<osp>_\\?)|(?<wsp>_))|(?<node>\\w+)|(?<literal>(\"[^\"]*\")|('[^']*'))|(\\\$(?<expression>\\w+))/",
+                            "_type"  => "rx"
+                        ),
+                        1 => array(
+                            "_param" => array(
+                                0 => array(
+                                    "_param" => "(",
+                                    "_type"  => "literal"
+                                ),
+                                1 => array(
+                                    "_param"  => true,
+                                    "_silent" => 2,
+                                    "_type"   => "whitespace"
+                                ),
+                                2 => array(
+                                    "_param" => "Sequence",
+                                    "_type"  => "token"
+                                ),
+                                3 => array(
+                                    "_param"  => true,
+                                    "_silent" => 2,
+                                    "_type"   => "whitespace"
+                                ),
+                                4 => array(
+                                    "_param" => ")",
+                                    "_type"  => "literal"
+                                )
+                            ),
+                            "_type"  => "sequence"
+                        )
+                    ),
+                    "_type"  => "option"
+                ),
+                2 => array(
+                    "_param" => "/((?<quest>\\?)|(?<any>\\*)|(?<must>\\+?)|(\\{(?<min>\\d+)?,(?<max>\\d+)?\\}))?/",
+                    "_type"  => "rx",
+                    "_min"   => 0
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_start"  => array(
+                    "Token___START" => true
+                ),
+                "_match"  => array(
+                    "Sequence" => array(
+                        "Token_Sequence" => true
+                    )
+                ),
+                "_finish" => array(
+                    "Token___FINISH" => true
+                )
+            )
+        ),
+        "File"      => array(
+            "_max"     => null,
+            "_min"     => 0,
+            "_name"    => "File",
+            "_param"   => array(
+                0 => array(
+                    "_silent" => 1,
+                    "_param"  => "Text",
+                    "_type"   => "token"
+                ),
+                1 => array(
+                    "_max"    => null,
+                    "_min"    => 0,
+                    "_silent" => 1,
+                    "_param"  => "Parser",
+                    "_type"   => "token"
+                )
+            ),
+            "_type"    => "sequence",
+            "_actions" => array(
+                "_start" => array(
+                    "File___START" => true
+                ),
+                "_all"   => array(
+                    "File___ALL" => true
+                )
+            )
+        )
+    );
+
+    /**
+     * Parser rules and action for node 'attrvalue'
+     *  Rule: ->  <node attrvalue> <rule>  .._? (  /(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/ | (  '(' sub:attr ')' ) ) </rule>  <action sub> {
+     * $nodeRes['value'] = $matchRes['_attr'];
+     * } </action>  <action _finish> {
+     * $mr = $nodeRes['_pregMatch'];
+     * if (isset($mr['v1']) && !empty($mr['v1'])) {
+     * $nodeRes['value'] = trim($mr['v1'], "'\"");
+     * }
+     * if (isset($mr['true']) && !empty($mr['true'])) {
+     * $nodeRes['value'] = true;
+     * }
+     * if (isset($mr['false']) && !empty($mr['false'])) {
+     * $nodeRes['value'] = false;
+     * }
+     * if (isset($mr['null']) && !empty($mr['null'])) {
+     * $nodeRes['value'] = null;
+     * }
+     * $nodeRes['_pregMatch'] = array();
+     * } </action> </node>  <-
+
+     */
+
+    public function attrvalue_sub(&$nodeRes, $matchRes)
+    {
+        $nodeRes['value'] = $matchRes['_attr'];
+    }
+
+    public function attrvalue___FINISH(&$nodeRes)
+    {
+        $mr = $nodeRes['_pregMatch'];
+        if (isset($mr['v1']) && !empty($mr['v1'])) {
+            $nodeRes['value'] = trim($mr['v1'], "'\"");
+        }
+        if (isset($mr['true']) && !empty($mr['true'])) {
+            $nodeRes['value'] = true;
+        }
+        if (isset($mr['false']) && !empty($mr['false'])) {
+            $nodeRes['value'] = false;
+        }
+        if (isset($mr['null']) && !empty($mr['null'])) {
+            $nodeRes['value'] = null;
+        }
+        $nodeRes['_pregMatch'] = array();
+    }
+
+    /**
+     * Parser rules and action for node 'attrentry'
+     *  Rule: ->  <node attrentry> <rule>  .._? key:Name .._? (  '=' .._? val:attrvalue )? </rule>  <action key> {
+     * $nodeRes['key'] = $matchRes->_text;
+     * $nodeRes['value'] = array($nodeRes['key'] => true);
+     * } </action>  <action val> {
+     * $nodeRes['value'][$nodeRes['key']] = $matchRes['value'];
+     * } </action> </node>  <-
+
+     */
+
+    public function attrentry_key(&$nodeRes, $matchRes)
+    {
+        $nodeRes['key'] = $matchRes['_text'];
+        $nodeRes['value'] = array($nodeRes['key'] => true);
+    }
+
+    public function attrentry_val(&$nodeRes, $matchRes)
+    {
+        $nodeRes['value'][$nodeRes['key']] = $matchRes['value'];
+    }
+
+
+    /**
+     * Parser rules and action for node 'Name'
+     *  Rule: ->  <node Name> <rule>  /\w+/ </rule> </node>  <-
+
+     */
+
+    /**
+     * Parser rules and action for node 'Header'
+     *  Rule: ->  <node Header> <rule>  /\s*\/\*!\* / </rule> </node>  <-
+
+     */
+
+    /**
+     * Parser rules and action for node 'End'
+     *  Rule: ->  <node End> <rule>  ./\s*\*\// </rule> </node>  <-
+
+     */
+
+    /**
+     * Parser rules and action for node 'Comment'
+     *  Rule: ->  <node Comment> <rule>  /[\s\t]*(([#][^\r\n]*)?([\r\n]+[\s\t]*))* / </rule> </node>  <-
+
+     */
+
+    /**
+     * Parser rules and action for node 'attr'
+     *  Rule: ->  <node attr> <rule>  attrentry (  ',' attrentry )* </rule>  <action _all> {
+     * if (!isset($nodeRes['_attr'])) {
+     * $nodeRes['_attr'] = array();
+     * }
+     * $nodeRes['_attr'] = array_merge($nodeRes['_attr'], $matchRes['value']);
+     * } </action> </node>  <-
+
+     */
+
+    public function attr___ALL(&$nodeRes, $matchRes)
+    {
+        if (!isset($nodeRes['_attr'])) {
+            $nodeRes['_attr'] = array();
+        }
+        $nodeRes['_attr'] = array_merge($nodeRes['_attr'], $matchRes['value']);
+    }
+
+    /**
+     * Parser rules and action for node 'Text'
+     *  Rule: ->  <node Text> <rule>  /([\S\s]+(?=([^\S\r\n]\/\*!\*)))|[\S\s]+/ </rule>  <action _start> {
+     * $nodeRes->_node = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\Text ($this, null);
+     * } </action>  <action _all> {
+     * $nodeRes['_node']['_text'] = $matchRes['_text'];
+     * } </action> </node>  <-
+
+     */
+
+    public function Text___START(&$nodeRes)
+    {
+        $nodeRes['_node'] = new Text ($this, null);
+    }
+
+    public function Text___ALL(&$nodeRes, $matchRes)
+    {
+        $nodeRes['_node']->text = $matchRes['_text'];
+    }
+
+    /**
+     * Parser rules and action for node 'Parser'
+     *  Rule: ->  <node Parser> <rule>  ..Header .._? '<pegparser' _ Name '>' Attribute* Node* .._? '</pegparser>' .._? End? </rule>  <action _start> {
+     * $nodeRes['_node'] = new \Smarty\Parser\Peg\Generator\Compiler\Nodes\ParserCompiler ($this, null);
+     * } </action>  <action Attribute> {
+     * if (!isset($nodeRes['_attr'])) {
+     * $nodeRes['_attr'] = array();
+     * }
+     * $nodeRes['_attr'] = array_merge($nodeRes['_attr'], $matchRes['_attr']);
+     * } </action>  <action Node> {
+     * $matchRes['_nodedef']['rule']['_name'] = $matchRes['_nodedef']['name'];
+     * ksort($matchRes['_nodedef']['rule']);
+     * $nodeRes['_node']->nodes[$matchRes['_nodedef']['name']] = $matchRes['_nodedef']['rule'];
+     * $nodeRes['_node']->comments[$matchRes['_nodedef']['name']] = $matchRes['_text'];
+     * if (isset($matchRes['_attr'])) {
+     * $nodeRes['_node']->attributes[$matchRes['_nodedef']['name']] = $matchRes['_attr'];
+     * }
+     * if (isset($matchRes['_nodedef']['actions'])) {
+     * $nodeRes['_node']->actions[$matchRes['_nodedef']['name']] = $matchRes['_nodedef']['actions'];
+     * }
+     * } </action>  <action _finish> {
+     * $i = 1;
+     * } </action> </node>  <-
+
+     */
+
+    public function Parser___START(&$nodeRes)
+    {
+        $nodeRes['_node'] = new ParserCompiler ($this, null);
+    }
+
+    public function Parser_Attribute(&$nodeRes, $matchRes)
+    {
+        if (!isset($nodeRes['_attr'])) {
+            $nodeRes['_attr'] = array();
+        }
+        $nodeRes['_attr'] = array_merge($nodeRes['_attr'], $matchRes['_attr']);
+    }
+
+    public function Parser_Node(&$nodeRes, $matchRes)
+    {
+        $matchRes['_nodedef']['rule']['_name'] = $matchRes['_nodedef']['name'];
+        ksort($matchRes['_nodedef']['rule']);
+        $nodeRes['_node']->nodes[$matchRes['_nodedef']['name']] = $matchRes['_nodedef']['rule'];
+        $nodeRes['_node']->comments[$matchRes['_nodedef']['name']] = $matchRes['_text'];
+        if (isset($matchRes['_attr'])) {
+            $nodeRes['_node']->attributes[$matchRes['_nodedef']['name']] = $matchRes['_attr'];
+        }
+        if (isset($matchRes['_nodedef']['actions'])) {
+            $nodeRes['_node']->actions[$matchRes['_nodedef']['name']] = $matchRes['_nodedef']['actions'];
+        }
+    }
+
+    public function Parser___FINISH(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    /**
+     * Parser rules and action for node 'Attribute'
+     *  Rule: ->  <node Attribute> <rule>  .._? '<attribute>' attr '</attribute>' .._? </rule>  <action attr> {
+     * $nodeRes['_attr'] = $matchRes['_attr'];
+     * } </action>  <action _finish> {
+     * $i=1;
+     * } </action> </node>  <-
+
+     */
+
+    public function Attribute_attr(&$nodeRes, $matchRes)
+    {
+        $nodeRes['_attr'] = $matchRes['_attr'];
+    }
+
+    public function Attribute___FINISH(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    /**
+     * Parser rules and action for node 'Node'
+     *  Rule: ->  <node Node> <rule>  .._? /\s*\<node\s+(?<nodename>\w+)\>/ Attribute* Rule .Action* '</node>' .._? </rule>  <action _start> {
+     * $i=1;
+     * } </action>  <action Rule> {
+     * $matchRes['_rule']['_name'] = $nodeRes['nodename'];
+     * $nodeRes['_nodedef']['rule'] = array_merge($nodeRes['_nodedef']['rule'], $matchRes['_rule']);
+     * } </action>  <action Action> {
+     * if (!isset($nodeRes['_nodedef']['actions'])) {
+     * $nodeRes['_nodedef']['actions'] = array();
+     * }
+     * $index = count($nodeRes['_nodedef']['actions']);
+     * $nodeRes['_nodedef']['actions'][$index]['funcname'] = $matchRes['_pregMatch']['funcname'];
+     * $nodeRes['_nodedef']['actions'][$index]['code'] = $matchRes['code'];
+     * if (isset($matchRes['_pregMatch']['argument'])) {
+     * $nodeRes['_nodedef']['actions'][$index]['argument'] = $matchRes['_pregMatch']['argument'];
+     * }
+     * unset($matchRes['_pregMatch']);
+     * } </action>  <action nodename> {
+     * $nodeRes['nodename'] = $matchRes['_pregMatch']['nodename'];
+     * $nodeRes['_nodedef']['name'] = $nodeRes['nodename'];
+     * $nodeRes['_nodedef']['rule'] = array();
+     * unset($matchRes['_pregMatch']);
+     * } </action>  <action Attribute> {
+     * if (!isset($nodeRes['_nodedef']['rule']['_attr'])) {
+     * $nodeRes['_nodedef']['rule']['_attr'] = array();
+     * }
+     * $nodeRes['_nodedef']['rule']['_attr'] = array_merge($nodeRes['_nodedef']['rule']['_attr'], $matchRes['_attr']);
+     * } </action>  <action _finish> {
+     * ksort($nodeRes['_nodedef']['rule']);
+     * } </action> </node>  <-
+
+     */
+
+    public function Node___START(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    public function Node_Rule(&$nodeRes, $matchRes)
+    {
+        $matchRes['_rule']['_name'] = $nodeRes['nodename'];
+        $nodeRes['_nodedef']['rule'] = array_merge($nodeRes['_nodedef']['rule'], $matchRes['_rule']);
+    }
+
+    public function Node_Action(&$nodeRes, $matchRes)
+    {
+        if (!isset($nodeRes['_nodedef']['actions'])) {
+            $nodeRes['_nodedef']['actions'] = array();
+        }
+        $index = count($nodeRes['_nodedef']['actions']);
+        $nodeRes['_nodedef']['actions'][$index]['funcname'] = $matchRes['_pregMatch']['funcname'];
+        $nodeRes['_nodedef']['actions'][$index]['code'] = $matchRes['code'];
+        if (isset($matchRes['_pregMatch']['argument'])) {
+            $nodeRes['_nodedef']['actions'][$index]['argument'] = $matchRes['_pregMatch']['argument'];
+        }
+        unset($matchRes['_pregMatch']);
+    }
+
+    public function Node_nodename(&$nodeRes, $matchRes)
+    {
+        $nodeRes['nodename'] = $matchRes['_pregMatch']['nodename'];
+        $nodeRes['_nodedef']['name'] = $nodeRes['nodename'];
+        $nodeRes['_nodedef']['rule'] = array();
+        unset($matchRes['_pregMatch']);
+    }
+
+    public function Node_Attribute(&$nodeRes, $matchRes)
+    {
+        if (!isset($nodeRes['_nodedef']['rule']['_attr'])) {
+            $nodeRes['_nodedef']['rule']['_attr'] = array();
+        }
+        $nodeRes['_nodedef']['rule']['_attr'] = array_merge($nodeRes['_nodedef']['rule']['_attr'], $matchRes['_attr']);
+    }
+
+    public function Node___FINISH(&$nodeRes)
+    {
+        ksort($nodeRes['_nodedef']['rule']);
+    }
+
+    /**
+     * Parser rules and action for node 'Rule'
+     *  Rule: ->  <node Rule> <rule>  .._? '<rule>' .._? Sequence .._? '</rule>' .._? </rule>  <action Sequence> {
+     * $nodeRes['_rule'] = $matchRes['_rule'];
+     * } </action>  <action _finish> {
+     * $i=1;
+     * } </action> </node>  <-
+
+     */
+
+    public function Rule_Sequence(&$nodeRes, $matchRes)
+    {
+        $nodeRes['_rule'] = $matchRes['_rule'];
+    }
+
+    public function Rule___FINISH(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    /**
+     * Parser rules and action for node 'Action'
+     *  Rule: ->  <node Action> <rule>  .._? /\<action\s+(?<funcname>\w+)(\((?<argument>\w+)\))?\>/ .._? code:/(\{(?:(?>[^{}]+|(?R))*)?\})/ .._? '</action>' .._? </rule>  <action code> {
+     * $nodeRes['code'] = $matchRes['_text'];
+     * } </action>  <action _finish> {
+     * $i=1;
+     * } </action> </node>  <-
+
+     */
+
+    public function Action_code(&$nodeRes, $matchRes)
+    {
+        $nodeRes['code'] = $matchRes['_text'];
+    }
+
+    public function Action___FINISH(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    public function Action___START(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    /**
+     * Parser rules and action for node 'PHP'
+     *  Rule: ->  <node PHP> <rule>  /.[\n\t ]* / .b:/(\{|\}|[^\n\}\{]+)* / </rule>  <action b> {
+     * $nodeRes['_text'] = trim($matchRes['_text']);
+     * } </action> </node>  <-
+
+     */
+
+    public function PHP_b(&$nodeRes, $matchRes)
+    {
+        $nodeRes['_text'] = trim($matchRes['_text']);
+    }
+
+    /**
+     * Parser rules and action for node 'Arguments'
+     *  Rule: ->  <node Arguments> <rule>  '(' attr:Name (  '=' value:Name | value:Arguments )? (  ',' attr:Name (  '=' value:Name | value:Arguments )? )* ')' </rule>  <action _finish> {
+     * $i=1;
+     * } </action> </node>  <-
+
+     */
+
+    public function Arguments___FINISH(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    /**
+     * Parser rules and action for node 'Option'
+     *  Rule: ->  <node Option> <rule>  _? result:Token (  _? '|' _? option:Token )* </rule>  <action result> {
+     * $nodeRes['_rule'] = $matchRes['_rule'];
+     * } </action>  <action option> {
+     * ksort($matchRes['_rule']);
+     * if($nodeRes['_rule']['_type'] != 'option') {
+     * ksort($nodeRes['_rule']);
+     * $r = $nodeRes['_rule'];
+     * $nodeRes['_rule'] = array('_type' => 'option', '_param' => array($r, $matchRes['_rule']));
+     * } else {
+     * $nodeRes['_rule']['_param'][] = $matchRes['_rule'];
+     * }
+     * } </action>  <action _finish> {
+     * $i=1;
+     * } </action> </node>  <-
+
+     */
+
+    public function Option_result(&$nodeRes, $matchRes)
+    {
+        $nodeRes['_rule'] = $matchRes['_rule'];
+    }
+
+    public function Option_option(&$nodeRes, $matchRes)
+    {
+        ksort($matchRes['_rule']);
+        if (isset($nodeRes['_rule']['_type']) && $nodeRes['_rule']['_type'] != 'option') {
+            ksort($nodeRes['_rule']);
+            $r = $nodeRes['_rule'];
+            $nodeRes['_rule'] = array('_type' => 'option', '_param' => array($r, $matchRes['_rule']));
+        } else {
+            $nodeRes['_rule']['_param'][] = $matchRes['_rule'];
+        }
+    }
+
+    public function Option___FINISH(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    /**
+     * Parser rules and action for node 'Sequence'
+     *  Rule: ->  <node Sequence> <rule>  result:Option sequence:Option* </rule>  <action result> {
+     * $nodeRes['_rule'] = $matchRes['_rule'];
+     * } </action>  <action sequence> {
+     * ksort($matchRes['_rule']);
+     * if($nodeRes['_rule']['_type'] != 'sequence') {
+     * ksort($nodeRes['_rule']);
+     * $r = $nodeRes['_rule'];
+     * $nodeRes['_rule'] = array('_type' => 'sequence', '_param' => array($r, $matchRes['_rule']));
+     * } else {
+     * $nodeRes['_rule']['_param'][] = $matchRes['_rule'];
+     * }
+     * } </action>  <action _finish> {
+     * $i=1;
+     * } </action> </node>  <-
+
+     */
+
+    public function Sequence_result(&$nodeRes, $matchRes)
+    {
+        $nodeRes['_rule'] = $matchRes['_rule'];
+    }
+
+    public function Sequence_sequence(&$nodeRes, $matchRes)
+    {
+        ksort($matchRes['_rule']);
+        if (isset($nodeRes['_rule']['_type']) && $nodeRes['_rule']['_type'] != 'sequence') {
+            ksort($nodeRes['_rule']);
+            $r = $nodeRes['_rule'];
+            $nodeRes['_rule'] = array('_type' => 'sequence', '_param' => array($r, $matchRes['_rule']));
+        } else {
+            $nodeRes['_rule']['_param'][] = $matchRes['_rule'];
+        }
+    }
+
+    public function Sequence___FINISH(&$nodeRes)
+    {
+        $i = 1;
+    }
+
+    /**
+     * Parser rules and action for node 'Token'
+     *  Rule: ->  <node Token> <rule>  /((?<silent>\.+)|(?<pla>&)|(?<nla>\!))?((?<tag>\w+):)?/ (  /(?<rx>\G(\/|~|@|%|§)(((\\\\)*\\\2)|.*?(?=(\\|\2)))*\2)|((?<osp>_\?)|(?<wsp>_))|(?<node>\w+)|(?<literal>("[^"]*")|('[^']*'))|(\$(?<expression>\w+))/ | (  '(' .._? Sequence .._? ')' ) ) /((?<quest>\?)|(?<any>\*)|(?<must>\+?)|(\{(?<min>\d+)?,(?<max>\d+)?\}))?/ </rule>  <action _start> {
+     * $nodeRes['_rule'] = array();
+     * } </action>  <action Sequence> {
+     * $nodeRes['_rule'] = $matchRes['_rule'];
+     * } </action>  <action _finish> {
+     * $mr = $nodeRes['_pregMatch'];
+     * if (isset($mr['osp']) && !empty($mr['osp'])) {
+     * $nodeRes['_rule']['_type'] = 'whitespace';
+     * $nodeRes['_rule']['_param'] = true;
+     * }
+     * if (isset($mr['wsp']) && !empty($mr['wsp'])) {
+     * $nodeRes['_rule']['_type'] = 'whitespace';
+     * $nodeRes['_rule']['_param'] = false;
+     * }
+     * if (isset($mr['node']) && !empty($mr['node'])) {
+     * $nodeRes['_rule']['_type'] = 'token';
+     * $nodeRes['_rule']['_param'] = $mr['node'];
+     * }
+     * if (isset($mr['expression']) && !empty($mr['expression'])) {
+     * $nodeRes['_rule']['_type'] = 'expression';
+     * $nodeRes['_rule']['_param'] = $mr['expression'];
+     * }
+     * if (isset($mr['literal']) && !empty($mr['literal'])) {
+     * $nodeRes['_rule']['_type'] = 'literal';
+     * $nodeRes['_rule']['_param'] = trim($mr['literal'],"'\"");
+     * }
+     * if (isset($mr['rx']) && !empty($mr['rx'])) {
+     * $nodeRes['_rule']['_type'] = 'rx';
+     * $nodeRes['_rule']['_param'] = $mr['rx'];
+     * }
+     * if (isset($mr['silent']) && !empty($mr['silent'])) {
+     * $nodeRes['_rule']['_silent'] = strlen($mr['silent']);
+     * }
+     * if (isset($mr['pla']) && !empty($mr['pla'])) {
+     * $nodeRes['_rule']['_pla'] = true;
+     * }
+     * if (isset($mr['nla']) && !empty($mr['nla'])) {
+     * $nodeRes['_rule']['_nla'] = true;
+     * }
+     * if (isset($mr['tag']) && !empty($mr['tag'])) {
+     * $nodeRes['_rule']['_tag'] =$mr['tag'];
+     * }
+     * if (isset($mr['quest']) && !empty($mr['quest'])) {
+     * $nodeRes['_rule']['_min'] = 0;
+     * } elseif (isset($mr['any']) && !empty($mr['any'])) {
+     * $nodeRes['_rule']['_min'] = 0;
+     * $nodeRes['_rule']['_max'] = null;
+     * } elseif (isset($mr['must']) && !empty($mr['must'])) {
+     * $nodeRes['_rule']['_max'] = null;
+     * } else {
+     * if (isset($mr['min']) && !empty($mr['min'])) {
+     * $nodeRes['_rule']['_min'] = $mr['min'];
+     * $nodeRes['_rule']['_max'] = null;
+     * }
+     * if (isset($mr['max']) && !empty($mr['max'])) {
+     * $nodeRes['_rule']['_max'] = $mr['max'];
+     * }
+     * }
+     * $nodeRes['_pregMatch'] = array();
+     * } </action> </node>  <-
+
+     */
+
+    public function Token___START(&$nodeRes)
+    {
+        $nodeRes['_rule'] = array();
+    }
+
+    public function Token_Sequence(&$nodeRes, $matchRes)
+    {
+        $nodeRes['_rule'] = $matchRes['_rule'];
+    }
+
+    public function Token___FINISH(&$nodeRes)
+    {
+        $mr = $nodeRes['_pregMatch'];
+        if (isset($mr['osp']) && !empty($mr['osp'])) {
+            $nodeRes['_rule']['_type'] = 'whitespace';
+            $nodeRes['_rule']['_param'] = true;
+        }
+        if (isset($mr['wsp']) && !empty($mr['wsp'])) {
+            $nodeRes['_rule']['_type'] = 'whitespace';
+            $nodeRes['_rule']['_param'] = false;
+        }
+        if (isset($mr['node']) && !empty($mr['node'])) {
+            $nodeRes['_rule']['_type'] = 'token';
+            $nodeRes['_rule']['_param'] = $mr['node'];
+        }
+        if (isset($mr['expression']) && !empty($mr['expression'])) {
+            $nodeRes['_rule']['_type'] = 'expression';
+            $nodeRes['_rule']['_param'] = $mr['expression'];
+        }
+        if (isset($mr['literal']) && !empty($mr['literal'])) {
+            $nodeRes['_rule']['_type'] = 'literal';
+            $nodeRes['_rule']['_param'] = trim($mr['literal'], "'\"");
+        }
+        if (isset($mr['rx']) && !empty($mr['rx'])) {
+            $nodeRes['_rule']['_type'] = 'rx';
+            $nodeRes['_rule']['_param'] = $mr['rx'];
+        }
+        if (isset($mr['silent']) && !empty($mr['silent'])) {
+            $nodeRes['_rule']['_silent'] = strlen($mr['silent']);
+        }
+        if (isset($mr['pla']) && !empty($mr['pla'])) {
+            $nodeRes['_rule']['_pla'] = true;
+        }
+        if (isset($mr['nla']) && !empty($mr['nla'])) {
+            $nodeRes['_rule']['_nla'] = true;
+        }
+        if (isset($mr['tag']) && !empty($mr['tag'])) {
+            $nodeRes['_rule']['_tag'] = $mr['tag'];
+        }
+        if (isset($mr['quest']) && !empty($mr['quest'])) {
+            $nodeRes['_rule']['_min'] = 0;
+        } elseif (isset($mr['any']) && !empty($mr['any'])) {
+            $nodeRes['_rule']['_min'] = 0;
+            $nodeRes['_rule']['_max'] = null;
+        } elseif (isset($mr['must']) && !empty($mr['must'])) {
+            $nodeRes['_rule']['_max'] = null;
+        } else {
+            if (isset($mr['min']) && !empty($mr['min'])) {
+                $nodeRes['_rule']['_min'] = $mr['min'];
+                $nodeRes['_rule']['_max'] = null;
+            }
+            if (isset($mr['max']) && !empty($mr['max'])) {
+                $nodeRes['_rule']['_max'] = $mr['max'];
+            }
+        }
+        $nodeRes['_pregMatch'] = array();
+    }
+
+    /**
+     * Parser rules and action for node 'File'
+     *  Rule: ->  <node File> <rule>  (  .Text .Parser* )* </rule>  <action _start> {
+     * $nodeRes['_nodes']= array();
+     * } </action>  <action _all> {
+     * if (isset($matchRes->_node)) {
+     * $nodeRes['_nodes'][] = $matchRes['_node'];
+     * }
+     * } </action> </node>  <-
+
+     */
+
+    public function File___START(&$nodeRes)
+    {
+        $nodeRes['_nodes'] = array();
+    }
+
+    public function File___ALL(&$nodeRes, $matchRes)
+    {
+        if (isset($matchRes['_node'])) {
+            $nodeRes['_nodes'][] = $matchRes['_node'];
+        }
+    }
+
+    /**
+     * @param $ruleName
+     *
+     * @return mixed
+     * @throws \Smarty_Parser_Peg_Exception_NoRule
+     */
+    public function getRuleAsArray($ruleName)
+    {
+        if (isset($this->ruleArray[$ruleName])) {
+            $rule = $this->ruleArray[$ruleName];
+            $rule['_ruleParser'] = $this;
+        } else {
+            throw new \Smarty_Parser_Peg_Exception_NoRule($ruleName, 0, $this->context);
+        }
+        return $rule;
+    }
+
+    public function getMatchMethod($ruleName, $quiet = false)
+    {
+        return false;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param \Smarty_Compiler|\Smarty_Compiler_CompilerCore $compiler compiler object
+     * @param \Smarty_Template_Context                       $context
+     */
+    function __construct(Compiler $compiler, Context $context)
+    {
+        $this->parser = $this;
+        $this->context = $context;
+        if (isset($this->ruleArray)) {
+            foreach ($this->ruleArray as $name => $rule) {
+                $this->rulePegParserArray[$name] = $this;
+            }
+        }
+        if (isset($this->ruleMethods)) {
+            foreach ($this->ruleMethods as $name => $rule) {
+                $this->rulePegParserArray[$name] = $this;
+            }
+        }
+        $this->trace = true;
+        if ($this->trace) {
+            $this->traceFile = fopen('php://output', 'w');
+        }
+    }
+
+    /**
+     * @param $infile
+     *
+     * @return mixed
+     */
+    public function compileFile($infile)
+    {
+        $this->filename = $infile;
+        $this->filetime = filemtime($infile);
+        $string = file_get_contents($infile);
+        return $this->compile($string);
+    }
+
+    /**
+     * @param $string
+     *
+     * @return mixed
+     */
+    public function compile($string)
+    {
+        $this->setSource($string);
+        $nodeRes = $this->parser->parse('File');
+        //        $nodeRes = $this->match_File();
+        $output = '';
+        foreach ($nodeRes['_nodes'] as $node) {
+            $output .= $node->compile($this->filename, $this->filetime);
+        }
+        return $output;
+    }
+
+    /**
+     * @param $string
+     * @param $outfile
+     */
+    public function compileStringToFile($string, $outfile)
+    {
+        $string = $this->compile($string);
+        file_put_contents($outfile, $string);
+    }
+}
+

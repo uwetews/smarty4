@@ -115,9 +115,9 @@ class TagOutput extends Magic
                 // auto loaded filters
                 if (isset($compiler->context->smarty->_autoloadFilters[Smarty::FILTER_VARIABLE])) {
                     foreach ((array) $compiler->context->smarty->_autoloadFilters[Smarty::FILTER_VARIABLE] as $name) {
-                        $result = $this->compile_output_filter($compiler, $name, $output);
-                        if ($result !== false) {
-                            $output = $result;
+                        $nodeRes = $this->compile_output_filter($compiler, $name, $output);
+                        if ($nodeRes !== false) {
+                            $output = $nodeRes;
                         } else {
                             // not found, throw exception
                             throw new \Smarty_Exception("Unable to load filter '{$name}'");
@@ -126,8 +126,8 @@ class TagOutput extends Magic
                 }
                 if (isset($compiler->context->smarty->_variableFilters)) {
                     foreach ($compiler->context->smarty->_variableFilters as $filter) {
-                        if (count($filter) == 1 && ($result = $this->compile_output_filter($compiler, $filter[0], $output)) !== false) {
-                            $output = $result;
+                        if (count($filter) == 1 && ($nodeRes = $this->compile_output_filter($compiler, $filter[0], $output)) !== false) {
+                            $output = $nodeRes;
                         } else {
                             $output = $compiler->compileTag('Internal_Modifier', array(), array('modifier_list' => array($filter), 'value' => $output));
                         }

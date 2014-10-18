@@ -1,36 +1,39 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class TagAssignParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class TagAssignParser extends PegParser
+class TagAssignParser extends RuleRoot
 {
+   
+    /**
+     *
+     * Parser generated on 2014-09-04 02:35:35
+     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagAssign.peg.inc' dated 2014-08-22 04:53:52
+     *
+    */
 
     /**
-     * Parser generated on 2014-08-10 18:55:25
-     *  Rule filename 'C:\wamp\www\smarty4\lib\Smarty/Parser/Source/Language/Smarty/Parser/TagAssign.peg.inc' dated 2014-07-08 03:12:19
-
-     */
-
-    /**
-     * Flag that compiled Peg Parser class is valid
+     Flag that compiled Peg Parser class is valid
+     *
      * @var bool
      */
     public $valid = true;
+
 
     /**
      * Array of match method names for rules of this Peg Parser
      *
      * @var array
      */
-    public $matchMethods = array(
-        "TagAssign" => "matchNodeTagAssign"
-    );
+    public $ruleMethods = array(
+            "TagAssign" => "matchNodeTagAssign"
+        );
 
     /**
      * Array of node attributes
@@ -38,174 +41,274 @@ class TagAssignParser extends PegParser
      * @var array
      */
     public $nodeAttributes = array(
-        "TagAssign" => array(
-            "_nodetype"  => "node",
-            "attributes" => array(
-                "required" => array(
-                    "var"   => true,
-                    "value" => true
+            "TagAssign" => array(
+                    "attributes" => array(
+                            "required" => array(
+                                    "var" => true,
+                                    "value" => true
+                                )
+                        ),
+                    "options" => array(
+                            "nocache" => true,
+                            "cachevalue" => true
+                        )
                 )
-            ),
-            "options"    => array(
-                "nocache"    => true,
-                "cachevalue" => true
-            )
-        )
-    );
-
+        );
     /**
-     * Parser rules and action for node 'TagAssign'
+     *
+     * Parser rules and actions for node 'TagAssign'
+     *
      *  Rule:
-     * <node TagAssign>
-     * <attribute>attributes=(required=(var,value)),options=(nocache,cachevalue)</attribute>
-     * <rule>Ldel 'assign' SmartyTagAttributes SmartyTagOptions Rdel</rule>
-     * <action _start>
-     * {
-     * $result['node'] = $previous['node'];
-     * }
-     * </action>
-     * </node>
-
-
-     */
-    public function matchNodeTagAssign($previous, &$errorResult)
-    {
-        $result = $this->parser->resultDefault;
+     * 
+     * 
+     *            <node TagAssign>
+     *                <attribute>attributes=(required=(var,value)),options=(nocache,cachevalue)</attribute>
+     *                <rule>Ldel 'assign' SmartyTagAttributes SmartyTagOptions Rdel</rule>
+     *                <action _start>
+     *                {
+     *                    $nodeRes['node'] = $previous['node'];
+     *                }
+     *                </action>
+     *            </node>
+     * 
+     *
+    */
+    public function matchNodeTagAssign($previous, &$errorResult){
+        $trace = $this->parser->trace;
+        if ($trace) {
+            $traceObj = $this->parser->getTraceObj();
+        }
+        $nodeRes = $this->parser->resultDefault;
         $error = array();
-        $pos0 = $result['_startpos'] = $result['_endpos'] = $this->parser->pos;
-        $result['_lineno'] = $this->parser->line;
-        $this->TagAssign___START($result, $previous);
-        // Start 'TagAssign' min '1' max '1'
+        $pos0 = $nodeRes['_startpos'] = $nodeRes['_endpos'] = $this->parser->pos;
+        $nodeRes['_lineno'] = $this->parser->line;
+        $this->TagAssign_START($nodeRes, $previous);
         // start sequence
-        $backup1 = $result;
-        $pos1 = $this->parser->pos;
-        $line1 = $this->parser->line;
-        $error1 = $error;
-        $this->parser->addBacktrace(array('_s1_', ''));
+        $backup0 = $nodeRes;
+        $pos0 = $this->parser->pos;
+        $line0 = $this->parser->line;
+        $error0 = $error;
+        if ($trace) {
+            $traceObj->addBacktrace(array('_s0_', ''));
+        }
         do {
             $error = array();
-            // Start 'Ldel' min '1' max '1'
-            $this->parser->addBacktrace(array('Ldel', ''));
-            $subres = $this->parser->matchRule($result, 'Ldel', $error);
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Ldel', $subres['_text']));
-                $result['_text'] .= $subres['_text'];
+            /*
+             * Start rule: Ldel
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $traceObj->addBacktrace(array('Ldel', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Ldel', $error);
+            if ($trace) {
+                $remove = $traceObj->popBacktrace();
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $traceObj->successNode(array('Ldel',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                if(!isset($nodeRes['Ldel'])) {
+                    $nodeRes['Ldel'] = $matchRes;
+                } else {
+                    if (!is_array($nodeRes['Ldel'])) {
+                        $nodeRes['Ldel'] = array($nodeRes['Ldel']);
+                    }
+                    $nodeRes['Ldel'][] = $matchRes;
+                }
                 $valid = true;
             } else {
                 $valid = false;
-                $this->parser->failNode($remove);
+                if ($trace) {
+                    $traceObj->failNode($remove);
+                }
             }
-            // End 'Ldel'
+            /*
+             * End rule: Ldel
+             */
             if (!$valid) {
-                $this->parser->matchError($error1, 'SequenceElement', $error);
-                $error = $error1;
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
                 break;
             }
             $error = array();
-            // Start ''assign'' min '1' max '1'
+            /*
+             * Start rule: 'assign'
+             *       min: 1 max: 1
+             */
             if ('assign' == substr($this->parser->source, $this->parser->pos, 6)) {
                 $this->parser->pos += 6;
-                $result['_text'] .= 'assign';
-                $this->parser->successNode(array('\'assign\'', 'assign'));
+                $nodeRes['_text'] .= 'assign';
+                if ($trace) {
+                    $traceObj->successNode(array('\'assign\'', 'assign'));
+                }
                 $valid = true;
             } else {
                 $this->parser->matchError($error, 'literal', 'assign');
-                $this->parser->failNode(array('\'assign\'', ''));
+                if ($trace) {
+                    $traceObj->failNode(array('\'assign\'',  ''));
+                }
                 $valid = false;
             }
-            // End ''assign''
+            /*
+             * End rule: 'assign'
+             */
             if (!$valid) {
-                $this->parser->matchError($error1, 'SequenceElement', $error);
-                $error = $error1;
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
                 break;
             }
             $error = array();
-            // Start 'SmartyTagAttributes' min '1' max '1'
-            $this->parser->addBacktrace(array('SmartyTagAttributes', ''));
-            $subres = $this->parser->matchRule($result, 'SmartyTagAttributes', $error);
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('SmartyTagAttributes', $subres['_text']));
-                $result['_text'] .= $subres['_text'];
+            /*
+             * Start rule: SmartyTagAttributes
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $traceObj->addBacktrace(array('SmartyTagAttributes', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'SmartyTagAttributes', $error);
+            if ($trace) {
+                $remove = $traceObj->popBacktrace();
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $traceObj->successNode(array('SmartyTagAttributes',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                if(!isset($nodeRes['SmartyTagAttributes'])) {
+                    $nodeRes['SmartyTagAttributes'] = $matchRes;
+                } else {
+                    if (!is_array($nodeRes['SmartyTagAttributes'])) {
+                        $nodeRes['SmartyTagAttributes'] = array($nodeRes['SmartyTagAttributes']);
+                    }
+                    $nodeRes['SmartyTagAttributes'][] = $matchRes;
+                }
                 $valid = true;
             } else {
                 $valid = false;
-                $this->parser->failNode($remove);
+                if ($trace) {
+                    $traceObj->failNode($remove);
+                }
             }
-            // End 'SmartyTagAttributes'
+            /*
+             * End rule: SmartyTagAttributes
+             */
             if (!$valid) {
-                $this->parser->matchError($error1, 'SequenceElement', $error);
-                $error = $error1;
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
                 break;
             }
             $error = array();
-            // Start 'SmartyTagOptions' min '1' max '1'
-            $this->parser->addBacktrace(array('SmartyTagOptions', ''));
-            $subres = $this->parser->matchRule($result, 'SmartyTagOptions', $error);
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('SmartyTagOptions', $subres['_text']));
-                $result['_text'] .= $subres['_text'];
+            /*
+             * Start rule: SmartyTagOptions
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $traceObj->addBacktrace(array('SmartyTagOptions', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'SmartyTagOptions', $error);
+            if ($trace) {
+                $remove = $traceObj->popBacktrace();
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $traceObj->successNode(array('SmartyTagOptions',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                if(!isset($nodeRes['SmartyTagOptions'])) {
+                    $nodeRes['SmartyTagOptions'] = $matchRes;
+                } else {
+                    if (!is_array($nodeRes['SmartyTagOptions'])) {
+                        $nodeRes['SmartyTagOptions'] = array($nodeRes['SmartyTagOptions']);
+                    }
+                    $nodeRes['SmartyTagOptions'][] = $matchRes;
+                }
                 $valid = true;
             } else {
                 $valid = false;
-                $this->parser->failNode($remove);
+                if ($trace) {
+                    $traceObj->failNode($remove);
+                }
             }
-            // End 'SmartyTagOptions'
+            /*
+             * End rule: SmartyTagOptions
+             */
             if (!$valid) {
-                $this->parser->matchError($error1, 'SequenceElement', $error);
-                $error = $error1;
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
                 break;
             }
             $error = array();
-            // Start 'Rdel' min '1' max '1'
-            $this->parser->addBacktrace(array('Rdel', ''));
-            $subres = $this->parser->matchRule($result, 'Rdel', $error);
-            $remove = array_pop($this->parser->backtrace);
-            if ($subres) {
-                $this->parser->successNode(array('Rdel', $subres['_text']));
-                $result['_text'] .= $subres['_text'];
+            /*
+             * Start rule: Rdel
+             *       min: 1 max: 1
+             */
+            if ($trace) {
+                $traceObj->addBacktrace(array('Rdel', ''));
+            }
+            $matchRes = $this->parser->matchRule($nodeRes, 'Rdel', $error);
+            if ($trace) {
+                $remove = $traceObj->popBacktrace();
+            }
+            if ($matchRes) {
+                if ($trace) {
+                    $traceObj->successNode(array('Rdel',  $matchRes['_text']));
+                }
+                $nodeRes['_text'] .= $matchRes['_text'];
+                if(!isset($nodeRes['Rdel'])) {
+                    $nodeRes['Rdel'] = $matchRes;
+                } else {
+                    if (!is_array($nodeRes['Rdel'])) {
+                        $nodeRes['Rdel'] = array($nodeRes['Rdel']);
+                    }
+                    $nodeRes['Rdel'][] = $matchRes;
+                }
                 $valid = true;
             } else {
                 $valid = false;
-                $this->parser->failNode($remove);
+                if ($trace) {
+                    $traceObj->failNode($remove);
+                }
             }
-            // End 'Rdel'
+            /*
+             * End rule: Rdel
+             */
             if (!$valid) {
-                $this->parser->matchError($error1, 'SequenceElement', $error);
-                $error = $error1;
+                $this->parser->matchError($error0, 'SequenceElement', $error);
+                $error = $error0;
                 break;
             }
             break;
         } while (true);
-        $remove = array_pop($this->parser->backtrace);
         if (!$valid) {
-            $this->parser->failNode($remove);
-            $this->parser->pos = $pos1;
-            $this->parser->line = $line1;
-            $result = $backup1;
-        } else {
-            $this->parser->successNode($remove);
+            if ($trace) {
+                $traceObj->failNode();
+            }
+            $this->parser->pos = $pos0;
+            $this->parser->line = $line0;
+            $nodeRes = $backup0;
+        } elseif ($trace) {
+            $traceObj->successNode();
         }
-        $error = $error1;
-        unset($backup1);
+        $error = $error0;
+        unset($backup0);
         // end sequence
-        // End 'TagAssign'
         if ($valid) {
-            $result['_endpos'] = $this->parser->pos;
-            $result['_endline'] = $this->parser->line;
+            $nodeRes['_endpos'] = $this->parser->pos;
+            $nodeRes['_endline'] = $this->parser->line;
         }
         if (!$valid) {
-            $result = false;
+            $nodeRes = false;
             $this->parser->matchError($errorResult, 'token', $error, 'TagAssign');
         }
-        return $result;
+        return $nodeRes;
+    }
+    public function TagAssign_START (&$nodeRes, $previous)
+    {
+        $nodeRes['node'] = $previous['node'];
     }
 
-    public function TagAssign___START(&$result, $previous)
-    {
-        $result['node'] = $previous['node'];
-    }
+
 }
 

@@ -1,17 +1,4 @@
 <?php
-/**
- * Smarty Compiler Node
- *
- * @package Smarty\Compiler
- * @author  Uwe Tews
- */
-
-/**
- * Smarty Compiler Node
- * Basic Parent Compiler Node
- *
- * @package Smarty\Compiler
- */
 namespace Smarty\Compiler;
 
 use Smarty\Node;
@@ -20,31 +7,15 @@ use Smarty\Exception\Magic;
 
 /**
  * Class Code
- * This class is an container for precompiled or formatted code blocks
+ * This class is an container for pre compiled or formatted code blocks
  * and related handling methods
  *
  * @package Smarty\Nodes
  */
-class Code extends Magic
+class Code //extends Magic
 {
-    public $sourceLineNo = null;
-
     /**
-     * Current source line number
-     *
-     * @var int
-     */
-    public $sourceStartPos = null;
-
-    /**
-     * Current source line number
-     *
-     * @var int
-     */
-    public $sourceEndPos = null;
-
-    /**
-     * Index of last precompiled raw entry
+     * Index of last pre compiled raw entry
      *
      * @var int
      */
@@ -55,18 +26,33 @@ class Code extends Magic
      *
      * @var array
      */
-    public $precompiled = array();
+    public $preCompiled = array();
 
     /**
-     * Last of precompiled code
+     * Last line number of pre compiled code
      *
      * @var int
      */
     public $lastLineNo = 0;
+    /**
+     * @var bool
+     */
     public $isParsed = false;
-    public $isPrecompiled = false;
+    /**
+     * @var bool
+     */
+    public $isPreCompiled = false;
+    /**
+     * @var bool
+     */
     public $isFormatted = false;
+    /**
+     * @var null
+     */
     public $node = null;
+    /**
+     * @var null
+     */
     public $formatter = null;
 
     const INDENTATION = 0;
@@ -85,6 +71,207 @@ class Code extends Magic
     function __construct($node = null)
     {
         $this->node = $node;
+    }
+
+
+    /**
+     * Apends a raw string to the compiled code.
+     *
+     * @param  string $string The string
+     *
+     * @return $this   current node
+     */
+    public function raw($string)
+    {
+        if ($this->ind_last_raw >= 0 && $this->preCompiled[$this->ind_last_raw][0] == self::RAW) {
+            $this->preCompiled[$this->ind_last_raw][1] .= $string;
+        } else {
+            $this->preCompiled[] = array(self::RAW, $string);
+            $this->ind_last_raw = count($this->preCompiled) - 1;
+        }
+        return $this;
+    }
+
+
+    /**
+     * The follow section contains the methods for precompiled code
+     */
+
+    /**
+     * Add newline to the current buffer.
+     *
+     * @return $this   current node
+     */
+    public function newline()
+    {
+        $this->raw("\n");
+        return $this;
+    }
+
+    /**
+     * Add a line of PHP code to output.
+     *
+     * @param  string $value PHP source
+     *
+     * @return $this   current node
+     */
+    public function code($value, $indent = 0)
+    {
+        if ($indent < 0) {
+            $this->outdent(- $indent);
+        }
+        $this->preCompiled[] = array(self::INDENTATION, $value);
+        if ($indent > 0) {
+            $this->indent($indent);
+        }
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+    /**
+     * Add an indentation to the current buffer.
+     *
+     * @return $this   current node
+     */
+    public function addIndentation()
+    {
+        $this->preCompiled[] = array(self::INDENTATION, null);
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+    /**
+     * Adds a quoted string to the compiled code.
+     *
+     * @param string   $value         The string
+     * @param bool     $double_quote  flag if double quotes shall be used
+     * @param null|int $string_length option string line length
+     *
+     * @return $this   current node
+     */
+    public function string($value, $double_quote = true, $string_length = null)
+    {
+        $this->preCompiled[] = array(self::STRING, $value, $double_quote, $string_length);
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+    /**
+     * Adds the PHP representation of a given value to the current buffer
+     *
+     * @param  mixed   $value         The value to convert
+     * @param  bool    $double_quote  flag to use double quotes on strings
+     * @param null|int $string_length option string line length
+     *
+     * @return $this   current node
+     */
+    public function repr($value, $double_quote = true, $string_length = null)
+    {
+        $this->preCompiled[] = array(self::REPR, $value, $double_quote, $string_length);
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+    /**
+     * Insert source line number
+     *
+     * @param  integer $line source line number
+     *
+     * @return $this   current node
+     */
+    public function lineNo($line)
+    {
+        if ($this->lastLineNo != $line) {
+            $this->preCompiled[] = array(self::LINE, $line);
+            $this->lastLineNo = $line;
+        }
+        return $this;
+    }
+
+    /**
+     * Outdents the generated code.
+     *
+     * @param integer $step The number of indentation to remove
+     *
+     * @return $this   current node
+     */
+    public function outdent($step = 1)
+    {
+        $this->preCompiled[] = array(self::OUTDENT, $step);
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+    /**
+     * Indents the generated code.
+     *
+     * @param  integer $step The number of indentation to add
+     *
+     * @return $this   current node
+     */
+    public function indent($step = 1)
+    {
+        $this->preCompiled[] = array(self::INDENT, $step);
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+    /**
+     * inserts curly open bracket generated code.
+     *
+     * @return $this   current node
+     */
+    public function openCurly()
+    {
+        $this->preCompiled[] = array(self::RAW, "{\n");
+        $this->preCompiled[] = array(self::INDENT, 1);
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+    /**
+     * inserts curly close bracket generated code.
+     *
+     * @return $this   current node
+     */
+    public function closeCurly()
+    {
+        $this->preCompiled[] = array(self::RAW, "\n");
+        $this->preCompiled[] = array(self::OUTDENT, 1);
+        $this->preCompiled[] = array(self::INDENTATION, "\n}\n");
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+
+    /**
+     * Merge other code buffer into current
+     *
+     * @param  \Smarty_Compiler_Code $code
+     *
+     * @return \Smarty_Compiler_code
+     */
+    public function mergeCode(Code $code)
+    {
+        $this->mergeTraceBackInfo($code->traceback);
+        $this->preCompiled = array_merge($this->preCompiled, $code->preCompiled);
+        $this->ind_last_raw = - 1;
+        return $this;
+    }
+
+    /**
+     * Merge traceback
+     *
+     * @param  \Smarty_Compiler_Node $node source node
+     *
+     * @return \Smarty_Compiler_Format
+     */
+    public function mergeTraceBackInfo(Code $code)
+    {
+        foreach ($code->traceback as $codeline => $line) {
+            $this->traceback[$codeline + $this->compiledLineNumber] = $line;
+        }
+        return $this;
     }
 
     /**
@@ -123,191 +310,6 @@ class Code extends Magic
             $nodes = null;
         }
         return $this;
-    }
-
-    /**
-     * Apends a raw string to the compiled code.
-     *
-     * @param  string $string The string
-     *
-     * @return $this   current node
-     */
-    public function raw($string)
-    {
-        if ($this->ind_last_raw >= 0 && $this->precompiled[$this->ind_last_raw][0] == self::RAW) {
-            $this->precompiled[$this->ind_last_raw][1] .= $string;
-        } else {
-            $this->precompiled[] = array(self::RAW, $string);
-            $this->ind_last_raw = count($this->precompiled) - 1;
-        }
-        return $this;
-    }
-
-
-    /**
-     * The follow section contains the methods for precompiled code
-     */
-
-    /**
-     * Add newline to the current buffer.
-     *
-     * @return $this   current node
-     */
-    public function newline()
-    {
-        $this->raw("\n");
-        return $this;
-    }
-
-    /**
-     * Add a line of PHP code to output.
-     *
-     * @param  string $value PHP source
-     *
-     * @return $this   current node
-     */
-    public function code($value, $indent = 0)
-    {
-        if ($indent < 0) {
-            $this->outdent(- $indent);
-        }
-        $this->precompiled[] = array(self::INDENTATION, $value);
-        if ($indent > 0) {
-            $this->indent($indent);
-        }
-        $this->ind_last_raw = - 1;
-        return $this;
-    }
-
-    /**
-     * Add an indentation to the current buffer.
-     *
-     * @return $this   current node
-     */
-    public function addIndentation()
-    {
-        $this->precompiled[] = array(self::INDENTATION, null);
-        $this->ind_last_raw = - 1;
-        return $this;
-    }
-
-    /**
-     * Adds a quoted string to the compiled code.
-     *
-     * @param string   $value         The string
-     * @param bool     $double_quote  flag if double quotes shall be used
-     * @param null|int $string_length option string line length
-     *
-     * @return $this   current node
-     */
-    public function string($value, $double_quote = true, $string_length = null)
-    {
-        $this->precompiled[] = array(self::STRING, $value, $double_quote, $string_length);
-        $this->ind_last_raw = - 1;
-        return $this;
-    }
-
-    /**
-     * Adds the PHP representation of a given value to the current buffer
-     *
-     * @param  mixed   $value         The value to convert
-     * @param  bool    $double_quote  flag to use double quotes on strings
-     * @param null|int $string_length option string line length
-     *
-     * @return $this   current node
-     */
-    public function repr($value, $double_quote = true, $string_length = null)
-    {
-        $this->precompiled[] = array(self::REPR, $value, $double_quote, $string_length);
-        $this->ind_last_raw = - 1;
-        return $this;
-    }
-
-    /**
-     * Insert source line number
-     *
-     * @param  integer $line source line number
-     *
-     * @return $this   current node
-     */
-    public function lineNo($line)
-    {
-        if ($this->lastLineNo != $line) {
-            $this->precompiled[] = array(self::LINE, $line);
-            $this->lastLineNo = $line;
-        }
-        return $this;
-    }
-
-    /**
-     * Outdents the generated code.
-     *
-     * @param integer $step The number of indentation to remove
-     *
-     * @return $this   current node
-     */
-    public function outdent($step = 1)
-    {
-        $this->precompiled[] = array(self::OUTDENT, $step);
-        $this->ind_last_raw = - 1;
-        return $this;
-    }
-
-    /**
-     * Indents the generated code.
-     *
-     * @param  integer $step The number of indentation to add
-     *
-     * @return $this   current node
-     */
-    public function indent($step = 1)
-    {
-        $this->precompiled[] = array(self::INDENT, $step);
-        $this->ind_last_raw = - 1;
-        return $this;
-    }
-
-    /**
-     * inserts curly open bracket generated code.
-     *
-     * @return $this   current node
-     */
-    public function openCurly()
-    {
-        $this->precompiled[] = array(self::RAW, "{\n");
-        $this->precompiled[] = array(self::INDENT, 1);
-        $this->ind_last_raw = - 1;
-        return $this;
-    }
-
-    /**
-     * inserts curly close bracket generated code.
-     *
-     * @return $this   current node
-     */
-    public function closeCurly()
-    {
-        $this->precompiled[] = array(self::RAW, "\n");
-        $this->precompiled[] = array(self::OUTDENT, 1);
-        $this->precompiled[] = array(self::INDENTATION, "\n}\n");
-        $this->ind_last_raw = - 1;
-        return $this;
-    }
-
-    public function formatCode()
-    {
-        if (!isset($this->formatter)) {
-            $this->formatter = $this->node->parser->compiler->instanceFormatter();
-            $this->formatter->formatCode($this);
-        }
-    }
-
-    public function getFormatted()
-    {
-        if (!isset($this->formatter)) {
-            $this->formatter = $this->node->parser->compiler->instanceFormatter();
-            return $this->formatter->getFormatted($this);
-        }
     }
 
     /**
@@ -374,14 +376,26 @@ class Code extends Magic
     }
 
     /**
+     *
+     */
+    public function reset() {
+        $this->lastLineNo = 0;
+        $this->ind_last_raw = - 1;
+        $this->preCompiled = array();
+        $this->isParsed = false;
+        $this->isPreCompiled = false;
+        $this->isFormatted = false;
+        $this->node = null;
+    }
+
+    /**
      * Remove all sub nodes from current node
      *
      * @return $this   current node
      */
     public function cleanup()
     {
-        $this->targetNode = null;
-        $this->parser = null;
+        $this->node = null;
         return $this;
     }
 }

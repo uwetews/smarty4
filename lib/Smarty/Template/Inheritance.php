@@ -133,8 +133,8 @@ class Smarty_Template_Inheritance extends Smarty_Template
                 if (isset($content_ptr->inheritance_blocks[$name]['calls_child'])) {
                     return $content_ptr->_getInheritanceBlock($name, $scope_tpl, $_scope, $ptr, $mode, $in_child_chain);
                 }
-                if (($result = $content_ptr->_getInheritanceChildBlock($name, $scope_tpl, $_scope, $mode, $ptr, $in_child_chain)) != false) {
-                    return $result;
+                if (($nodeRes = $content_ptr->_getInheritanceChildBlock($name, $scope_tpl, $_scope, $mode, $ptr, $in_child_chain)) != false) {
+                    return $nodeRes;
                 } else {
                     if (isset($content_ptr->inheritance_blocks[$name]['parent_block'])) {
                         $parent_content_ptr = $content_ptr->inheritance_blocks[$name]['parent_block'][0];

@@ -15,6 +15,13 @@
     echo '<br>error ' . $errno . ' ' . $errstr . '<br>';
 }
 
+class A {
+    public $b =1;
+    public $n = 'hallo';
+    public function loop() {
+        return array(5,6,7);
+    }
+}
 //phpinfo();
 $start = microtime(true);
 //set_error_handler('ErrorHandler');
@@ -23,18 +30,18 @@ $start = microtime(true);
 require_once '../../lib/SplClassLoader.php';
 $classLoader = new SplClassLoader();
 $classLoader->register();
-$smarty = new Smarty();
+$smarty = new Smarty('./MyConfig.xml');
 $time = microtime(true);
 echo '<br>startup time '. ($time-$start);
 echo '<br>memory ' . memory_get_usage();
 echo '<br> memory peak ' . memory_get_peak_usage() . '<br><br>';
 //Smarty::muteExpectedErrors();
 //$smarty->php_handling = Smarty::PHP_QUOTE;
-$smarty->setErrorReporting(E_ALL);
-error_reporting(E_ALL + E_STRICT);
+//$smarty->setErrorReporting(E_ALL);
+error_reporting(E_ALL | E_STRICT);
 //$smarty->addPluginsDir('./plugins');
-$smarty->addPluginsDir('../PHPunit/PHPunitplugins');
-$smarty->setPluginsDir('../PHPunit/PHPunitplugins');
+//$smarty->addPluginsDir('../PHPunit/PHPunitplugins');
+//$smarty->setPluginsDir('../PHPunit/PHPunitplugins');
 //$smarty->addPluginsDir( "./../../distribution/demo/plugins/");
 //$smarty->addTemplateDir('../PHPunit/templates');
 //$smarty->setTemplateDir('../PHPunit/templates');
@@ -47,7 +54,7 @@ $smarty->setPluginsDir('../PHPunit/PHPunitplugins');
             '../PHPunit/templates_4',
         ));
 */
-$smarty->setCacheLifetime(400);
+//$smarty->setCacheLifetime(400);
 //$smarty->caching = 1;
 //$smarty->cache_modified_check = true;
 // $smarty->security=true;;
@@ -63,9 +70,10 @@ $smarty->setCacheLifetime(400);
 //Smarty_Compiler::parserdebug = true;
 //$smarty->locking_timeout = 10;
 //$smarty->setCaching(1);
-$smarty->assign('bar', 80);
+$smarty->assign('a', array(1,2,3,4,5));
+$smarty->assign('bar', 'hallo');
 $smarty->assign('foo', true);
-$smarty->assign('foo', array(4,7,5), true);
+$smarty->assign('u', new A);
 $smarty->force_compile = true;
 $smarty->display('bug.tpl');
 

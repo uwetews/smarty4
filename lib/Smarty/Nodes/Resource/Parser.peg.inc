@@ -2,12 +2,12 @@
 namespace Smarty\Nodes\Resource;
 
 /**
- * Class PegParser
+ * Class RuleRoot;
  *
  * @package Smarty\Nodes\Resource
  */
 
-class PegParser
+class RuleRoot;
 {
 
     /*!*

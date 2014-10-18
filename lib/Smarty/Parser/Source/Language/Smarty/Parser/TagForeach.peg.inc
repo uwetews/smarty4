@@ -1,44 +1,51 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
- * Class PegParser
+ * Class RuleRoot;
  *
  * @package Smarty\Source\Smarty\Nodes\foreachTag
  */
-class TagForeachParser extends PegParser
+class TagForeachParser extends RuleRoot
 {
     /*!*
         <pegparser TagForeach>
 
             <node TagForeach>
                 <attribute>attributes=(required=(from,item),optional=(key),subtags=(foreachelse)),options=nocache</attribute>
-                <rule>tag:(Ldel 'foreach' _  from:Value _ 'as' _ (key:Variable _? '=>' _?)? item:Variable SmartyTagOptions Rdel) | ..Smarty_Tag_Default body:Body? (!LdelSlash ..elseTagforeach)? close:SmartyBlockCloseTag</rule>
+                <rule>tag:(Ldel 'foreach' _  from:Value _ 'as' _ (key:Variable _? '=>' _?)? item:Variable (!Rdel SmartyTagOptions)? Rdel) | ..Smarty_Tag_Default body:Body? (!LdelSlash ..elseTagforeach)? close:SmartyBlockCloseTag</rule>
                 <action _start>
                 {
-                    $result['node'] = $previous['node'];
+                    $nodeRes['node'] = $previous['node'];
                 }
                 </action>
                 <action from>
                 {
-                    $result['node']->setTagAttribute(array('from', $subres['node']));
+                    $nodeRes['node']->setTagAttribute(array('from', $matchRes['node']));
                 }
                 </action>
                 <action key>
                 {
-                    $result['node']->setTagAttribute(array('key', $subres['node']));
+                    $nodeRes['key'] = $matchRes['node'];
                 }
                 </action>
                 <action item>
                 {
-                    $result['node']->setTagAttribute(array('item', $subres['node']));
+                    $nodeRes['node']->setTagAttribute(array('item', $matchRes['node']));
+                }
+                </action>
+                <action _finish>
+                {
+                    if (isset($nodeRes['key'])) {
+                        $nodeRes['node']->setTagAttribute(array('key', $nodeRes['key']));
+                    }
                 }
                 </action>
                 <action body>
                 {
-                    $result['node']->addSubTree($subres['node'],'foreach');
+                    $nodeRes['node']->addSubTree($matchRes['node'],'foreach');
                 }
                 </action>
             </node>
@@ -47,12 +54,12 @@ class TagForeachParser extends PegParser
                 <rule>Ldel 'foreachelse'  Rdel body:Body?</rule>
                 <action _start>
                  {
-                    $result['node'] = $previous['node'];
+                    $nodeRes['node'] = $previous['node'];
                  }
                 </action>
                 <action body>
                 {
-                    $result['node']->addSubTree($subres['node'],'foreachelse');
+                    $nodeRes['node']->addSubTree($matchRes['node'],'foreachelse');
                 }
                 </action>
             </token>

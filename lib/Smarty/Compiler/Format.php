@@ -1,11 +1,4 @@
 <?php
-
-/**
- * Smarty Code generator
- *
- * @package Smarty\Compiler
- * @author  Uwe Tews
- */
 namespace Smarty\Compiler;
 
 use Smarty\Node;
@@ -63,44 +56,15 @@ class Format extends Code
     public $string_line_length = 200;
 
     /**
-     * Merge other code buffer into current
-     *
-     * @param  \Smarty_Compiler_Code $code
-     *
-     * @return \Smarty_Compiler_code
-     */
-    public function mergeCode(Code $code)
-    {
-        $this->mergeTraceBackInfo($code->traceback);
-        $this->raw($code->precompiled);
-        return $this;
-    }
-
-    /**
-     * Merge traceback
-     *
-     * @param  \Smarty_Compiler_Node $node source node
-     *
-     * @return \Smarty_Compiler_Format
-     */
-    public function mergeTraceBackInfo(Code $code)
-    {
-        foreach ($code->traceback as $codeline => $line) {
-            $this->traceback[$codeline + $this->compiledLineNumber] = $line;
-        }
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getFormatted(Code $code = null, $delete = true)
     {
         $code = isset($code) ? $code : $this;
-        if (!empty($code->precompiled)) {
+        if (!empty($code->preCompiled)) {
             $this->formatCode($code, $delete);
         }
-        return $this->compiled;;
+        return $this->compiled;
     }
 
     /**
@@ -115,12 +79,12 @@ class Format extends Code
         if ($code == null) {
             $code = $this;
         } else {
-            if (isset($this->precompiled) && !empty($this->precompiled)) {
+            if (isset($this->preCompiled) && !empty($this->preCompiled)) {
                 $this->formatCode();
             }
         }
-        if (isset($code->precompiled) && !empty($code->precompiled)) {
-            foreach ($code->precompiled as $key => $entry) {
+        if (isset($code->preCompiled) && !empty($code->preCompiled)) {
+            foreach ($code->preCompiled as $key => $entry) {
                 switch ($entry[0]) {
                     case Code::RAW:
                         $this->compiled .= $entry[1];
@@ -161,7 +125,7 @@ class Format extends Code
                 }
             }
             if ($delete) {
-                $code->precompiled = array();
+                $code->preCompiled = array();
                 $this->ind_last_raw = - 1;
             }
         }
@@ -211,8 +175,9 @@ class Format extends Code
                 $this->compiled .= "\n" . str_repeat(' ', $this->indentation * 4) . ')';
                 $this->indentation --;
             }
-        } elseif (is_object($value) && $value instanceof \Smarty_Compiler_Format) {
-            $this->compiled .= $value->getFormated();
+        } elseif (is_object($value) && $value instanceof Format) {
+            $value->indentation = $this->indentation;
+            $this->compiled .= $value->getFormatted();
         } else {
             $this->formatString($value, $double_quote, $string_length);
         }
@@ -260,21 +225,22 @@ class Format extends Code
     /**
      * @param $node
      */
-    public function mergeFormated($code)
+    public function mergeFormatted(Format $code)
     {
-        if (!empty($this->precompiled)) {
+        if (!empty($this->preCompiled)) {
             $this->formatCode();
         }
-        $this->compiled .= $code->getFormated();
+        $code->indentation = $this->indentation;
+        $this->compiled .= $code->getFormatted();
         $this->compiledLineNumber += $code->compiledLineNumber;
     }
 
-    /**
-     * @param $node
-     */
-    public function mergeCompiled($code)
-    {
-        $this->precompiled = array_merge($this->precompiled, $code->precompiled);
-        $this->ind_last_raw = - 1;
+    public function reset() {
+        $this->indentation = 0;
+        $this->savedIndentation = 0;
+        $this->compiled = '';
+        $this->compiledLineNumber = 0;
+        $this->traceback = array();
+        parent::reset();
     }
 }

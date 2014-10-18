@@ -53,21 +53,21 @@ class Smarty_Compiler_Php_ompiler_Internal_RegisteredFunction extends \Smarty_Co
         $compiler->tag_nocache = $compiler->tag_nocache || !$tag_info[1];
         $function = $tag_info[0];
         // convert attributes into parameter string
-        $result = $this->getPluginParameterString($function, $_attr, $compiler, false, $tag_info[2]);
+        $nodeRes = $this->getPluginParameterString($function, $_attr, $compiler, false, $tag_info[2]);
         // compile code
         $this->iniTagCode($compiler);
 
         if ($function instanceof Closure) {
-            $this->code("echo \$this->smarty->_registered['plugin'][Smarty::PLUGIN_FUNCTION]['{$tag}'][0]({$result});")
+            $this->code("echo \$this->smarty->_registered['plugin'][Smarty::PLUGIN_FUNCTION]['{$tag}'][0]({$nodeRes});")
                  ->newline();
         } elseif (!is_array($function)) {
-            $this->code("echo {$function}({$result});")
+            $this->code("echo {$function}({$nodeRes});")
                  ->newline();
         } elseif (is_object($function[0])) {
-            $this->code("echo \$this->smarty->_registered['plugin'][Smarty::PLUGIN_FUNCTION]['{$tag}'][0][0]->{$function[1]}({$result});")
+            $this->code("echo \$this->smarty->_registered['plugin'][Smarty::PLUGIN_FUNCTION]['{$tag}'][0][0]->{$function[1]}({$nodeRes});")
                  ->newline();
         } else {
-            $this->code("echo {$function[0]}::{$function[1]}({$result});")
+            $this->code("echo {$function[0]}::{$function[1]}({$nodeRes});")
                  ->newline();
         }
 

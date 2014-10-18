@@ -2,7 +2,7 @@
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
 use Smarty\Parser\Source\Language\Smarty\Node\Value\String;
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 use Smarty\Node;
 
 /**
@@ -10,7 +10,7 @@ use Smarty\Node;
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class SpecialVariableParser extends PegParser
+class SpecialVariableParser extends RuleRoot
 {
     /*!*
     <pegparser SpecialVariable>

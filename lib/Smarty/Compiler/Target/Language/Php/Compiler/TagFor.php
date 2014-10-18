@@ -33,6 +33,7 @@ class TagFor extends Magic
      */
     public static function compile(Node $node, Code $codeTargetObj, $delete)
     {
+        $codeObj = new Format();
         $codeTargetObj->lineNo($node->sourceLineNo);
         $codeTargetObj->code("// {$node->sourceText}");
         $condition = isset($node->tagAttributes['condition']);
@@ -55,35 +56,38 @@ class TagFor extends Magic
                           ->indent();
         } else {
             $index = self::$index ++;
-            $tmpvar = "\$__tmp_for_var_{$index}";
-            $startnode = $node->tagAttributes['start'];
-            $var = self::getCompiledVariable($startnode, $startnode->tagAttributes['variable']->internalNodeTrees['name']);
-            $codeTargetObj->lineNo($startnode->sourceLineNo)
-                          ->code("\$_scope->_tpl_vars->{$var} = {$tmpvar} = new Entry;\n");
+            $tmpVar = "\$__tmp_for_var_{$index}";
+            $startNode = $node->tagAttributes['start'];
+            // compile variable string
+            $codeObj->compileNodeItems($startNode->tagAttributes['variable']->internalNodeTrees['name'], false);
+            $var = $codeObj->getFormatted();
+            $codeObj->reset();
+            $codeTargetObj->lineNo($startNode->sourceLineNo)
+                          ->code("\$_scope->_tpl_vars->{$var} = {$tmpVar} = new Entry;\n");
             if (isset($node->tagAttributes['step'])) {
-                $codeTargetObj->code("{$tmpvar}->step = ")
+                $codeTargetObj->code("{$tmpVar}->step = ")
                               ->compileNode($node->tagAttributes['step'], $delete)
                               ->raw(";\n");
             } else {
-                $codeTargetObj->code("{$tmpvar}->step = 1;\n");
+                $codeTargetObj->code("{$tmpVar}->step = 1;\n");
             }
-            $codeTargetObj->code("{$tmpvar}->value = ")
+            $codeTargetObj->code("{$tmpVar}->value = ")
                           ->compileNode($node->tagAttributes['start']->tagAttributes['value'], $delete)
                           ->raw(";\n");
-            $codeTargetObj->code("{$tmpvar}->to = ")
+            $codeTargetObj->code("{$tmpVar}->to = ")
                           ->compileNode($node->tagAttributes['to'], $delete)
                           ->raw(";\n");
             if (isset($node->tagAttributes['max'])) {
-                $codeTargetObj->code("{$tmpvar}->total = (int) min(ceil(({$tmpvar}->step > 0 ? {$tmpvar}->to + 1 - {$tmpvar}->value : {$tmpvar}->value - {$tmpvar}->to +1)/abs({$tmpvar}->step)), ")
+                $codeTargetObj->code("{$tmpVar}->total = (int) min(ceil(({$tmpVar}->step > 0 ? {$tmpVar}->to + 1 - {$tmpVar}->value : {$tmpVar}->value - {$tmpVar}->to +1)/abs({$tmpVar}->step)), ")
                               ->compileNode($node->tagAttributes['max'], $delete)
                               ->raw(");\n");
             } else {
-                $codeTargetObj->code("{$tmpvar}->total = (int) ceil(({$tmpvar}->step > 0 ? {$tmpvar}->to + 1 - {$tmpvar}->value : {$tmpvar}->value -  {$tmpvar}->to +1)/abs( {$tmpvar}->step));\n");
+                $codeTargetObj->code("{$tmpVar}->total = (int) ceil(({$tmpVar}->step > 0 ? {$tmpVar}->to + 1 - {$tmpVar}->value : {$tmpVar}->value -  {$tmpVar}->to +1)/abs( {$tmpVar}->step));\n");
             }
-            $codeTargetObj->code("if ({$tmpvar}->total > 0) {\n", 1);
-            $codeTargetObj->code("for ({$tmpvar}->iteration = 1;{$tmpvar}->iteration <= {$tmpvar}->total; {$tmpvar}->value += {$tmpvar}->step, {$tmpvar}->iteration++) {\n", 1);
-            $codeTargetObj->code("{$tmpvar}->first = {$tmpvar}->iteration == 1;\n");
-            $codeTargetObj->code("{$tmpvar}->last = {$tmpvar}->iteration == {$tmpvar}->total;\n");
+            $codeTargetObj->code("if ({$tmpVar}->total > 0) {\n", 1);
+            $codeTargetObj->code("for ({$tmpVar}->iteration = 1;{$tmpVar}->iteration <= {$tmpVar}->total; {$tmpVar}->value += {$tmpVar}->step, {$tmpVar}->iteration++) {\n", 1);
+            $codeTargetObj->code("{$tmpVar}->first = {$tmpVar}->iteration == 1;\n");
+            $codeTargetObj->code("{$tmpVar}->last = {$tmpVar}->iteration == {$tmpVar}->total;\n");
         }
         if (false !== $body = $node->getSubTree('for')) {
             $node->parser->compiler->compileNode($body, $codeTargetObj, $delete);

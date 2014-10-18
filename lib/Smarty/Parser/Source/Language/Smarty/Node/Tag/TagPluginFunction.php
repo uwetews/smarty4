@@ -84,11 +84,11 @@ class TagPluginFunction extends Tag
     public function generatePluginParserRules()
     {
         $parserNode = 'Plugin' . ucfirst($this->pluginName);
-        if (isset($this->parser->rules[$parserNode]) && false === $this->parser->rules[$parserNode]) {
+        if (isset($this->parser->ruleArray[$parserNode]) && false === $this->parser->ruleArray[$parserNode]) {
             // no plugin specific rule, use default
             return;
         }
-        if (isset($this->parser->rules[$parserNode]) || isset($this->parser->rulePegParserArray[$parserNode])) {
+        if (isset($this->parser->ruleArray[$parserNode]) || isset($this->parser->rulePegParserArray[$parserNode])) {
             // set up parsing attributes of plugin
             $this->parserNode = $parserNode;
             $this->setNodeAttributes($this->parser->getNodeAttributes($this->parserNode));
@@ -115,7 +115,7 @@ class TagPluginFunction extends Tag
             return;
         } else {
             //fall back to default parser
-            $this->parser->rules[$parserNode] = false;
+            $this->parser->ruleArray[$parserNode] = false;
             return;
         }
     }

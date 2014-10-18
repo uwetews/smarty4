@@ -47,9 +47,9 @@ class Smarty_Compiler_Php_ompiler_Internal_PluginBlock extends \Smarty_Compiler_
             unset($_attr['nocache']);
             $cache_attr = null;
             if ($compiler->context->caching) {
-                $result = $this->getAnnotation($function, 'smarty_nocache');
-                if ($result) {
-                    $compiler->tag_nocache = $compiler->tag_nocache || $result;
+                $nodeRes = $this->getAnnotation($function, 'smarty_nocache');
+                if ($nodeRes) {
+                    $compiler->tag_nocache = $compiler->tag_nocache || $nodeRes;
                     $compiler->getPlugin(substr($function, 16), Smarty::PLUGIN_FUNCTION);
                 }
                 if ($compiler->tag_nocache || $compiler->nocache) {

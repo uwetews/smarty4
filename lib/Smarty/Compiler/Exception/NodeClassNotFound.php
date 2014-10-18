@@ -8,7 +8,7 @@
 namespace Smarty\Compiler\Exception;
 
 use Smarty\Template;
-
+use Smarty\Parser\Exception\ForSourceLanguage;
 /**
  * Smarty compiled language not found exception
  *

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<smarty>
+    <configSection name="init">
+        <properties scope="default">
+            <property name="templateDir" value="array(0 => './templates/')"/>
+            <property name="configDir" value="array(0 => './config/')"/>
+            <property name="compileDir"  value="'./templates_c/'"/>
+            <property name="cacheDir"  value="'./cache/'"/>
+            <property name="pluginsDir" value="array(0 => './plugins/')"/>
+            <property name="useSubDirs" value="off"/>
+            <property name="defaultResourceType" value="'file'"/>
+            <property name="defaultCompiledType" value="'file'"/>
+            <property name="defaultCacheType" value="'file'"/>
+            <property name="errorReporting" value="null"/>
+            <property name="debugging" value="off"/>
+            <property name="debuggingCtrl" value="'NONE'"/>
+            <property name="forceCompile" value="off"/>
+            <property name="objectCaching" value="on"/>
+            <property name="developerMode" value="off"/>
+            <property name="contextCaching" value="on"/>
+            <property name="charset" value="'UTF-8'"/>
+            <property name="caching" value="\Smarty::CACHING_OFF"/>
+            <property name="compileCheck" value="\Smarty::COMPILECHECK_ON"/>
+            <property name="allowAmbiguousResources" value="off"/>
+            <property name="allowRelativePath" value="off"/>
+            <property name="disableCorePlugins" value="off"/>
+            <property name="templateResource" type="null" value="null"/>
+            <property name="filePerms" type="numeric" value="0644"/>
+            <property name="dirPerms" type="numeric" value="0771"/>
+        </properties>
+        <sourceLanguageName scope="default" value="Smarty"/>
+        <targetLanguageName scope="default" value="Php"/>
+    </configSection>
+
+    <configSection name="compiler">
+        <properties scope="default">
+            <property name="compileLocking" value="on"/>
+            <property name="parserTrace" value="off"/>
+        </properties>
+        <compilerConfigXml scope="default" value="./CompilerConfig.xml"/>
+    </configSection>
+
+    <configSection name="caching">
+        <properties scope="default">
+            <property name="cacheLifetime" type="numeric" value="3600"/>
+            <property name="cacheModifiedCheck" value="off"/>
+            <property name="forceCache" value="off"/>
+        </properties>
+     </configSection>
+</smarty>

@@ -85,10 +85,10 @@ class RxMatchOld
      *
      * @return bool
      */
-    public function matchRx(&$result, $params)
+    public function matchRx(&$nodeRes, $params)
     {
         if ($this->_hasExpression) {
-            $this->_result = $result;
+            $this->_result = $nodeRes;
             $key = $this->insert_expression($this->_regexp);
             $this->_result = null;
         } else {
@@ -97,7 +97,7 @@ class RxMatchOld
         $pos = $this->parser->pos;
         if (isset($this->regexpCache[$pos])) {
             $res = $this->regexpCache[$pos];
-        } elseif (isset($result['_attr']['matchall'])) {
+        } elseif (isset($nodeRes['_attr']['matchall'])) {
             if (empty($this->regexpCache) && preg_match_all($key . 'Sx', $this->parser->source, $matches, PREG_OFFSET_CAPTURE, $pos)) {
                 //                var_dump($matches);
                 $this->regexpCache[- 1] = true;
@@ -105,12 +105,12 @@ class RxMatchOld
                     $res = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
                     foreach ($match as $n => $v) {
                         if (is_string($n)) {
-                            $res['_matchres'][$n] = $v[0];
+                            $res['_pregMatch'][$n] = $v[0];
                         }
                     }
                     $this->regexpCache[$match[1]] = $res;
-                    if (isset($result['match'])) {
-                        $result['_matchres'] = $match[0];
+                    if (isset($nodeRes['match'])) {
+                        $nodeRes['_pregMatch'] = $match[0];
                     }
                 }
             } else {
@@ -130,7 +130,7 @@ class RxMatchOld
                 $res = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
                 foreach ($match as $n => $v) {
                     if (is_string($n)) {
-                        $res['_matchres'][$n] = $v[0];
+                        $res['_pregMatch'][$n] = $v[0];
                     }
                 }
                 if ($res['_startpos'] != $pos) {
@@ -148,12 +148,12 @@ class RxMatchOld
         } else {
             $this->parser->pos = $res['_endpos'];
             $this->parser->line += substr_count($res['_text'], "\n");
-            if ($result['_silent'] < 2) {
+            if ($nodeRes['_silent'] < 2) {
                 $res['_tag'] = $params['_tag'];
-                if (isset($result['_name'])) {
-                    $res['_name'] = $result['_name'];
+                if (isset($nodeRes['_name'])) {
+                    $res['_name'] = $nodeRes['_name'];
                 }
-                $this->ruleArrayParser->ruleArrayAction($result, $res);
+                $this->ruleArrayParser->ruleArrayAction($nodeRes, $res);
             }
             return true;
         }

@@ -1,14 +1,14 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class TagStatementParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class TagStatementParser extends PegParser
+class TagStatementParser extends RuleRoot
 {
     /*!*
          <pegparser TagStatement>
@@ -17,8 +17,8 @@ class TagStatementParser extends PegParser
                  <rule>Ldel statement:Statement SmartyTagAttributes SmartyTagOptions Rdel</rule>
                  <action statement>
                  {
-                     $result['node'] = $subres['node'];
-                     $result['node']->setTagAttribute(array('istag', true));
+                     $nodeRes['node'] = $matchRes['node'];
+                     $nodeRes['node']->setTagAttribute(array('istag', true));
                  }
                  </action>
              </node>

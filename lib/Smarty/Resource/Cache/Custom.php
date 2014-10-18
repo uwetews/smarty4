@@ -1,7 +1,7 @@
 <?php
 namespace Smarty\Resource\Cache;
 
-use Smarty\Template\Context;
+use Smarty\Context;
 
 /**
  * Cache Handler API

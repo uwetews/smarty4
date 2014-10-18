@@ -9,7 +9,7 @@ use Smarty\Exception\Magic;
  *
  * @package Smarty\Variable
  */
-class Methods extends Magic
+class Methods extends Smarty\CoreMethods
 {
     /**
      * parent

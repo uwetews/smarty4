@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<smarty>
+
+
+    <configSection name="Default" disabled="false">
+        <properties>
+        <property name="forceCompile" value="off"/>
+        </properties>
+    </configSection>
+
+    <configSection name="Uwe" disabled="true">
+        <properties>
+        <property name="compileCheck" value="off"/>
+        </properties>
+    </configSection>
+</smarty>

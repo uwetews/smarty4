@@ -1,14 +1,14 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class UnexpectedParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class UnexpectedParser extends PegParser
+class UnexpectedParser extends RuleRoot
 {
     /*!*
     <pegparser Unexpected>
@@ -16,7 +16,7 @@ class UnexpectedParser extends PegParser
             <rule> &unexpected:/\s*[\S]+/ /\s*([\S])*?(?=(({getLdel})|({getRdel})))/ </rule>
             <action unexpected>
             {
-                $result['error'][] = array('type' => 'unexpected', 'value' => $subres['_text'], 'line' => $subres['_lineno'], 'pos' => $subres['_startpos']);
+                $nodeRes['error'][] = array('type' => 'unexpected', 'value' => $matchRes['_text'], 'line' => $matchRes['_lineno'], 'pos' => $matchRes['_startpos']);
             }
             </action>
              <action _init(getLdel)>

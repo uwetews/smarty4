@@ -59,14 +59,14 @@ class RxMatch
     /**
      * match regular expression
      *
-     * @param  $result
+     * @param  $nodeRes
      *
      * @return bool
      */
-    public function matchRx(&$result, $params)
+    public function matchRx(&$nodeRes, $params)
     {
         if ($this->_hasExpression) {
-            $this->_result = $result;
+            $this->_result = $nodeRes;
             $key = $this->insert_expression($this->_regexp);
             $this->_result = null;
         } else {
@@ -83,12 +83,12 @@ class RxMatch
                     $res = array('_silent' => 0, '_text' => $match[0], '_startpos' => $match[1], '_endpos' => $match[1] + strlen($match[0]));
                     foreach ($match as $n => $v) {
                         if (is_string($n)) {
-                            $res['_matchres'][$n] = $v[0];
+                            $res['_pregMatch'][$n] = $v[0];
                         }
                     }
                     $this->regexpCache[$match[1]] = $res;
-                    if (isset($result['match'])) {
-                        $result['_matchres'] = $match[0];
+                    if (isset($nodeRes['match'])) {
+                        $nodeRes['_pregMatch'] = $match[0];
                     }
                 }
             } else {
@@ -108,7 +108,7 @@ class RxMatch
                 $res = array('_silent' => 0, '_text' => $match[0][0], '_startpos' => $match[0][1], '_endpos' => $match[0][1] + strlen($match[0][0]));
                 foreach ($match as $n => $v) {
                     if (is_string($n)) {
-                        $res['_matchres'][$n] = $v[0];
+                        $res['_pregMatch'][$n] = $v[0];
                     }
                 }
                 if ($res['_startpos'] != $pos) {
@@ -127,8 +127,8 @@ class RxMatch
             $this->parser->pos = $res['_endpos'];
             $this->parser->line += substr_count($res['_text'], "\n");
             $res['_tag'] = $params['_tag'];
-            if (isset($result['_name'])) {
-                $res['_name'] = $result['_name'];
+            if (isset($nodeRes['_name'])) {
+                $res['_name'] = $nodeRes['_name'];
             }
             return $res;
         }

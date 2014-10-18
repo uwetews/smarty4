@@ -1,14 +1,14 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class TagIfParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class TagIfParser extends PegParser
+class TagIfParser extends RuleRoot
 {
     /*!*
         <pegparser TagIf>
@@ -17,22 +17,22 @@ class TagIfParser extends PegParser
                 <rule>Ldel 'if' _ condition:( Unilog? Statement) | condition:Logexpr SmartyTagOptions Rdel body:Body? (!SmartyBlockCloseTag elseifTagif)* (!SmartyBlockCloseTag elseTagif)? close:SmartyBlockCloseTag</rule>
                 <action _start>
                 {
-                    $result['node'] = $previous['node'];
+                    $nodeRes['node'] = $previous['node'];
                 }
                 </action>
                 <action condition>
                 {
-                    $result['condition'] = $subres['node'];
+                    $nodeRes['condition'] = $matchRes['node'];
                 }
                 </action>
                 <action body>
                 {
-                    $result['body'] = $subres['node'];
+                    $nodeRes['body'] = $matchRes['node'];
                 }
                 </action>
                 <action _finish>
                 {
-                    $result['node']->addSubTree(array('condition' => $result['condition'], 'body' => isset($result['body']) ? $result['body'] : false),'if');
+                    $nodeRes['node']->addSubTree(array('condition' => $nodeRes['condition'], 'body' => isset($nodeRes['body']) ? $nodeRes['body'] : false),'if');
                 }
                 </action>
             </node>
@@ -40,22 +40,22 @@ class TagIfParser extends PegParser
                 <rule>Ldel 'elseif' _ condition:( Unilog? Statement) | condition:Logexpr Rdel body:Body?</rule>
                 <action _start>
                  {
-                    $result['node'] = $previous['node'];
+                    $nodeRes['node'] = $previous['node'];
                  }
                 </action>
                 <action condition>
                 {
-                    $result['condition'] = $subres['node'];
+                    $nodeRes['condition'] = $matchRes['node'];
                 }
                 </action>
                 <action body>
                 {
-                    $result['body'] = $subres['node'];
+                    $nodeRes['body'] = $matchRes['node'];
                 }
                 </action>
                 <action _finish>
                 {
-                    $result['node']->addSubTree(array('condition' => $result['condition'], 'body' => isset($result['body']) ? $result['body'] : false),'elseif', true);
+                    $nodeRes['node']->addSubTree(array('condition' => $nodeRes['condition'], 'body' => isset($nodeRes['body']) ? $nodeRes['body'] : false),'elseif', true);
                 }
                 </action>
             </token>
@@ -64,17 +64,17 @@ class TagIfParser extends PegParser
                 <rule>Ldel 'else'  Rdel body:Body?</rule>
                 <action _start>
                 {
-                    $result['node'] = $previous['node'];
+                    $nodeRes['node'] = $previous['node'];
                 }
                 </action>
                 <action body>
                 {
-                    $result['body'] = $subres['node'];
+                    $nodeRes['body'] = $matchRes['node'];
                 }
                 </action>
                 <action _finish>
                 {
-                    $result['node']->addSubTree(array('body' => isset($result['body']) ? $result['body'] : false),'else');
+                    $nodeRes['node']->addSubTree(array('body' => isset($nodeRes['body']) ? $nodeRes['body'] : false),'else');
                 }
                 </action>
             </token>

@@ -1,14 +1,14 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class TagIncludeParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class TagIncludeParser extends PegParser
+class TagIncludeParser extends RuleRoot
 {
     /*!*
        <pegparser TagInclude>
@@ -18,7 +18,7 @@ class TagIncludeParser extends PegParser
                <rule>Ldel 'include' SmartyTagAttributes SmartyTagScopes SmartyTagOptions Rdel</rule>
                <action _start>
                {
-                   $result['node'] = $previous['node'];
+                   $nodeRes['node'] = $previous['node'];
                }
                </action>
            </node>

@@ -62,6 +62,10 @@ class Body extends Node
         return $this;
     }
 
+    public function getCountSubTree() {
+        return count($this->subtreeNodes);
+    }
+
     /**
      * Compile body into target node
      * No Compiler class needed for this node

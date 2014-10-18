@@ -30,9 +30,9 @@ class Smarty_Variable_Method_GetConfigVars
     {
         $_ptr = $object;
         if (isset($varname)) {
-            $result = $object->_getVariable('___config_var_' . $varname, $_ptr, $search_parents, false);
+            $nodeRes = $object->_getVariable('___config_var_' . $varname, $_ptr, $search_parents, false);
 
-            return $result;
+            return $nodeRes;
         } else {
             $_result = array();
             while ($_ptr !== null) {

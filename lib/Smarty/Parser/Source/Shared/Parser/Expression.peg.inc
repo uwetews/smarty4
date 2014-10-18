@@ -3,46 +3,47 @@ namespace Smarty\Parser\Source\Shared\Parser;
 
 use Smarty\Parser\Source\Language\Smarty\Node\Value\Number;
 use Smarty\Parser\Source\Language\Smarty\Node\Value\String;
+use Smarty\Parser\Source\Language\Smarty\Node\Value\DoubleQuoted;
 use Smarty\Parser\Source\Language\Smarty\Node\Value\Boolean;
+use Smarty\Parser\Source\Language\Smarty\Node\Value\Null;
+use Smarty\Parser\Source\Language\Smarty\Node\Value\Variable;
 use Smarty\Parser\Source\Language\Smarty\Node\Value\Subexpression;
 use Smarty\Parser\Source\Language\Smarty\Node\Value\FunctionCall;
+use Smarty\Parser\Source\Language\Smarty\Node\Value\ArrayValue;
 use Smarty\Parser\Source\Language\Smarty\Node\Operator\Math;
 use Smarty\Parser\Source\Language\Smarty\Node\Operator\Unimath;
 use Smarty\Parser\Source\Language\Smarty\Node\Operator\Unilog;
 use Smarty\Parser\Source\Language\Smarty\Node\Operator\Condition;
 use Smarty\Parser\Source\Language\Smarty\Node\Operator\Logical;
 use Smarty\Parser\Source\Language\Smarty\Node\Tag\TagStatement;
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class ExpressionParser
  *
  * @package Smarty\Parser\Source\Shared\Parser
  */
-class ExpressionParser extends PegParser
+class ExpressionParser extends RuleRoot
 {
+    /**
+     * Currently not used
+
+     */
 
     /*!*
     <pegparser Expression>
+
+        <token Id>
+            <rule>/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* /</rule>
+        </token>
 
         <node Number>
             <attribute>hash</attribute>
             <rule>/\[0-9]+(?:\.[0-9]+)?/</rule>
             <action _finish>
             {
-                $result['node'] = new Number($this->parser);
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
-            }
-            </action>
-        </node>
-
-        <node String>
-            <attribute>hash</attribute>
-            <rule>/'[^'\\]*(?:\\.[^'\\]*)*'/</rule>
-            <action _finish>
-            {
-                $result['node'] = new String($this->parser);
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                $nodeRes['node'] = new Number($this->parser);
+                $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
         </node>
@@ -52,8 +53,8 @@ class ExpressionParser extends PegParser
             <rule>/(true|false)(?![^a-zA-Z0-9])/</rule>
             <action _finish>
             {
-                $result['node'] = new Boolean($this->parser);
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+            $nodeRes['node'] = new Boolean($this->parser);
+            $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
         </node>
@@ -63,8 +64,73 @@ class ExpressionParser extends PegParser
             <rule>/null(?![^a-zA-Z0-9])/</rule>
             <action _finish>
             {
-                $result['node'] = new Null($this->parser);
-                $result['node']->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                $nodeRes['node'] = new Null($this->parser);
+                $nodeRes['node']->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
+            }
+            </action>
+        </node>
+
+        <node DoubleQuoted>
+            <rule> '"' ( ( '$' simpleVar:Id ) | ( '`' variable:Variable '`' ) | ( '{' expression:Expr '}' ) | dq:'\"' | text:/(([\s\S])*?(?=(\{|\$|(`\$)|(\\")|")))/ )* '"' </rule>
+            <action simpleVar>
+            {
+                $var = new Variable($this->parser);
+                $node = new String($this->parser);
+                $var->addSubTree($node->setValue($matchRes['_text'], true)->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']), 'name', true);
+                $nodeRes['nodes'][] = $var;
+            }
+            </action>
+            <action variable>
+            {
+                $nodeRes['nodes'][] = $matchRes['node'];
+            }
+            </action>
+            <action expression>
+            {
+                $nodeRes['nodes'][] = $matchRes['node'];
+            }
+            </action>
+            <action dq>
+            {
+                $node = new String($this->parser);
+                $node->setValue('"', false, false);
+                $nodeRes['nodes'][] = $node;
+            }
+            </action>
+            <action text>
+            {
+                $node = new String($this->parser);
+                $node->setValue($matchRes['_text']);
+                $nodeRes['nodes'][] = $node;
+            }
+            </action>
+            <action _finish>
+            {
+                if (!isset($nodeRes['nodes'])) {
+                    $node = new String($this->parser);
+                    $node->setValue('')->setTraceInfo($nodeRes['_lineno'], '', $nodeRes['_startpos'], $nodeRes['_endpos']);
+                    $nodeRes['nodes'][] = $node;
+                }
+                $node =  new DoubleQuoted($this->parser);
+                $node->setTextSegmentsNodes($nodeRes['nodes']);
+                unset($nodeRes['nodes']);
+                $nodeRes['node'] = $node;
+            }
+            </action>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+        </node>
+
+        <node String>
+            <attribute>hash</attribute>
+            <rule>/'[^'\\]*(?:\\.[^'\\]*)*'/</rule>
+            <action _finish>
+            {
+                $nodeRes['node'] = new String($this->parser);
+                $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
         </node>
@@ -79,36 +145,61 @@ class ExpressionParser extends PegParser
             </action>
             <action number>
             {
-                $result['node'] = new Number($this->parser);
-                $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+                $nodeRes['node'] = new Number($this->parser);
+                $nodeRes['node']->setValue($matchRes['_text'])->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']);
             }
             </action>
             <action string>
             {
-                $result['node'] = new String($this->parser);
-                $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+                $nodeRes['node'] = new String($this->parser);
+                $nodeRes['node']->setValue($matchRes['_text'])->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']);
             }
             </action>
             <action bool>
             {
-                $result['node'] = new Boolean($this->parser);
-                $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+                $nodeRes['node'] = new Boolean($this->parser);
+                $nodeRes['node']->setValue($matchRes['_text'])->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']);
             }
             </action>
             <action null>
             {
-                $result['node'] = new Null($this->parser);
-                $result['node']->setValue($subres['_text'])->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+                $nodeRes['node'] = new Null($this->parser);
+                $nodeRes['node']->setValue($matchRes['_text'])->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']);
             }
             </action>
         </token>
 
-        <token Array>
-            <rule> ( 'array' _? '(' item:Arrayitem (',' item:Arrayitem)* ','? ')' ) | ('[' item:Arrayitem (',' item:Arrayitem)* ','? ']')</rule>
+        <token ArrayValue>
+            <rule> ( /\s*array\s*[(]\s* / item:ArrayItem ( /\s*,\s* / item:ArrayItem)* /\s*,?\s*[)]/ ) | (/\s*\[\s* / item:ArrayItem (/\s*,\s* / item:ArrayItem)* /\s*,?\s*\]/ )</rule>
+            <action item>
+            {
+                $nodeRes['arrayItems'][] = array($matchRes['index'], $matchRes['value']);
+            }
+            </action>
+           <action _finish>
+            {
+                $nodeRes['node'] = new ArrayValue($this->parser);
+                $nodeRes['node']->setKeyValueNodes($nodeRes['arrayItems']);
+                $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
+            }
+            </action>
         </token>
 
-        <token  Arrayitem>
-           <rule> ( index:Value _? '=>' _?)? value:Value  </rule>
+        <token  ArrayItem>
+           <rule> ( index:Value /\s*=>\s* / )? value:Value  </rule>
+            <action index>
+            {
+                $nodeRes['index'] = $matchRes['node'];
+            }
+            </action>
+            <action value>
+            {
+                if (!isset($nodeRes['index'])) {
+                    $nodeRes['index'] = null;
+                }
+                $nodeRes['value'] = $matchRes['node'];
+            }
+            </action>
         </token>
 
 
@@ -118,25 +209,25 @@ class ExpressionParser extends PegParser
             <rule>(name:Id | namevar:Variable) param:Parameter</rule>
             <action name>
             {
-                $result['name'] = $subres['_text'];
+                $nodeRes['name'] = $matchRes['_text'];
             }
             </action>
             <action namevar>
             {
-                $result['namevar'] = $subres['node'];
+                $nodeRes['namevar'] = $matchRes['node'];
             }
             </action>
             <action param>
             {
-                $result['node'] = new FunctionCall($this->parser);
-                if (isset($result['name'])) {
+                $nodeRes['node'] = new FunctionCall($this->parser);
+                if (isset($nodeRes['name'])) {
                     $string = new String($this->parser);
-                    $string->setValue($result['name'], true);
-                    $result['node']->setNameNode($string);
+                    $string->setValue($nodeRes['name'], true);
+                    $nodeRes['node']->setNameNode($string);
                 } else {
-                    $result['node']->setNameNode($result['namevar']);
+                    $nodeRes['node']->setNameNode($nodeRes['namevar']);
                 }
-                $result['node']->setParameterNodes(isset($subres['param']) ? $subres['param'] : null);
+                $nodeRes['node']->setParameterNodes(isset($matchRes['param']) ? $matchRes['param'] : null);
             }
             </action>
         </node>
@@ -145,7 +236,14 @@ class ExpressionParser extends PegParser
             <rule> '(' ( param:Expr ( ',' param:Expr)*)? ')' </rule>
             <action param>
             {
-                $result['param'][] = $subres['node'];
+                $nodeRes['param'][] = $matchRes['node'];
+            }
+            </action>
+            <action _finish>
+            {
+                if (!isset($nodeRes['param'])) {
+                    $nodeRes['param'] = array();
+                }
             }
             </action>
         </token>
@@ -153,46 +251,46 @@ class ExpressionParser extends PegParser
 
         <token Value>
             <attribute>hash</attribute>
-            <rule> value:AnyLiteral | (value:Variable !'(') | ( '(' subexpr:Expr ')' ) | value:FunctionCall  | value:Array </rule>
+            <rule> value:AnyLiteral | (&'$' value:Variable !'(') | ( &'"' value:DoubleQuoted ) | ( '(' subexpr:Expr ')' ) | value:ArrayValue | value:FunctionCall  </rule>
             <action value>
             {
-                $result['node'] = $subres['node'];
+                $nodeRes['node'] = $matchRes['node'];
             }
             </action>
             <action subexpr>
             {
-                $result['node'] = new Subexpression($this->parser, $subres['node']);
+                $nodeRes['node'] = new Subexpression($this->parser, $matchRes['node']);
             }
             </action>
         </token>
 
 
         <token Statement>
-            <rule> var:Variable arr:'[]'? _? append:'.'? '=' _? value:Expr _? </rule>
+            <rule> var:Variable /(?<arr>(\[\s*\]))?\s*(?<append>[.])?=\s* / value:Expr _? </rule>
             <action var>
             {
-                $result['node'] = new TagStatement($this->parser);
-                $result['var'] = $subres['node'];
+                $nodeRes['node'] = new TagStatement($this->parser);
+                $nodeRes['var'] = $matchRes['node'];
             }
             </action>
             <action arr>
             {
-                $result['var']->addSubTree(array('type' => 'arrayelement', 'node' => null) , 'suffix', true);
+                $nodeRes['var']->addSubTree(array('type' => 'arrayelement', 'node' => null) , 'suffix', true);
             }
             </action>
             <action value>
             {
-                $result['node']->setTagAttribute(array('value', $subres['node']));
+                $nodeRes['node']->setTagAttribute(array('value', $matchRes['node']));
             }
             </action>
             <action append>
             {
-                $result['node']->setTagAttribute(array('append', true));
+                $nodeRes['node']->setTagAttribute(array('append', true));
             }
             </action>
             <action _finish>
             {
-                $result['node']->setTagAttribute(array('variable', $result['var']));
+                $nodeRes['node']->setTagAttribute(array('variable', $nodeRes['var']));
             }
             </action>
         </token>
@@ -204,30 +302,30 @@ class ExpressionParser extends PegParser
              <rule> value:Value addmodifier:('|' name:Id (':' param:Value)*)* </rule>
              <action value>
             {
-               $result['node'] = $subres['node'];
+               $nodeRes['node'] = $matchRes['node'];
             }
             </action>
             <action addmodifier>
             {
-                if (isset($subres['name'])) {
-                        $value = $result['node'];
-                        $result['node'] = new Node($this->parser, 'Modifier');
-                        $result['node']->addSubTree($value, 'value');
-                        $result['node']->addSubTree($subres['name'], 'name');
-                        $result['node']->addSubTree(isset($subres['param']) ? $subres['param'] : false, 'param');
+                if (isset($matchRes['name'])) {
+                        $value = $nodeRes['node'];
+                        $nodeRes['node'] = new Node($this->parser, 'Modifier');
+                        $nodeRes['node']->addSubTree($value, 'value');
+                        $nodeRes['node']->addSubTree($matchRes['name'], 'name');
+                        $nodeRes['node']->addSubTree(isset($matchRes['param']) ? $matchRes['param'] : false, 'param');
                 }
             }
             </action>
             <action param>
             {
-               $result['param'][] = $subres['node'];
+               $nodeRes['param'][] = $matchRes['node'];
             }
             </action>
             <action name>
             {
                $string = new String($this->parser);
-               $string->setValue($subres['_text'], true);
-               $result['name'] = $string;
+               $string->setValue($matchRes['_text'], true);
+               $nodeRes['name'] = $string;
             }
             </action>
         </node>
@@ -236,7 +334,7 @@ class ExpressionParser extends PegParser
             <rule> value:Mathexpr | value:Logexpr  </rule>
              <action _all>
             {
-               $result['node'] = $subres['node'];
+               $nodeRes['node'] = $matchRes['node'];
             }
             </action>
        </token>
@@ -245,10 +343,10 @@ class ExpressionParser extends PegParser
             <rule> (operator:Unimath left:ModifierValue) | (left:ModifierValue)  (operator:Unimath | (operator:Math operator:Unimath?) right:ModifierValue )* </rule>
             <action _all>
             {
-                if (!isset($result['node'])) {
-                    $result['node'] = array();
+                if (!isset($nodeRes['node'])) {
+                    $nodeRes['node'] = array();
                 }
-                $result['node'][] = $subres['node'];
+                $nodeRes['node'][] = $matchRes['node'];
             }
             </action>
         </token>
@@ -257,10 +355,10 @@ class ExpressionParser extends PegParser
             <rule> (operator:Unilog left:ModifierValue)|(left:ModifierValue operator:NamedCondition?) ( operator:Logical | (operator:Condition|operator:NamedCondition2) (operator:Unilog right:ModifierValue)|(right:ModifierValue operator:NamedCondition?) )* </rule>
             <action _all>
             {
-                if (!isset($result['node'])) {
-                    $result['node'] = array();
+                if (!isset($nodeRes['node'])) {
+                    $nodeRes['node'] = array();
                 }
-                $result['node'][] = $subres['node'];
+                $nodeRes['node'][] = $matchRes['node'];
             }
             </action>
         </token>
@@ -272,8 +370,8 @@ class ExpressionParser extends PegParser
             <rule>/(\s*(===|!==|==|!=|<>|<=|<|>=|>)\s*)|(\s+(eq|ne|ge|gte|gt|le|lte|lt|instanceof)\s+)/ </rule>
             <action _finish>
             {
-                $result['node'] = new Condition($this->parser);
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                $nodeRes['node'] = new Condition($this->parser);
+                $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
         </token>
@@ -293,8 +391,8 @@ class ExpressionParser extends PegParser
             <rule>/\s*((\|\||&&)\s*)|((and|or|xor)\s+)/</rule>
             <action _finish>
             {
-                $result['node'] = new Logical($this->parser);
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                $nodeRes['node'] = new Logical($this->parser);
+                $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
         </token>
@@ -304,8 +402,8 @@ class ExpressionParser extends PegParser
             <rule>/(\s*(\*|\/|%|&|\|^|>>|<<)\s*)|(\s+mod\s+)/</rule>
             <action _finish>
             {
-                $result['node'] = new Math($this->parser);
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                $nodeRes['node'] = new Math($this->parser);
+                $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
         </node>
@@ -315,8 +413,8 @@ class ExpressionParser extends PegParser
             <rule>/\s*(\+|-|~)\s* /</rule>
             <action _finish>
             {
-                $result['node'] = new Unimath($this->parser);
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                $nodeRes['node'] = new Unimath($this->parser);
+                $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
          </node>
@@ -327,8 +425,8 @@ class ExpressionParser extends PegParser
             <rule>/((!|~)\s*)|(not\s+)/</rule>
             <action _finish>
             {
-                $result['node'] = new Unilog($this->parser);
-                $result['node']->setValue($result['_text'])->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                $nodeRes['node'] = new Unilog($this->parser);
+                $nodeRes['node']->setValue($nodeRes['_text'])->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
         </node>

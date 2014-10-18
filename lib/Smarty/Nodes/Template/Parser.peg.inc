@@ -4,11 +4,11 @@ namespace Smarty\Nodes\Template;
 use Smarty\Nodes;
 
 /**
- * Class PegParser
+ * Class RuleRoot;
  *
  * @package Smarty\Nodes\Template
  */
-class PegParser
+class RuleRoot;
 {
     /*!*
         <pegparser Template>
@@ -16,12 +16,12 @@ class PegParser
                 <rule>.Bom? nodes:Body?</rule>
                 <action _start>
                 {
-                    $result->node = new Nodes\Internal\Template($result->_peg);
+                    $nodeRes->node = new Nodes\Internal\Template($nodeRes->_peg);
                 }
                </action>
                 <action nodes>
                 {
-                    $result->node->templateBodyNode = $subres->node;
+                    $nodeRes->node->templateBodyNode = $matchRes->node;
                 }
                </action>
             </node>

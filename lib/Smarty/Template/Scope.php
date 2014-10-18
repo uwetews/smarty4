@@ -2,6 +2,7 @@
 namespace Smarty\Template;
 
 use Smarty\Variable;
+use Smarty\Context;
 
 /**
  * Class Scope

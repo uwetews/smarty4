@@ -173,8 +173,8 @@ class Smarty_Compiler_Php_NodeCompiler_Value_Modifier
         if ($parameters = $this->buildReflection($callback)
                                ->getParameters()
         ) {
-            if ($result = $this->injectObject($callback, array('Smarty', 'Smarty_Internal_Template', 'Smarty_Compiler_CompilerCore'), 0)) {
-                if ($result[0] == 'Smarty' || $result[0] == 'Smarty_Internal_Template') {
+            if ($nodeRes = $this->injectObject($callback, array('Smarty', 'Smarty_Internal_Template', 'Smarty_Compiler_CompilerCore'), 0)) {
+                if ($nodeRes[0] == 'Smarty' || $nodeRes[0] == 'Smarty_Internal_Template') {
                     $object = '$this, ';
                 } else {
                     $object = $compiler;

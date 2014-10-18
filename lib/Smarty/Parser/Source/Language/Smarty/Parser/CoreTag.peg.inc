@@ -1,7 +1,7 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 use Smarty\Node;
 
 /**
@@ -9,10 +9,44 @@ use Smarty\Node;
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class CoreTagParser extends PegParser
+class CoreTagParser extends RuleRoot
 {
     /*!*
     <pegparser CoreTag>
+
+        <token Ldel>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/{getLdel}/</rule>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+        </token>
+
+        <token LdelSlash>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/{getLdel}\//</rule>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+        </token>
+
+        <token Rdel>
+            <attribute>matchall</attribute>
+            # do not change! real left delimiter regular expression will be obtained by parser
+            <rule>/\s*{getRdel}/</rule>
+            <action _init(getRdel)>
+                {
+                    return $this->parser->Rdel;
+                }
+            </action>
+        </token>
+
 
     #
     #   Tag parsing
@@ -25,7 +59,7 @@ class CoreTagParser extends PegParser
     #
     #
         <token CoreTag>
-            <rule> ( tagname:SmartyTagPrefix tag:$SmartyTag) | ( !SmartyTagPrefix ( tag:TagOutput | tag:TagStatement )) </rule>
+            <rule> ( /({getLdel})(?<tagname>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ))(?!(\s*\())/ tag:$SmartyTag) | ( ( ../(?=({getLdel}.*?=.*?{getRdel}))/ tag:TagStatement ) | tag:TagOutput ) </rule>
             <action _start>
             {
                 $i = 1;
@@ -33,20 +67,30 @@ class CoreTagParser extends PegParser
             </action>
              <action _expression(SmartyTag)>
                 {
-                    $result['_text'] = '';
-                    return $this->parser->tagDispatcher($result);
+                    $nodeRes['_text'] = '';
+                    return $this->parser->tagDispatcher($nodeRes);
                 }
             </action>
             <action tag>
                 {
-                    $result['node'] = $subres['node'];
+                    $nodeRes['node'] = $matchRes['node'];
                 }
             </action>
             <action tagname>
                 {
-                    $result['tagname'] = $subres['_matchres']['tagname'];
-                    $result['savedstartpos'] = $subres['_startpos'];
-                    $result['savedline'] = $subres['_lineno'];
+                    $nodeRes['tagname'] = $matchRes['_pregMatch']['tagname'];
+                    $nodeRes['savedstartpos'] = $matchRes['_startpos'];
+                    $nodeRes['savedline'] = $matchRes['_lineno'];
+                }
+            </action>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
+            <action _init(getRdel)>
+                {
+                    return $this->parser->Rdel;
                 }
             </action>
         </token>
@@ -58,22 +102,22 @@ class CoreTagParser extends PegParser
             <rule>  ( _  (&'scope' scope:SmartyTagScopes) | (( name:Id _? '=' _?)? value:Expr))* </rule>
              <action _start>
             {
-                $result['node'] = $previous['node'];
+                $nodeRes['node'] = $previous['node'];
             }
             </action>
            <action name>
             {
-                $result['name'] = strtolower($subres['_text']);
+                $nodeRes['name'] = strtolower($matchRes['_text']);
             }
             </action>
             <action value>
             {
-                $result['node']->setTagAttribute(array(isset($result['name']) ? $result['name'] : null, $subres['node']));
+                $nodeRes['node']->setTagAttribute(array(isset($nodeRes['name']) ? $nodeRes['name'] : null, $matchRes['node']));
             }
             </action>
             <action scope>
             {
-                $result['node']->setTagAttribute(array('scope', $subres['node']));
+                $nodeRes['node']->setTagAttribute(array('scope', $matchRes['node']));
             }
             </action>
             <action _finish>
@@ -91,12 +135,12 @@ class CoreTagParser extends PegParser
             <rule>  ( _ option:Id)* </rule>
             <action _start>
             {
-                $result['node'] = $previous['node'];
+                $nodeRes['node'] = $previous['node'];
             }
             </action>
            <action option>
             {
-                $result['node']->setTagOption(strtolower($subres['_text']));
+                $nodeRes['node']->setTagOption(strtolower($matchRes['_text']));
             }
             </action>
         </token>
@@ -109,17 +153,17 @@ class CoreTagParser extends PegParser
             <rule> 'scope' _? '=' _? /(?<scope>(parent|root|global))/ | error:Unexpected </rule>
             <action _start>
             {
-                $result['node'] = new Node($this->parser, 'SmartyTagScopes');
+                $nodeRes['node'] = new Node($this->parser, 'SmartyTagScopes');
             }
             </action>
            <action scope>
             {
-                $result['node']->setValue(strtolower($subres['_matchres']['scope']));
+                $nodeRes['node']->setValue(strtolower($matchRes['_pregMatch']['scope']));
             }
             </action>
            <action error>
             {
-                $result['node']->addError($subres['error']);
+                $nodeRes['node']->addError($matchRes['error']);
             }
             </action>
         </token>
@@ -131,20 +175,20 @@ class CoreTagParser extends PegParser
             <rule> Ldel Id SmartyTagAttributes SmartyTagOptions Rdel </rule>
             <action _start>
             {
-                $result['node'] = $previous['node'];
+                $nodeRes['node'] = $previous['node'];
             }
             </action>
             <action _finish>
             {
-                $result['tagAttributes'] = array();
-                if (isset($result['attrib'])) {
-                    $result['tagAttributes'] = $result['attrib']['attrib'];
-                    unset($result['attrib']);
+                $nodeRes['tagAttributes'] = array();
+                if (isset($nodeRes['attrib'])) {
+                    $nodeRes['tagAttributes'] = $nodeRes['attrib']['attrib'];
+                    unset($nodeRes['attrib']);
                 }
-                $result['tagOptions'] = array();
-                if (isset($result['options'])) {
-                    $result['tagOptions'] = $result['options']['Options'];
-                    unset($result['options']);
+                $nodeRes['tagOptions'] = array();
+                if (isset($nodeRes['options'])) {
+                    $nodeRes['tagOptions'] = $nodeRes['options']['Options'];
+                    unset($nodeRes['options']);
                 }
 
             }
@@ -157,22 +201,6 @@ class CoreTagParser extends PegParser
         <node Smarty_Tag_Block_Default>
             <rule> Smarty_Tag_Default body:Body Smarty_Tag_Block_Close</rule>
         </node>
-
-            <token SmartyBlockCloseTag>
-            <attribute>matchall</attribute>
-            # do not change! real left delimiter regular expression will be obtained by parser
-            <rule>/{getLdel}\/(?<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ){getRdel}/</rule>
-            <action _init(getLdel)>
-                {
-                    return $this->parser->Ldel;
-                }
-            </action>
-            <action _init(getRdel)>
-                {
-                    return $this->parser->Rdel;
-                }
-            </action>
-        </token>
 
         <token SmartyTagPrefix>
             <attribute>matchall</attribute>
@@ -197,17 +225,6 @@ class CoreTagParser extends PegParser
             <action _init(getRdel)>
                 {
                     return $this->parser->Rdel;
-                }
-            </action>
-        </token>
-
-        <token SmartyTagPrefix>
-            <attribute>matchall</attribute>
-            # do not change! real left delimiter regular expression will be obtained by parser
-            <rule>/({getLdel})(?<tagname>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* ))(?!(\s*\())/</rule>
-            <action _init(getLdel)>
-                {
-                    return $this->parser->Ldel;
                 }
             </action>
         </token>

@@ -49,7 +49,7 @@
  * <rule>Ldel 'cycle' SmartyTagAttributes SmartyTagOptions Rdel</rule>
  * <action _start>
  * {
- * $result['node'] = $previous['node'];
+ * $nodeRes['node'] = $previous['node'];
  * }
  * </action>
  * </node>

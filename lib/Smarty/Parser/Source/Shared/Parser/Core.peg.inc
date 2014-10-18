@@ -2,22 +2,23 @@
 namespace Smarty\Parser\Source\Shared\Parser;
 
 use Smarty\Node;
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class CoreParser
  *
  * @package Smarty\Parser\Source\Shared\Parser
  */
-class CoreParser extends PegParser
+class CoreParser extends RuleRoot
 {
+    // TODO  Not used
 
     /*!*
     <pegparser Core>
 
         <token Id>
             <rule>/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]* /</rule>
-         </token>
+        </token>
 
         <token Attr>
             <rule>/[\S]+/</rule>

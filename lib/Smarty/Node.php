@@ -10,7 +10,7 @@ use Smarty\Compiler\Code;
  *
  * @package Smarty
  */
-class Node// extends Magic
+class Node //extends Magic
 {
     /**
      * Node name

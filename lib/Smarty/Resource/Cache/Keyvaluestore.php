@@ -1,7 +1,7 @@
 <?php
 namespace Smarty\Resource\Cache;
 
-use Smarty\Template\Context;
+use Smarty\Context;
 
 /**
  * Smarty Cache Handler Base for Key/Value Storage Implementations

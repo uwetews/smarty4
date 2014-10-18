@@ -1,7 +1,7 @@
 <?php
 namespace Smarty\Resource\Compiled;
 
-use Smarty\Template\Context;
+use Smarty\Context;
 
 /**
  * Class Recompiled
@@ -29,9 +29,7 @@ class Recompiled //extends Smarty_Exception_Magic
             if ($context->smarty->debugging) {
                 Smarty_Debug::start_compile($context);
             }
-            $class_name = $context->getCompilerClass();
-            $compiler = new $class_name($context, null);
-            eval('?>' . $compiler->compileResource($context));
+            eval('?>' . $context->compileResource());
             unset($compiler);
             if ($context->smarty->debugging) {
                 Smarty_Debug::end_compile($context);

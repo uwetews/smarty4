@@ -104,7 +104,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Import extends Smarty_Compiler_Code_P
 
         $compiler->suppressNocacheProcessing = true;
         $this->iniTagCode($compiler);
-        $this->precompiled .= $comp->template_code->precompiled;
+        $this->preCompiled .= $comp->template_code->preCompiled;
         // release compiler object to free memory
         unset($comp);
 

@@ -240,8 +240,8 @@ class Smarty_Compiler_Php_NodeCompiler_Tagxxx
     public function getPluginParameterString($callback, $params, $compiler, $block, $cache_attr = null)
     {
         $object = '$this';
-        if ($result = $this->injectObject($callback, array('Smarty', 'Smarty_Template'))) {
-            if ($result[1] == 0) {
+        if ($nodeRes = $this->injectObject($callback, array('Smarty', 'Smarty_Template'))) {
+            if ($nodeRes[1] == 0) {
                 $par_array = array();
                 $par_names = array();
                 $parameters = $this->buildReflection($callback)

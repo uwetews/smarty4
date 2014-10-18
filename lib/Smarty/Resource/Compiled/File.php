@@ -1,14 +1,15 @@
 <?php
 namespace Smarty\Resource\Compiled;
 
-use Smarty\Template\Context;
+use Smarty\Context;
+use Smarty\Resource\FileBase;
 
 /**
  * Class File
  *
  * @package Smarty\Resource\Compiled
  */
-class File //extends Smarty_Exception_Magic
+class File extends FileBase
 {
     /**
      * Load compiled template
@@ -28,7 +29,7 @@ class File //extends Smarty_Exception_Magic
         $is_locked = false;
         try {
             $isValid = false;
-            if ($exists && !$context->smarty->forceCompile && $timestamp >= $context->timestamp) {
+            if ($exists && !$context->getProperty('forceCompile') && $timestamp >= $context->timestamp) {
                 // load existing compiled template class
                 $template_class_name = $this->loadTemplateClass($filepath);
                 if (class_exists($template_class_name, false)) {
@@ -37,14 +38,11 @@ class File //extends Smarty_Exception_Magic
                 }
             }
             if (!$isValid) {
+                $context->enableCompiler();
                 $is_locked = $this->setLock($context, $filepath, $timestamp, $exists);
                 $template_class_name = '';
                 // we must compile from source
-                $class_name = $context->getCompilerClass();
-                $compiler = new $class_name($context);
-                // write compiled template
-                $context->smarty->_writeFile($filepath, $compiler->compileResource($context));
-                unset($compiler);
+                $this->write($context->smarty, $filepath, $context->compileResource());
                 $this->populateTimestamp($context->smarty, $filepath, $timestamp, $exists);
                 $template_class_name = $this->loadTemplateClass($filepath);
                 if (class_exists($template_class_name, false)) {
@@ -77,16 +75,16 @@ class File //extends Smarty_Exception_Magic
      */
     public function buildFilepath(Context $context)
     {
-        $_compileId = isset($context->compileId) ? preg_replace('![^\w\|]+!', '_', $context->compileId) : null;
+        $_compileId = ($_compileId = $context->getProperty('compileId')) ? preg_replace('![^\w\|]+!', '_', $_compileId) : null;
         $_filepath = $context->uid . '_' . $context->smarty->compiletime_params;
         // if useSubDirs, break file into directories
-        if ($context->smarty->useSubDirs) {
+        if ($useSubDirs = $context->getProperty('useSubDirs')) {
             $_filepath = substr($_filepath, 0, 2) . '/'
                 . substr($_filepath, 2, 2) . '/'
                 . substr($_filepath, 4, 2) . '/'
                 . $_filepath;
         }
-        $_compile_dir_sep = $context->smarty->useSubDirs ? '/' : '^';
+        $_compile_dir_sep = $useSubDirs ? '/' : '^';
         if (isset($_compileId)) {
             $_filepath = $_compileId . $_compile_dir_sep . $_filepath;
         }
@@ -94,12 +92,12 @@ class File //extends Smarty_Exception_Magic
         if ($context->_usage == \Smarty::IS_CONFIG) {
             $_subtype = '.config';
             // TODO must caching be a compiled property?
-        } elseif ($context->caching) {
+        } elseif ($context->getProperty('caching')) {
             $_subtype = '.cache';
         } else {
             $_subtype = '';
         }
-        $_compile_dir = $context->smarty->getCompileDir();
+        $_compile_dir = $context->getProperty('compileDir');
         // set basename if not specified
         $_basename = $context->handler->getBasename($context);
         if ($_basename === null) {
@@ -157,7 +155,7 @@ class File //extends Smarty_Exception_Magic
      */
     public function setLock($context, $filepath, $timestamp, $exists)
     {
-        if (!$exists || $context->smarty->compile_locking) {
+        if (!$exists || !$context->getProperty('compileLocking')) {
             return false;
         }
         // compile locking

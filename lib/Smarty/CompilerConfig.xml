@@ -1,49 +1,30 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <smarty>
-    <baseDir></baseDir>
-    <compiler>
-        <source>
-            <rootDir>/Parser/Source</rootDir>
-            <configFile>/sourceConfig.xml</configFile>
-        </source>
-        <target>
-            <rootDir>/Target</rootDir>
-        </target>
-    </compiler>
-    <parser name="default" mainClass="Parser" subtype="PegParser">
-        <pegParser>
-            <trace>on</trace>
-            <compileCheck>on</compileCheck>
-            <forceCompile>on</forceCompile>
-            <parserBackup>on</parserBackup>
-            <compileMode>code</compileMode>
-            <generator>pegParserGenerator</generator>
-        </pegParser>
-        <pegParserGenerator>
-            <trace>on</trace>
-            <compileCheck>on</compileCheck>
-            <forceCompile>on</forceCompile>
-            <parserBackup>on</parserBackup>
-            <compileMode>code</compileMode>
-            <generator>pegParserGenerator</generator>
-        </pegParserGenerator>
-    </parser>
+    <configSection name="internalCompiler">
+    <compilerClass scope="default" value="\Smarty\Compiler"/>
     <parserPeg>
-        <trace></trace>
-        <checkGenerator></checkGenerator>
+        <trace>off</trace>
+        <checkGenerator>off</checkGenerator>
         <compile_check>on</compile_check>
-        <force_compile></force_compile>
-        <generatorClass>Smarty\Tool\Parser\Peg\Generator</generatorClass>
+        <force_compile>off</force_compile>
+        <generatorClass>Smarty\Parser\Peg\Generator\Core</generatorClass>
         <ruleFilePostfix>.peg.inc</ruleFilePostfix>
         <parserFilePostfix>Parser.php</parserFilePostfix>
         <parserClassPostfix>Parser</parserClassPostfix>
     </parserPeg>
     <pegGenerator>
         <compile_check>on</compile_check>
-        <trace>on</trace>
-        <force_compile></force_compile>
+        <trace>off</trace>
+        <force_compile>off</force_compile>
         <generatorClass>Smarty\Tool\Parser\Peg\InternalTool\ParserGenerator</generatorClass>
         <ruleFilePostfix>Tool/Parser/Peg/InternalTool/ParserGenerator.peg.inc</ruleFilePostfix>
         <parserFilePostfix>Tool/Parser/Peg/Generator.php</parserFilePostfix>
     </pegGenerator>
+             <sourceConfig language="Smarty">
+                 <directoryPath value="./Parser/Source/Language/Smarty/"/>
+                 <sourceConfigXml value="./SourceConfig.xml"/>
+                 <configSection value="internalSourceSmarty"/>
+             </sourceConfig>
+        <defaultNode>resource</defaultNode>
+    </configSection>
 </smarty>

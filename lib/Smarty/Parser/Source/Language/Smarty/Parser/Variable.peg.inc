@@ -2,7 +2,8 @@
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
 use Smarty\Parser\Source\Language\Smarty\Node\Value\String;
-use Smarty\PegParser;
+use Smarty\Parser\Source\Language\Smarty\Node\Value\Variable;
+use Smarty\Parser\Peg\RuleRoot;
 use Smarty\Node;
 
 /**
@@ -10,7 +11,7 @@ use Smarty\Node;
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class VariableParser extends PegParser
+class VariableParser extends RuleRoot
 {
     /*!*
     <pegparser Variable>
@@ -20,7 +21,7 @@ class VariableParser extends PegParser
     #                -> name can be nested variable                    -> array access     -> property or method
         <node Variable>
             <attribute>hash</attribute>
-            <rule>  (&'$smarty.' special:SpecialVariable) | (isvar:'$' ((id:Id | ('{' var:Variable '}'))+ ('@' property:Id)? ( (&/\.|\[/ Arrayelement) | ( &'->' Object))*)) </rule>
+            <rule>  ( ../(?=([$]smarty[.]))/ special:SpecialVariable) | ( /(?<isvar>[$])(?<id>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*))?/ ( '{' var:Variable /(\})(?<id>([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*))?/ )* ( ../(?=([@.\[]|(->)))/ (('@' property:Id)? ( ( ../(?=([.\[]))/ Arrayelement) | ( &'->' Object))*))? ) </rule>
             <action _start>
             {
                 $i = 1;
@@ -28,33 +29,33 @@ class VariableParser extends PegParser
             </action>
             <action special>
             {
-                $result['node'] = $subres['node'];
+                $nodeRes['node'] = $matchRes['node'];
             }
             </action>
             <action isvar>
             {
-                $result['node'] = new Node($this->parser, 'Variable');
+                $nodeRes['node'] = new Variable($this->parser);
             }
             </action>
             <action id>
             {
                 $node = new String($this->parser);
-                $result['node']->addSubTree($node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']), 'name', true);
+                $nodeRes['node']->addSubTree($node->setValue($matchRes['_pregMatch']['id'], true)->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']), 'name', true);
             }
             </action>
             <action var>
             {
-                $result['node']->addSubTree($subres['node'], 'name', true);
+                $nodeRes['node']->addSubTree($matchRes['node'], 'name', true);
             }
             </action>
             <action property>
             {
-                $result['node']->addSubTree($subres['_text'], 'property');
+                $nodeRes['node']->addSubTree($matchRes['_text'], 'property');
             }
             </action>
             <action _finish>
             {
-                    $result['node']->setTraceInfo($result['_lineno'], $result['_text'], $result['_startpos'], $result['_endpos']);
+                    $nodeRes['node']->setTraceInfo($nodeRes['_lineno'], $nodeRes['_text'], $nodeRes['_startpos'], $nodeRes['_endpos']);
             }
             </action>
         </node>
@@ -63,18 +64,18 @@ class VariableParser extends PegParser
             <rule>(('.' ( iv:Id | value:Value)) | ('['  value:Expr ']'))+</rule>
             <action _start>
             {
-                $result['node'] = $previous['node'];
+                $nodeRes['node'] = $previous['node'];
             }
             </action>
             <action value>
             {
-                $result['node']->addSubTree(array('type' => 'arrayelement', 'node' => $subres['node']) , 'suffix', true);
+                $nodeRes['node']->addSubTree(array('type' => 'arrayelement', 'node' => $matchRes['node']) , 'suffix', true);
             }
             </action>
             <action iv>
             {
                 $node = new String($this->parser);
-                $result['node']->addSubTree(array('type' => 'arrayelement', 'node' => $node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']) , 'suffix', true));
+                $nodeRes['node']->addSubTree(array('type' => 'arrayelement', 'node' => $node->setValue($matchRes['_text'], true)->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']) , 'suffix', true));
             }
             </action>
         </node>
@@ -83,29 +84,29 @@ class VariableParser extends PegParser
             <rule>(addsuffix:('->' ( .iv:Id | .var:Variable) method:Parameter?))+</rule>
             <action _start>
             {
-                $result['node'] = $previous['node'];
+                $nodeRes['node'] = $previous['node'];
             }
             </action>
             <action iv>
             {
                 $node = new String($this->parser);
-                $node->setValue($subres['_text'], true)->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-                $result['name'] = $node;
+                $node->setValue($matchRes['_text'], true)->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']);
+                $nodeRes['name'] = $node;
             }
             </action>
             <action var>
             {
-                $result['name'] = $subres['node'];
+                $nodeRes['name'] = $matchRes['node'];
             }
             </action>
             <action method>
             {
-                $result['method'] = $subres['node'];
+                $nodeRes['method'] = $matchRes['param'];
             }
             </action>
             <action addsuffix>
             {
-                $result['node']->addSubTree(array('type' => 'object', 'name' => $subres['name'], 'method' => isset($subres['method']) ? $subres['method'] : null) , 'suffix', true);
+                $nodeRes['node']->addSubTree(array('type' => 'object', 'name' => $matchRes['name'], 'method' => isset($matchRes['method']) ? $matchRes['method'] : null) , 'suffix', true);
             }
             </action>
         </token>

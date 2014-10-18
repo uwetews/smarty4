@@ -2,14 +2,14 @@
 namespace Smarty\Compiler\Target\Language\Php\Parser;
 
 use Smarty\Node;
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class TemplateParser
  *
  * @package Smarty\Compiler\Target\Language\Php\Parser
  */
-class TemplateParser extends PegParser
+class TemplateParser extends RuleRoot
 {
     /*!*
          <pegparser Template>
@@ -17,14 +17,14 @@ class TemplateParser extends PegParser
                  <rule>.Bom? nodes:Body?  Unexpected?</rule>
                  <action _start>
                  {
-                     $result['node'] = new Node\Template($this->parser, $result);
+                     $nodeRes['node'] = new Node\Template($this->parser, $nodeRes);
                  }
                 </action>
                  <action nodes>
                  {
-                     $result['node']->templateBodyNode = $subres['node'];
-                     $result['node']->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
-                     $result['node']->templateBodyNode->setTraceInfo($subres['_lineno'], $subres['_text'], $subres['_startpos'], $subres['_endpos']);
+                     $nodeRes['node']->templateBodyNode = $matchRes['node'];
+                     $nodeRes['node']->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']);
+                     $nodeRes['node']->templateBodyNode->setTraceInfo($matchRes['_lineno'], $matchRes['_text'], $matchRes['_startpos'], $matchRes['_endpos']);
                  }
                 </action>
              </node>

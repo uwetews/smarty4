@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<configSection name="internalSourceSmarty">
+<sourceConfig language="Smarty">
+            <node name="if" class=".Tag\TagIf" type="tag" pegParserClass=".TagIfParser" pegRuleFile=".TagIfParser"/>
+            <node name="assign" class=".Tag\TagAssign" type="tag" pegParserClass=".TagAssignParser" pegRuleFile=".TagAssignParser"/>
+            <node name="for" class=".Tag\TagFor" type="tag" pegParserClass=".TagForParser" pegRuleFile=".TagForParser"/>
+            <node name="foreach" class=".Tag\TagForeach" type="tag" pegParserClass=".TagForeachParser" pegRuleFile=".TagForeachParser"/>
+            <node name="include" class=".Tag\TagInclude" type="tag" pegParserClass=".TagIncludeParser" pegRuleFile=".TagIncludeParser"/>
+            <node name="nocache" class=".Tag\TagNocache" type="tag" pegParserClass=".TagNocacheParser" pegRuleFile=".TagNocacheParser"/>
+            <node name="while" class=".Tag\TagWhile" type="tag" pegParserClass=".TagWhileParser" pegRuleFile=".TagWhileParser"/>
+            <node name="internalOutput" class=".Tag\TagOutput" type="internalTag" pegParserClass=".TagOutputParser" pegRuleFile=".TagOutputParser"/>
+            <node name="internalStatement" class=".Tag\TagStatement" type="internalTag" pegParserClass=".TagStatementParser" pegRuleFile=".TagStatementParser"/>
+            <node name="internalPluginFunction" class=".Tag\TagPluginFunction" type="internalTag" pegParserClass=".TagPluginFunctionParser" pegRuleFile=".TagPluginFunctionParser"/>
+            <node name="ArrayValue" class=".Value\ArrayValue" type="value" pegParserClass=".TagStatementParser" pegRuleFile=".TagStatementParser"/>
+            <node name="Boolean" class=".Value\Boolean" type="value" pegParserClass=".TagStatementParser" pegRuleFile=".TagStatementParser"/>
+            <nodeDirectoryPath value="./Parser/Source/Language/Smarty"/>
+            <nodeDirectoryPathShared value="./Parser/Source/Language/Shared"/>
+            <nodeNameSpace value="Smarty\Source\Language\Smarty\"/>
+            <nodeNameSpaceShared value="Smarty\Source\Language\Shared\"/>
+            <parserConfig>
+                <parserClass>Smarty\Parser\Source\Language\Smarty\ParserExtension</parserClass>
+                <type>PegParser</type>
+                <PegParser>
+                    <parser>
+                        <directoryPath>./Parser/Source/Language/Smarty/Parser</directoryPath>
+                        <directoryPathShared>./Parser/Source/Language/Shared</directoryPathShared>
+                        <nameSpace>Smarty\Source\Language\Smarty\Parser\</nameSpace>
+                        <nameSpaceShared>Smarty\Source\Language\Shared\Parser\</nameSpaceShared>
+                    </parser>
+                    <rule>
+                        <directoryPath>./Parser/Source/Language/Smarty/Parser</directoryPath>
+                        <directoryPathShared>./Parser/Source/Language/Shared</directoryPathShared>
+                        <fileExt>.peg.inc</fileExt>
+                    </rule>
+                </PegParser>
+            </parserConfig>
+    </sourceConfig>
+</configSection>

@@ -146,7 +146,7 @@ class Smarty_ComSmarty_Compiler_Php_er_Tag_Blockclose extends Smarty_CompilerSma
                    ->newline();
         $block_code->code("/* Line {$saved_data[5]} */")
                    ->newline();
-        $block_code->precompiled .= $compiler->template_code->precompiled;
+        $block_code->preCompiled .= $compiler->template_code->preCompiled;
         $block_code->code("return ob_get_clean();")
                    ->newline();
 
@@ -154,7 +154,7 @@ class Smarty_ComSmarty_Compiler_Php_er_Tag_Blockclose extends Smarty_CompilerSma
                    ->code('}')
                    ->newline(3);
 
-        $compiler->inheritance_blocks_code[] .= $block_code->precompiled;
+        $compiler->inheritance_blocks_code[] .= $block_code->preCompiled;
 
         $compiler->template_code = $saved_data[1];
         $this->iniTagCode($compiler);

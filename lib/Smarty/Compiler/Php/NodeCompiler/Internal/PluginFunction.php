@@ -56,9 +56,9 @@ class Smarty_Compiler_Php_ompiler_Internal_PluginFunction extends \Smarty_Compil
         unset($_attr['nocache']);
         $cache_attr = null;
         if ($compiler->context->caching) {
-            $result = $this->getAnnotation($function, 'smarty_nocache');
-            if ($result) {
-                $compiler->tag_nocache = $compiler->tag_nocache || $result;
+            $nodeRes = $this->getAnnotation($function, 'smarty_nocache');
+            if ($nodeRes) {
+                $compiler->tag_nocache = $compiler->tag_nocache || $nodeRes;
                 $compiler->getPlugin(substr($function, 16), Smarty::PLUGIN_FUNCTION);
             }
             if ($compiler->tag_nocache || $compiler->nocache) {
@@ -66,11 +66,11 @@ class Smarty_Compiler_Php_ompiler_Internal_PluginFunction extends \Smarty_Compil
             }
         }
         // convert attributes into parameter string
-        $result = $this->getPluginParameterString($function, $_attr, $compiler, false, $cache_attr);
+        $nodeRes = $this->getPluginParameterString($function, $_attr, $compiler, false, $cache_attr);
         // compile code
         $this->iniTagCode($compiler);
 
-        $this->code("echo {$function}({$result});")
+        $this->code("echo {$function}({$nodeRes});")
              ->newline();
 
         return $this->returnTagCode($compiler);

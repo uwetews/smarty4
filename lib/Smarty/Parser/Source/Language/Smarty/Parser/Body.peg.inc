@@ -2,38 +2,48 @@
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
 use Smarty\Parser\Source\Language\Smarty\Node;
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class BodyParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class BodyParser extends PegParser
+class BodyParser extends RuleRoot
 {
     /*!*
    <pegparser Body>
 
        <node  Body>
            <attribute>node='Body'</attribute>
-           <rule> ((!LdelSlash &Ldel .nodes:CoreTag) | nodes:Text )*</rule>
+           <rule> (( ../(?=({getLdel}(?!(\/))))/ nodes:CoreTag) | nodes:Text )*</rule>
+           <action _start>
+           {
+                $nodeRes['node'] = new Node\Body($this->parser);
+                $this->parser->pushBody($nodeRes['node']);
+           }
+           </action>
            <action nodes>
               {
-                $result['nodes'][] = $subres['node'];
+                $nodeRes['node']->addSubTree($matchRes['node']);
+                $this->parser->cleanupCache();
               }
            </action>
            <action _finish>
            {
-               if (isset($result['nodes'])) {
-                   $result['node'] = new Node\Body($this->parser);
-                   $result['node']->setTraceInfo($result['_lineno'], '', $result['_startpos'], $result['_endpos']);
-                   $result['node']->addSubTree($result['nodes']);
-                   unset($result['nodes']);
+               $this->parser->popBody();
+               if ($nodeRes['node']->getCountSubTree()) {
+                    $nodeRes['node']->setTraceInfo($nodeRes['_lineno'], '', $nodeRes['_startpos'], $nodeRes['_endpos']);
                } else {
-                   $result = false;
+                   $nodeRes = false;
                }
            }
            </action>
+            <action _init(getLdel)>
+                {
+                    return $this->parser->Ldel;
+                }
+            </action>
        </node>
    </pegparser>
 

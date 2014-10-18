@@ -4,11 +4,11 @@ namespace Smarty\Nodes\Core;
 use Smarty\Nodes;
 
 /**
- * Class PegParser
+ * Class RuleRoot;
  *
  * @package Smarty\Nodes\Core
  */
-class PegParser
+class RuleRoot;
 {
     /*!*
     <pegparser Config>
@@ -17,8 +17,8 @@ class PegParser
             <rule>/[0-9]+(?:\.[0-9]+)?/</rule>
             <action _finish>
             {
-                $result->node = new Nodes\Value\Number($result->_peg);
-                $result->node->setValue($result->_text)->setTraceInfo($result->_lineno, $result->_text, $result->_startpos, $result->_endpos);
+                $nodeRes->node = new Nodes\Value\Number($nodeRes->_peg);
+                $nodeRes->node->setValue($nodeRes->_text)->setTraceInfo($nodeRes->_lineno, $nodeRes->_text, $nodeRes->_startpos, $nodeRes->_endpos);
             }
             </action>
         </node>
@@ -27,8 +27,8 @@ class PegParser
             <rule>/'[^'\\]*(?:\\.[^'\\]*)*'/</rule>
             <action _finish>
             {
-                $result->node = new Nodes\Value\String($result->_peg);
-                $result->node->setValue($result->_text)->setTraceInfo($result->_lineno, $result->_text, $result->_startpos, $result->_endpos);
+                $nodeRes->node = new Nodes\Value\String($nodeRes->_peg);
+                $nodeRes->node->setValue($nodeRes->_text)->setTraceInfo($nodeRes->_lineno, $nodeRes->_text, $nodeRes->_startpos, $nodeRes->_endpos);
             }
             </action>
         </node>
@@ -37,8 +37,8 @@ class PegParser
             <rule>/(true|false)(?![^a-zA-Z0-9])/</rule>
             <action _finish>
             {
-                $result->node = new Nodes\Value\Boolean($result->_peg);
-                $result->node->setValue($result->_text)->setTraceInfo($result->_lineno, $result->_text, $result->_startpos, $result->_endpos);
+                $nodeRes->node = new Nodes\Value\Boolean($nodeRes->_peg);
+                $nodeRes->node->setValue($nodeRes->_text)->setTraceInfo($nodeRes->_lineno, $nodeRes->_text, $nodeRes->_startpos, $nodeRes->_endpos);
             }
             </action>
         </node>
@@ -47,33 +47,33 @@ class PegParser
             <rule>/null(?![^a-zA-Z0-9])/</rule>
             <action _finish>
             {
-                $result->node = new Nodes\Value\Null($result->_peg);
-                $result->node->setTraceInfo($result->_lineno, $result->_text, $result->_startpos, $result->_endpos);
+                $nodeRes->node = new Nodes\Value\Null($nodeRes->_peg);
+                $nodeRes->node->setTraceInfo($nodeRes->_lineno, $nodeRes->_text, $nodeRes->_startpos, $nodeRes->_endpos);
             }
             </action>
         </node>
             <node attrvalue>
                 <rule> .._? ( /(?<true>true)|(?<false>false)|(?<null>null)|(?<v1>(('[^']*')|("[^"]*")|\d+|\w+))/ | ( '(' sub:attr ')' ) )</rule>
                 <action sub> {
-                        $result->value = $subres->_attr;
+                        $nodeRes->value = $matchRes->_attr;
                     }
                 </action>
                 <action _finish>
                     {
-                        $mr = $result->_matchres;
+                        $mr = $nodeRes->_matchres;
                         if (isset($mr['v1']) && !empty($mr['v1'])) {
-                            $result->value = trim($mr['v1'], "'\"");
+                            $nodeRes->value = trim($mr['v1'], "'\"");
                         }
                         if (isset($mr['true']) && !empty($mr['true'])) {
-                            $result->value = true;
+                            $nodeRes->value = true;
                         }
                         if (isset($mr['false']) && !empty($mr['false'])) {
-                            $result->value = false;
+                            $nodeRes->value = false;
                         }
                         if (isset($mr['null']) && !empty($mr['null'])) {
-                            $result->value = null;
+                            $nodeRes->value = null;
                         }
-                        $result->_matchres = array();
+                        $nodeRes->_matchres = array();
                     }
                 </action>
             </node>
@@ -83,12 +83,12 @@ class PegParser
                 <rule> .._? key:Name .._?  '=' .._? val:attrvalue? </rule>
                 <action key>
                 {
-                    $result->key = $subres->_text;
+                    $nodeRes->key = $matchRes->_text;
                 }
                 </action>
                 <action val>
                 {
-                    $result->value[$result->key] = $subres->value;
+                    $nodeRes->value[$nodeRes->key] = $matchRes->value;
                 }
                 </action>
              </node>
@@ -105,16 +105,16 @@ class PegParser
             <rule>/((?<number>([0-9]+(?:\.[0-9]+)?))|(?<string>('[^'\\]*(?:\\.[^'\\]*)*')|((?<null>null)|(?<bool>(true|false)))(?![^a-zA-Z0-9])))/</rule>
             <action _finish>
             {
-                if (isset($result->_matchres['number'])) {
-                    $result->node = new Nodes\Value\Number($result->_peg);
-                } elseif (isset($result->_matchres['string'])) {
-                    $result->node = new Nodes\Value\String($result->_peg);
-                } elseif (isset($result->_matchres['bool'])) {
-                    $result->node = new Nodes\Value\Boolean($result->_peg);
+                if (isset($nodeRes->_matchres['number'])) {
+                    $nodeRes->node = new Nodes\Value\Number($nodeRes->_peg);
+                } elseif (isset($nodeRes->_matchres['string'])) {
+                    $nodeRes->node = new Nodes\Value\String($nodeRes->_peg);
+                } elseif (isset($nodeRes->_matchres['bool'])) {
+                    $nodeRes->node = new Nodes\Value\Boolean($nodeRes->_peg);
                 } else {
-                    $result->node = new Nodes\Value\Null($result->_peg);
+                    $nodeRes->node = new Nodes\Value\Null($nodeRes->_peg);
                 }
-                $result->node->setValue($result->_text)->setTraceInfo($result->_lineno, $result->_text, $result->_startpos, $result->_endpos);
+                $nodeRes->node->setValue($nodeRes->_text)->setTraceInfo($nodeRes->_lineno, $nodeRes->_text, $nodeRes->_startpos, $nodeRes->_endpos);
             }
             </action>
         </node>
@@ -156,18 +156,18 @@ class PegParser
             <rule>/(\s*(?<op>(\*|\/|%))\s*)|(\s+(?<op2>mod)\s+)/</rule>
             <action op>
             {
-                $result->_type = 'operator';
-                $result->_subtype = 'math';
-                $result->_compile = " {$subres->_matchres['op']} ";
-                unset($subres->_matchres['op']);
+                $nodeRes->_type = 'operator';
+                $nodeRes->_subtype = 'math';
+                $nodeRes->_compile = " {$matchRes->_matchres['op']} ";
+                unset($matchRes->_matchres['op']);
             }
             </action>
             <action op2>
             {
-                $result->_type = 'operator';
-                $result->_subtype = 'math';
-                $result->_compile = " {$subres->_matchres['op2']} ";
-                unset($subres->_matchres['op2']);
+                $nodeRes->_type = 'operator';
+                $nodeRes->_subtype = 'math';
+                $nodeRes->_compile = " {$matchRes->_matchres['op2']} ";
+                unset($matchRes->_matchres['op2']);
             }
             </action>
         </node>
@@ -176,10 +176,10 @@ class PegParser
             <rule>/\s*(?<op>(\+|-))\s* /</rule>
             <action op>
             {
-                $result->_type = 'operator';
-                $result->_subtype = 'math';
-                $result->_compile = " {$subres->_matchres['op']} ";
-                unset($subres->_matchres['op']);
+                $nodeRes->_type = 'operator';
+                $nodeRes->_subtype = 'math';
+                $nodeRes->_compile = " {$matchRes->_matchres['op']} ";
+                unset($matchRes->_matchres['op']);
             }
             </action>
          </node>
@@ -188,54 +188,54 @@ class PegParser
             <rule>/(\s*(?<op>(===|!==|==|!=|<>|<=|<|>=|>))\s*)|(\s+(?<op2>(eq|ne|ge|gte|gt|le|lte|lt|instanceof))\s+)/ </rule>
             <action op>
             {
-                $result->_type = 'operator';
-                $result->_subtype = 'bool';
-                switch ($subres->_matchres['op']) {
+                $nodeRes->_type = 'operator';
+                $nodeRes->_subtype = 'bool';
+                switch ($matchRes->_matchres['op']) {
                         case '<>':
-                            $result->_compile = '!=';
+                            $nodeRes->_compile = '!=';
                             break;
                         default:
-                            $result->_compile = $subres->_matchres['op'];
+                            $nodeRes->_compile = $matchRes->_matchres['op'];
                             break;
                 }
-                $result->_compile = ' ' . $result->_compile . ' ';
-                unset($subres->_matchres['op']);
+                $nodeRes->_compile = ' ' . $nodeRes->_compile . ' ';
+                unset($matchRes->_matchres['op']);
             }
             </action>
             <action op2>
             {
-                $result->_type = 'operator';
-                $result->_subtype = 'bool';
-                switch ($subres->_matchres['op2']) {
+                $nodeRes->_type = 'operator';
+                $nodeRes->_subtype = 'bool';
+                switch ($matchRes->_matchres['op2']) {
                        case 'eq':
-                            $result->_compile = '==';
+                            $nodeRes->_compile = '==';
                             break;
                         case 'ne':
-                            $result->_compile = '==';
+                            $nodeRes->_compile = '==';
                             break;
                         case 'ge':
                         case 'gte':
-                            $result->_compile = '>=';
+                            $nodeRes->_compile = '>=';
                             break;
                         case 'gt':
-                            $result->_compile = '>';
+                            $nodeRes->_compile = '>';
                             break;
                         case 'le':
                         case 'lte':
-                            $result->_compile = '<=';
+                            $nodeRes->_compile = '<=';
                             break;
                         case 'lt':
-                            $result->_compile = '<';
+                            $nodeRes->_compile = '<';
                             break;
                         case 'lt':
-                            $result->_compile = 'instanceof';
+                            $nodeRes->_compile = 'instanceof';
                             break;
                         default:
-                            $result->_compile = $subres->_matchres['op2'];
+                            $nodeRes->_compile = $matchRes->_matchres['op2'];
                             break;
                 }
-                $result->_compile = ' ' . $result->_compile . ' ';
-                unset($subres->_matchres['op2']);
+                $nodeRes->_compile = ' ' . $nodeRes->_compile . ' ';
+                unset($matchRes->_matchres['op2']);
             }
             </action>
         </node>
@@ -295,7 +295,7 @@ class PegParser
             <rule>  value:AnyLiteral | value:Variable | value:Array | value:Function | (OpenP value:Expr CloseP) </rule>
             <action value>
             {
-                $result->node = $subres->node;
+                $nodeRes->node = $matchRes->node;
             }
             </action>
         </node>
@@ -328,7 +328,7 @@ class PegParser
             <action _finish>
 
                 {
-                    $this->parserContext->compiler->error("unexpected '{$result['text']}'", $this->parserContext->line, $this);
+                    $this->parserContext->compiler->error("unexpected '{$nodeRes['text']}'", $this->parserContext->line, $this);
                     }
 
 

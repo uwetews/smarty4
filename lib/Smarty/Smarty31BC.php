@@ -87,6 +87,9 @@ class Smarty_Smarty31BC extends Smarty
      */
     public static $_SMARTY_PLUGINS_DIR = SMARTY_PLUGINS_DIR;
 
+    public function __construct($userConfigXml = false) {
+        parent::__construct($userConfigXml);
+    }
     /**
      * <<magic>> Generic getter.
      * Get Smarty or Template property

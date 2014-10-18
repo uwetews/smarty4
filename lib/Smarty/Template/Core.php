@@ -2,6 +2,7 @@
 namespace Smarty\Template;
 
 use Smarty;
+use Smarty\Context;
 use Smarty\Variable\Methods;
 use Smarty\Variable\Entry;
 

@@ -26,12 +26,12 @@ class ArrayElement extends Magic
      * @param      $node   source node
      * @param bool $delete flag if compiled nodes shall be deleted
      */
-    public static function compile(Node $target, Node $node, $delete = true)
+    public static function compile(Node $node, Code $codeTargetObj, $delete)
     {
         foreach ($node->arrayElements as $element) {
-            $target->raw('[');
-            $element->compile($target, $delete);
-            $target->raw(']');
+            $codeTargetObj->raw('[');
+            $element->compile($codeTargetObj, $delete);
+            $codeTargetObj->raw(']');
         }
         if ($delete) {
             $node->cleanupNodeArray($node->arrayElements);

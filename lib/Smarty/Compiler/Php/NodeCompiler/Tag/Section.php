@@ -55,7 +55,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Section
     {
         $compiling_node = new Smarty_Compiler_Format($node->parser, 'node');
         $name = trim($compiling_node->compileNode($node->attributeNodes['name'])
-                                    ->getFormated(), "'\"");
+                                    ->getFormatted(), "'\"");
         $SmartyVarName = '$smarty.foreach.' . $name . '.';
         $section_props = "\$_scope->_tpl_vars->smarty_section_{$name}->value";
 
@@ -64,7 +64,7 @@ class Smarty_Compiler_Php_NodeCompiler_Tag_Section
 
         foreach ($node->attributeNodes as $attr_name => $n) {
             $attr_value = $compiling_node->compileNode($n)
-                                         ->getFormated();
+                                         ->getFormatted();
             switch ($attr_name) {
                 case 'loop':
                     $target->code("{$section_props}['loop'] = is_array(\$_loop=$attr_value) ? count(\$_loop) : max(0, (int) \$_loop);\n")

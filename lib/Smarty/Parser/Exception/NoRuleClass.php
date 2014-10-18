@@ -7,7 +7,7 @@
  */
 namespace Smarty\Parser\Exception;
 
-use Smarty\Template\Context;
+use Smarty\Context;
 
 /**
  * Smarty compiled language not found exception

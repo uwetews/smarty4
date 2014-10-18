@@ -194,12 +194,12 @@ class Create extends Magic
             }
         }
         if (!$context->no_output_filter && !$this->has_nocache_code && (isset($context->smarty->_autoloadFilters['output']) || isset($context->smarty->_registered['filter']['output']))) {
-            $this->template_code->precompiled = $context->smarty->runFilter('output', $this->template_code->precompiled, $this);
+            $this->template_code->preCompiled = $context->smarty->runFilter('output', $this->template_code->preCompiled, $this);
         }
         // write cache file content
         if (!$context->handler->recompiled && ($context->caching == Smarty::CACHING_LIFETIME_CURRENT || $context->caching == Smarty::CACHING_LIFETIME_SAVED)) {
             $this->template_code = $this->_createSmartyContentClass($context->smarty);
-            $this->cache_obj->writeCache($context->smarty, $this->filepath, $this->template_code->precompiled);
+            $this->cache_obj->writeCache($context->smarty, $this->filepath, $this->template_code->preCompiled);
             $this->template_code = null;
             if ($context->smarty->debugging) {
                 Smarty_Debug::end_cache($context);
@@ -222,7 +222,7 @@ class Create extends Magic
             Smarty_Debug::start_cache($context);
         }
 
-        return $this->template_code->precompiled;
+        return $this->template_code->preCompiled;
     }
 
     /**
@@ -388,10 +388,10 @@ class Create extends Magic
                 if (preg_match("!/\*%%SmartyNocache%%\*/!", $source[$i])) {
                     $this->template_code->formatPHP(stripcslashes(preg_replace("!echo\s(\"|')/\*%%SmartyNocache%%\*/|/\*/%%SmartyNocache%%\*/(\"|');!", '', $source[$i])));
                 } else {
-                    $this->template_code->precompiled .= $source[$i];
+                    $this->template_code->preCompiled .= $source[$i];
                 }
             }
-            $this->template_functions_code[$name] = $this->template_code->precompiled;
+            $this->template_functions_code[$name] = $this->template_code->preCompiled;
             $this->template_code = null;
             if (isset($ptr->compiled->template_obj->template_functions[$name]['called_functions'])) {
                 foreach ($ptr->compiled->template_obj->template_functions[$name]['called_functions'] as $name => $dummy) {
@@ -528,10 +528,10 @@ class Create extends Magic
             if (preg_match("!/\*%%SmartyNocache%%\*/!", $source[$i])) {
                 $template_code->formatPHP(stripcslashes(preg_replace("!echo\s(\"|')/\*%%SmartyNocache%%\*/|/\*/%%SmartyNocache%%\*/(\"|');!", '', $source[$i])));
             } else {
-                $template_code->precompiled .= $source[$i];
+                $template_code->preCompiled .= $source[$i];
             }
         }
 
-        return $template_code->precompiled;
+        return $template_code->preCompiled;
     }
 }

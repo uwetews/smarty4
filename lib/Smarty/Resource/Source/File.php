@@ -10,7 +10,7 @@
 namespace Smarty\Resource\Source;
 
 use Smarty\Exception;
-use Smarty\Template\Context;
+use Smarty\Context;
 
 /**
  * Smarty Resource Source File Plugin
@@ -110,9 +110,9 @@ class File //extends Smarty_Exception_Magic
 
         // get source directories
         if ($context->_usage == \Smarty::IS_CONFIG) {
-            $_directories = $context->smarty->getConfigDir();
+            $_directories = $context->getConfigDir();
         } else {
-            $_directories = $context->smarty->getTemplateDir();
+            $_directories = $context->getTemplateDir();
         }
         // template_dir index?
         if ($file[0] == '[' && preg_match('#^\[(?P<key>[^\]]+)\](?P<file>.+)$#', $file, $match)) {

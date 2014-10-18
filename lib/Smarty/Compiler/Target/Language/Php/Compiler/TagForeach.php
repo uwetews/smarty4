@@ -4,6 +4,7 @@ namespace Smarty\Compiler\Target\Language\Php\Compiler;
 
 use Smarty\Node;
 use Smarty\Compiler\Code;
+use Smarty\Compiler\Format;
 use Smarty\Exception\Magic;
 
 /**
@@ -28,7 +29,7 @@ class TagForeach extends Magic
          * if (isset($node->attributeNodes['name'])) {
          * $has_name = true;
          * $name = trim($compiling_node->compileNode($node->attributeNodes['name'])
-         * ->getFormated(), "'\"");
+         * ->getFormatted(), "'\"");
          * $SmartyVarName = '$smarty.foreach.' . $name . '.';
          * unset($node->attributeNodes['name']);
          * } else {
@@ -36,7 +37,7 @@ class TagForeach extends Magic
          * $has_name = false;
          * }
          * $item = trim($compiling_node->compileNode($node->attributeNodes['item'])
-         * ->getFormated(), "'\"");
+         * ->getFormatted(), "'\"");
          * unset($node->attributeNodes['item']);
          * $ItemVarName = '$' . $item . '@';
          * // evaluates which Smarty variables and properties have to be computed        // TODO  this must be changed
@@ -62,14 +63,21 @@ class TagForeach extends Magic
          * $usesPropTotal = $usesSmartyTotal || $usesSmartyShow || $usesPropShow || $usesPropLast || strpos($node->parser->lex->source, $ItemVarName . 'total') !== false;
          * // End TODO
          */
+        $codeObj = new Format();
 
-        // compile tag
-        $item = self::getCompiledVariable($node, $node->tagAttributes['item']->nameSegments);
+        // compile item variable string
+        $codeObj->compileNodeItems($node->tagAttributes['item']->internalNodeTrees['name'], false);
+        $item = $codeObj->getFormatted();
+        $codeObj->reset();
+
         $codeTargetObj->lineNo($node->sourceLineNo)
                       ->code("\$_scope->_tpl_vars->{$item} = new Entry;\n")
                       ->code("\$_scope->_tpl_vars->{$item}->_loop = false;\n");
         if (isset($node->tagAttributes['key'])) {
-            $key = self::getCompiledVariable($node, $node->tagAttributes['key']->nameSegments);
+            // compile key variable string
+            $codeObj->compileNodeItems($node->tagAttributes['key']->internalNodeTrees['name'], false);
+            $key = $codeObj->getFormatted();
+            $codeObj->reset();
             $codeTargetObj->code("\$_scope->_tpl_vars->{$key} = new Entry;\n")
                           ->code("\$_scope->_tpl_vars->{$key}->_loop = false;\n");
         } else {
@@ -78,7 +86,7 @@ class TagForeach extends Magic
         $codeTargetObj->code('$_from = ');
         $node->tagAttributes['from']->compile($codeTargetObj, true);
         $codeTargetObj->raw(";\n")
-                      ->code("if (!is_array(\$_from) && !is_object(\$_from)) {\n")
+                      ->code("if (!is_array(\$_from) && !(\$_from instanceof Traversable)) {\n")
                       ->indent()
                       ->code("settype(\$_from, 'array');\n")
                       ->outdent()
@@ -125,6 +133,7 @@ class TagForeach extends Magic
         if ($key != null) {
             $keyterm = "\$_scope->_tpl_vars->{$key}->value =>";
         } else {
+            $keyterm = '';
             /**
              * if ($usesPropKey) {
              * $keyterm = "\$_scope->_tpl_vars->{$item}->key =>";
@@ -191,20 +200,6 @@ class TagForeach extends Magic
         }
     }
 
-    /**
-     * Compile code for 'key' or 'item' variable
-     *
-     * @param Node $node
-     * @param Node $item
-     *
-     * @return string
-     */
-    public static function getCompiledVariable(Node $node, Node $item)
-    {
-        $comp = new Code($node);
-        $comp->compileNodeItems($item, false);
-        return $comp->getFormatted();
-    }
 
     /**
      * Compile foreachelse tag

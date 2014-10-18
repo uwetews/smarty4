@@ -7,9 +7,9 @@ use Smarty\Compiler\Exception\ParserClassNotFound;
 use Smarty\Exception\Magic;
 use Smarty\Exception;
 use Smarty\Node;
+use Smarty\Context;
 use Smarty\Compiler\Format;
 use Smarty\Compiler\Code;
-use Smarty\Template\Context;
 use Smarty\Template\Scope;
 
 /**
@@ -17,7 +17,7 @@ use Smarty\Template\Scope;
  *
  * @package Smarty
  */
-class Compiler extends Magic
+class Compiler// extends Magic
 {
 
     /*
@@ -53,14 +53,8 @@ class Compiler extends Magic
      * @var array
      */
     public static $_tag_objects = array();
-    public $baseDir = '';
-    public $compilerConfig = null;
-    public $compilerConfigXml = null;
-    public $smartyConfig = null;
-    public $sourceConfig = null;
-    public $sourceConfigXML = null;
-    public $targetConfig = null;
     public $context = null;
+    public $smarty = null;
     /**
      * @var array
      */
@@ -286,26 +280,61 @@ class Compiler extends Magic
      */
     public function __construct(Context $context)
     {
-
         $this->context = $context;
-
-        $this->smartyConfig = $context->smarty->smartyConfig;
-        $file = __DIR__ . '/CompilerConfig.xml';
-        if (is_file($file)) {
-            $this->compilerConfigXml = simplexml_load_file($file);
-        } else {
-            throw new NoConfigFile($file);
-        }
-        {
-            $this->compilerConfig = $this->context->smarty->simpleXMLToArray($this->compilerConfigXml->compiler);
-            $this->baseDir = !empty($this->compilerConfig->baseDir) ? (string) $this->compilerConfig->baseDir : __DIR__;
-            $this->sourceConfig['rootDir'] = $this->baseDir . $this->compilerConfig['source']['rootDir'];
-            $this->sourceConfigXML = simplexml_load_file($this->sourceConfig['rootDir'] . $this->compilerConfig['source']['configFile']);
-            $this->sourceConfig = array_merge($this->sourceConfig, $this->context->smarty->simpleXMLToArray($this->sourceConfigXML->language->{$context->getSourceLanguage()}));
-        }
+        $this->smarty = $context->smarty;
+        $this->loadSourceConfig();
+        exit();
         // make sure that we don't run into backtrack limit errors
         ini_set('pcre.backtrack_limit', - 1);
     }
+
+    public function loadSourceConfig()
+    {
+        $source = ucfirst($this->context->getSourceLanguage());
+        $sourceConfig = array();
+            $configs = $this->context->xpath->query("//sourceConfig[@language='{$source}']");
+            foreach ($configs as $config) {
+                foreach ($config->childNodes as $node) {
+                    if ($value = $node->getAttribute('value')) {
+                        $sourceConfig[$node->nodeName] = $node->getAttribute('value');
+                    } else {
+                        $value = array();
+                        foreach ($node->attributes as $attr) {
+                            $value[$attr->nodeName] = $attr->nodeValue;
+                        }
+                        $sourceConfig[$node->nodeName][$value['name']] = $value;
+                    }
+                }
+            }
+
+        $basePath = $this->context->_absolutePath($sourceConfig['directoryPath'], \Smarty::$baseDir);
+        $xmlFile = $this->context->_absolutePath($sourceConfig['sourceConfigXml'], $basePath);
+        if (!isset($this->loadedXmlFiles[$xmlFile])) {
+            $xml = $this->context->_loadXml($xmlFile);
+            $nodes = $xml->getElementsByTagName('sourceConfig');
+            foreach ($nodes as $nd) {
+                foreach ($nd->childNodes as $node) {
+                    $na = $node->attributes;
+                    if ($na->length == 1 && $value = $node->getAttribute('value')) {
+                        $sourceConfig[$node->nodeName] = $value;
+                    } else {
+                        $value = array();
+                        foreach ($na as $attr) {
+                            $value[$attr->nodeName] = $attr->nodeValue;
+                        }
+                        $sourceConfig[$node->nodeName][$value['name']] = $value;
+                    }
+                }
+            }
+        }
+exit();
+        $this->context->loadConfigSection($sourceConfig['configSection'], null, null, $this->context->_absolutePath($sourceConfig['sourceConfigXml'], $basePath));
+        if (isset($this->configData['sourceConfig']['directoryPathShared'])) {
+            $this->configData['sourceConfig'][$source]['directoryPathShared'] = $this->_absolutePath($this->configData['sourceConfig'][$source]['directoryPathShared'], \Smarty::$baseDir);
+        }
+        //$this->configData['sourceConfig'] = $name;
+    }
+
 
     /**
      * Compiles from resource
@@ -319,7 +348,7 @@ class Compiler extends Magic
      */
     public function compileResource(Context $context, Node $node = null, $pre_filter = true, $post_filter = true)
     {
-        if ($context->smarty->debugging) {
+        if ($debugging = $context->getProperty('debugging')) {
             \Smarty_Debug::start_compile($context);
         }
 
@@ -330,7 +359,7 @@ class Compiler extends Magic
 
         unset($root_node);
 
-        if ($context->smarty->debugging) {
+        if ($debugging) {
             \Smarty_Debug::end_compile($context);
         }
         return $code;
@@ -360,9 +389,10 @@ class Compiler extends Magic
             $node = $this->instanceNode($nodeClass, $context);
             $node->setSource($source);
             $node->parse();
+            $node->parser->cleanup();
             $codeObj = $node->compile();
             $code = $codeObj->compiled;
-            $node->parser->cleanup();
+ //          $node->parser->cleanup();
             $node->cleanup();
             unset($node);
             echo '<br>exit<br>';
@@ -389,16 +419,16 @@ class Compiler extends Magic
      *
      * @return string
      */
-    public function getDefaultNodeName($context)
+    public function getDefaultNodeName(Context $context)
     {
-        return (string) $context->smarty->smartyConfig->parser->defaultNode;
+        return $context->_getConfigData('defaultNode');
     }
 
     /**
      * Instance node
      *
      * @param string                   $nodeName node name
-     * @param \Smarty\Template\Context $context
+     * @param \Smarty\Context $context
      * @param null                     $parser
      * @param null                     $tokenName
      * @param bool                     $quiet
@@ -496,8 +526,8 @@ class Compiler extends Magic
      * @param string $class     class name
      * @param bool   $exception flag if exception shall be thrown (default true)
      *
+     * @throws MissingClass
      * @return bool return status
-     * @throws \Smarty_Compiler_Exception_MissingClass
      */
     public function classExists($class, $exception = true)
     {
@@ -597,266 +627,6 @@ class Compiler extends Magic
     }
 
     /**
-     * Get node compiler object
-     *
-     * @param Node|\Smarty_Compiler_Node $node
-     *
-     * @return object node compiler object
-     */
-    public function getNodeCompilerCallback(Node $node)
-    {
-        if (isset($node->base_tag)) {
-            $nodeType = $node->base_tag;
-        } elseif (isset($node->tag)) {
-            $nodeType = $node->tag;
-        } else {
-            $nodeType = $node->nodeType;
-        }
-        $language = $node->language;
-        // already in cache?
-        if (isset($this->tag_cache[$language][$nodeType])) {
-            return $this->tag_cache[$language][$nodeType];
-        }
-        // get compiler class postfix from node
-        return $this->tag_cache[$language][$nodeType] = false;
-    }
-
-    /**
-     * Return callback of template function for tag or false if not defined
-     *
-     * @param string $tag tag name
-     *
-     * @return bool
-     */
-    public function getTemplateFunctionCB($tag)
-    {
-        return false;
-    }
-
-    /**
-     * Instance plugin tag node or false if not defined
-     *
-     * @param $tag
-     *
-     * @return string $tag   tag name
-     */
-    public function instancePluginTagNode($tag)
-    {
-        return false;
-    }
-
-    /**
-     * Compile Tag
-     * This is a call back from the lexer/parser
-     * It executes the required compile plugin for the Smarty tag
-     *
-     * @param  string $tag       tag name
-     * @param  array  $args      array with tag attributes
-     * @param  array  $parameter array with compilation parameter
-     *
-     * @return string compiled code
-     */
-    public function compilexTag($tag, $args, $parameter = array())
-    {
-        // $args contains the attributes parsed and compiled by the lexer/parser
-        // assume that tag does compile into code, but creates no HTML output
-        $this->has_code = true;
-        $this->has_output = false;
-        // log tag/attributes
-        //TODO mit trace back
-        if (isset($this->context->smarty->get_used_tags) && $this->context->smarty->get_used_tags) {
-            $this->context->smarty->used_tags[] = array($tag, $args);
-        }
-        // check nocache option flag
-        if (in_array("'nocache'", $args) || in_array(array('nocache' => 'true'), $args)
-            || in_array(array('nocache' => '"true"'), $args) || in_array(array('nocache' => "'true'"), $args)
-        ) {
-            $this->tag_nocache = true;
-        }
-        // tags with _ like load_config need processing
-        if (strpos($tag, '_') === false || strpos($tag, 'Internal_') === 0) {
-            $_tag = $tag;
-        } else {
-            $_tag = '';
-            $parts = explode('_', $tag);
-            foreach ($parts as $part) {
-                $_tag .= ucfirst($part);
-            }
-        }
-        // compile the smarty tag (required compile classes to compile the tag are autoloaded)
-        if (($_output = $this->compileCoreTag($_tag, $args, $parameter)) === false) {
-            if (isset($this->_templateFunctions[$tag])) {
-                // template defined by {template} tag
-                $args['_attr']['name'] = "'" . $tag . "'";
-                $_output = $this->compileCoreTag('Call', $args, $parameter);
-            }
-        }
-        if ($_output !== false) {
-            if ($_output !== true) {
-                // did we get compiled code
-                if ($this->has_code) {
-                    // return compiled code
-                    return $_output;
-                }
-            }
-            // tag did not produce compiled code
-            return '';
-        } else {
-            // map_named attributes
-            if (isset($args['_attr'])) {
-                foreach ($args['_attr'] as $attribute) {
-                    if (is_array($attribute)) {
-                        $args = array_merge($args, $attribute);
-                    }
-                }
-            }
-            // not an internal compiler tag
-            if (strlen($tag) < 6 || substr($tag, - 5) != 'close') {
-                // check if tag is a registered object
-                if (isset($this->context->smarty->_registered['object'][$tag]) && isset($parameter['object_method'])) {
-                    $method = $parameter['object_method'];
-                    if (!in_array($method, $this->context->smarty->_registered['object'][$tag][3]) &&
-                        (empty($this->context->smarty->_registered['object'][$tag][1]) || in_array($method, $this->context->smarty->_registered['object'][$tag][1]))
-                    ) {
-                        return $this->compileCoreTag('Internal_ObjectFunction', $args, $parameter, $tag, $method);
-                    } elseif (in_array($method, $this->context->smarty->_registered['object'][$tag][3])) {
-                        return $this->compileCoreTag('Internal_ObjectBlockFunction', $args, $parameter, $tag, $method);
-                    } else {
-                        $this->error('unallowed method "' . $method . '" in registered object "' . $tag . '"', $this->lex->taglineno);
-                    }
-                }
-                // check if tag is registered
-                foreach (array(Smarty::PLUGIN_COMPILER, Smarty::PLUGIN_FUNCTION, Smarty::PLUGIN_BLOCK) as $plugin_type) {
-                    if (isset($this->context->smarty->_registered['plugin'][$plugin_type][$tag])) {
-                        // if compiler function plugin call it now
-                        if ($plugin_type == Smarty::PLUGIN_COMPILER) {
-                            return $this->compileCoreTag('Internal_PluginCompiler', $args, $parameter, $tag);
-                        }
-                        // compile registered function or block function
-                        if ($plugin_type == Smarty::PLUGIN_FUNCTION || $plugin_type == Smarty::PLUGIN_BLOCK) {
-                            return $this->compileCoreTag('Internal_Registered' . ucfirst($plugin_type), $args, $parameter, $tag);
-                        }
-                    }
-                }
-                // check plugins from plugins folder
-                foreach (\Smarty_Compiler::$plugin_search_order as $plugin_type) {
-                    if ($plugin_type == Smarty::PLUGIN_COMPILER && $this->context->smarty->_loadPlugin('\Smarty_compiler_' . $tag) && (!isset($this->context->smarty->securityPolicy) || $this->context->smarty->securityPolicy->isTrustedTag($tag, $this))) {
-                        $plugin = 'smarty_compiler_' . $tag;
-                        if (is_callable($plugin) || class_exists($plugin, false)) {
-                            return $this->compileCoreTag('Internal_PluginCompiler', $args, $parameter, $tag);
-                        }
-                        $this->error("Plugin '{{$tag}...}' not callable", $this->lex->taglineno);
-                    } else {
-                        if ($function = $this->getPlugin($tag, $plugin_type)) {
-                            if (!isset($this->context->smarty->securityPolicy) || $this->context->smarty->securityPolicy->isTrustedTag($tag, $this)) {
-                                return $this->compileCoreTag('Internal_Plugin' . ucfirst($plugin_type), $args, $parameter, $tag, $function);
-                            }
-                        }
-                    }
-                }
-                if (is_callable($this->context->smarty->default_plugin_handler_func)) {
-                    $found = false;
-                    // look for already resolved tags
-                    foreach (\Smarty_Compiler::$plugin_search_order as $plugin_type) {
-                        if (isset($this->default_handler_plugins[$plugin_type][$tag])) {
-                            $found = true;
-                            break;
-                        }
-                    }
-                    if (!$found) {
-                        // call default handler
-                        foreach (\Smarty_Compiler::$plugin_search_order as $plugin_type) {
-                            if ($this->getPluginFromDefaultHandler($tag, $plugin_type)) {
-                                $found = true;
-                                break;
-                            }
-                        }
-                    }
-                    if ($found) {
-                        // if compiler function plugin call it now
-                        if ($plugin_type == Smarty::PLUGIN_COMPILER) {
-                            return $this->compileCoreTag('Internal_PluginCompiler', $args, $parameter, $tag);
-                        } else {
-                            return $this->compileCoreTag('Internal_Registered' . ucfirst($plugin_type), $args, $parameter, $tag);
-                        }
-                    }
-                }
-            } else {
-                // compile closing tag of block function
-                $base_tag = substr($tag, 0, - 5);
-                // check if closing tag is a registered object
-                if (isset($this->context->smarty->_registered['object'][$base_tag]) && isset($parameter['object_method'])) {
-                    $method = $parameter['object_method'];
-                    if (in_array($method, $this->context->smarty->_registered['object'][$base_tag][3])) {
-                        return $this->compileCoreTag('Internal_ObjectBlockFunction', $args, $parameter, $tag, $method);
-                    } else {
-                        $this->error('unallowed closing tag method "' . $method . '" in registered object "' . $base_tag . '"', $this->lex->taglineno);
-                    }
-                }
-                // registered compiler plugin ?
-                if (isset($this->context->smarty->_registered['plugin'][Smarty::PLUGIN_COMPILER][$tag])) {
-                    return $this->compileCoreTag('Internal_PluginCompilerclose', $args, $parameter, $tag);
-                }
-                // registered block tag ?
-                if (isset($this->context->smarty->_registered['plugin'][Smarty::PLUGIN_BLOCK][$base_tag]) || isset($this->default_handler_plugins[Smarty::PLUGIN_BLOCK][$base_tag])) {
-                    return $this->compileCoreTag('Internal_RegisteredBlock', $args, $parameter, $tag);
-                }
-                // block plugin?
-                if ($function = $this->getPlugin($base_tag, Smarty::PLUGIN_BLOCK)) {
-                    return $this->compileCoreTag('Internal_PluginBlock', $args, $parameter, $tag, $function);
-                }
-                if ($this->context->smarty->_loadPlugin('smarty_compiler_' . $tag)) {
-                    return $this->compileCoreTag('Internal_PluginCompilerclose', $args, $parameter, $tag);
-                }
-                $this->error("Plugin '{{$tag}...}' not callable", $this->lex->taglineno);
-            }
-            $this->error("unknown tag '{{$tag}...}'", $this->lex->taglineno);
-        }
-        return false;
-    }
-
-    /**
-     * lazy loads internal compile plugin for tag and calls the compile method
-     * compile objects cached for reuse.
-     * class name format:  \Smarty_Compiler_Php_NodeCompiler_Tag_TagName
-     *
-     * @param  string $tag    tag name
-     * @param  array  $args   list of tag attributes
-     * @param  mixed  $param1 optional parameter
-     * @param  mixed  $param2 optional parameter
-     * @param  mixed  $param3 optional parameter
-     *
-     * @return string compiled code
-     */
-    public function compileCoreTag($tag, $args, $param1 = null, $param2 = null, $param3 = null)
-    {
-        // re-use object if already exists
-        if (isset(self::$_tag_objects[$tag])) {
-            // compile this tag
-            return self::$_tag_objects[$tag]->compile($args, $this, $param1, $param2, $param3);
-        }
-        // check if tag allowed by security
-        if (!isset($this->context->smarty->securityPolicy) || $this->context->smarty->securityPolicy->isTrustedTag($tag, $this)) {
-            $class = '\Smarty_Compiler_Php_NodeCompiler_Tag_' . $tag;
-            if (!class_exists($class, true)) {
-                if (substr($tag, - 5) == 'close') {
-                    $base_class = substr($tag, 0, - 5);
-                    if (!class_exists($base_class, true)) {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            }
-            self::$_tag_objects[$tag] = new $class;
-            // compile this tag
-            return self::$_tag_objects[$tag]->compile($args, $this, $param1, $param2, $param3);
-        }
-        // no internal compile plugin for this tag
-        return false;
-    }
-
-    /**
      * display compiler error messages
      * If parameter $args is empty it is a parser detected syntax error.
      * In this case the parser is called to obtain information about expected tokens.
@@ -866,7 +636,7 @@ class Compiler extends Magic
      * @param  string                  $line line-number
      * @param  \Smarty_Compiler_Parser $parser
      *
-     * @throws \Smarty_Exception_Compiler
+     * @throws Exception\Compiler
      */
     public function error($msg = null, $line = null, $parser)
     {
@@ -947,10 +717,10 @@ class Compiler extends Magic
         $callback = null;
         $script = null;
         $cacheable = true;
-        $result = call_user_func_array(
+        $nodeRes = call_user_func_array(
             $this->context->smarty->default_plugin_handler_func, array($tag, $plugin_type, $this->context->smarty, &$callback, &$script, &$cacheable)
         );
-        if ($result) {
+        if ($nodeRes) {
             $this->tag_nocache = $this->tag_nocache || !$cacheable;
             if ($script !== null) {
                 if (is_file($script)) {
@@ -999,12 +769,6 @@ class Compiler extends Magic
     public function popOutputVar()
     {
         $this->output_var = array_pop($this->output_var_stack);
-    }
-
-    public function instanceFormatter()
-    {
-        $className = "Smarty\Compiler\Target\Language\\{$this->context->getTargetLanguage()}\Formatter";
-        return new $className();
     }
 
     /**

@@ -1,14 +1,14 @@
 <?php
 namespace Smarty\Parser\Source\Language\Smarty\Parser;
 
-use Smarty\PegParser;
+use Smarty\Parser\Peg\RuleRoot;
 
 /**
  * Class TagNocacheParser
  *
  * @package Smarty\Parser\Source\Language\Smarty\Parser
  */
-class TagNocacheParser extends PegParser
+class TagNocacheParser extends RuleRoot
 {
     /*!*
         <pegparser TagNocache>
@@ -18,12 +18,12 @@ class TagNocacheParser extends PegParser
                 <rule>Ldel 'nocache'  Rdel  body:Body? close:Smarty_Tag_Block_Close</rule>
                 <action _start>
                 {
-                    $result['node'] = $previous['node'];
+                    $nodeRes['node'] = $previous['node'];
                 }
                 </action>
                 <action body>
                 {
-                    $result['node']->addSubTree($subres['node']);
+                    $nodeRes['node']->addSubTree($matchRes['node']);
                 }
                 </action>
             </node>
